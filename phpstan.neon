@@ -1,0 +1,11 @@
+parameters:
+    level: 6
+    paths:
+        - src/
+        - templates/
+    ignoreErrors:
+        -
+         	identifier: constant.notFound
+        #-
+        #    message: '#^Parameter \#\d+ \$callback of function \S+ expects callable\(\)\: mixed, \S+ given\.$#'
+        #    identifier: argument.type

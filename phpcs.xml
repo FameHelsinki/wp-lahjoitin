@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<ruleset name="WP_Plugin">
+	<description>This is how we code in this project.</description>
+
+	<arg name="extensions" value="php,inc"/>
+    <file>src</file>
+    <file>templates</file>
+	<rule ref="Generic.PHP.RequireStrictTypes" />
+</ruleset>

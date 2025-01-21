@@ -1,0 +1,43 @@
+{
+	"name": "famehelsinki/wp_lahjoitukset",
+	"type": "wordpress-plugin",
+	"description": "Plugin for Fame Wordpress common functionality.",
+	"homepage": "https://github.com/FameHelsinki/wp-lahjoitukset",
+	"keywords": [
+		"wordpress",
+		"plugin"
+	],
+	"license": "GPL-2.0-or-later",
+	"version": "dev-1.0.0",
+	"authors": [
+		{
+			"name": "Santeri Hurnanen",
+			"email": "santeri.hurnanen@fame.fi",
+			"homepage": "https://github.com/hyrsky"
+		}
+	],
+	"require-dev": {
+		"squizlabs/php_codesniffer": "^3.11",
+		"phpstan/phpstan": "^2.1",
+		"szepeviktor/phpstan-wordpress": "^2.0",
+		"phpstan/extension-installer": "^1.4",
+		"10up/wp_mock": "^1.0",
+		"phpunit/phpunit": "^9.6"
+	},
+	"config": {
+        "optimize-autoloader": true,
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"phpstan/extension-installer": true
+		}
+	},
+	"scripts": {
+		"lint:php": "phpcs && phpstan analyze"
+	},
+    "autoload": {
+        "psr-4": {"Fame\\WordPress\\Lahjoitukset\\": "src/"}
+    },
+	"require": {
+		"psr/container": "^2.0"
+	}
+}
