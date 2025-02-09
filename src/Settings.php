@@ -17,17 +17,26 @@ class Settings implements ComponentInterface
     private Section $settings;
 
     /**
+     * Constructs a new instance.
+     */
+    public function __construct() {
+        $this->settings = new Section('fame_lahjoitukset_settings', 'Lahjoitukset settings');
+        $this->settings
+            ->addField(new TextField('backend_url'));
+    }
+
+    /**
      * Run admin_menu action.
      */
     #[Action('admin_menu')]
     public function registerSettings(): void
     {
-        $this->settings = new Section('fame_lahjoitukset_settings', 'Lahjoitukset settings');
-        $this->settings
-            ->addField((new TextField('backend_url'))
-                ->setLabel(__('Backend URL', 'fame_lahjoitukset'))
-                ->setDescription(__('Your lahjoitukset-backend instance', 'fame_lahjoitukset')))
-            ->register(self::MENU_SLUG);
+    	$this->settings
+			->getField('backend_url')
+			->setLabel(__('Backend URL', 'fame_lahjoitukset'))
+			->setDescription(__('Your lahjoitukset-backend instance', 'fame_lahjoitukset'));
+
+        $this->settings->register(self::MENU_SLUG);
 
         \add_options_page(
             __('Fame lahjoitukset settings', 'fame_lahjoitukset'),
