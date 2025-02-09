@@ -8,7 +8,6 @@
 		"plugin"
 	],
 	"license": "GPL-2.0-or-later",
-	"version": "dev-1.0.0",
 	"authors": [
 		{
 			"name": "Santeri Hurnanen",
@@ -32,7 +31,7 @@
 		}
 	},
 	"scripts": {
-		"lint:php": "phpcs && phpstan analyze"
+		"lint:php": "phpcs && phpstan --memory-limit=-1 analyze && composer validate"
 	},
     "autoload": {
         "psr-4": {"Fame\\WordPress\\Lahjoitukset\\": "src/"}

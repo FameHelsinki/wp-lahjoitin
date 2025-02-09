@@ -1,0 +1,77 @@
+name: 'Build package'
+
+on:
+    workflow_dispatch:
+    release:
+        types: [created, edited]
+    push:
+        branches: ['main']
+
+# Give permission to upload release artifact.
+permissions:
+    contents: write
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+
+            - name: Use PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+
+            - name: Build
+              run: |
+                  npm ci
+                  npm run build
+                  composer install --no-dev --optimize-autoloader --classmap-authoritative
+
+            - name: Setup release
+              id: release-setup
+              run: |
+                  SEMVER_REGEX='^v?([0-9]+)\.([0-9]+)\.([0-9]+)(-[0-9A-Za-z.-]+)?$'
+
+                  if [[ "${{ github.ref }}" == refs/tags/* ]] && [["${{ github.ref_name }}" =~ "$SEMVER_REGEX" ]]; then
+                    # Strip leading 'v'.
+                    VERSION="${{ github.ref_name }}"
+                    VERSION=${VERSION#v}
+                  else
+                    # Extract base version from PHP file.
+                    VERSION=$(grep -Po "Version:\s+\K.*$" fame-lahjoitukset.php)
+                    VERSION="$VERSION-dev+${{ github.sha }}"
+                  fi
+
+                  PACKAGE="/tmp/fame-lahjoitukset-$VERSION.zip"
+
+                  echo "Version: $VERSION"
+                  echo "VERSION=$VERSION" >> $GITHUB_OUTPUT;
+                  echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT;
+
+                  # Replace the version in the plugin file.
+                  sed -i "s/\(Version:[[:space:]]\+\).*/\1$VERSION/" fame-lahjoitukset.php
+
+                  # Create package. Note: vendor fondler is included on purpose.
+                  zip -r "$PACKAGE" . -x ".git*" -x "node_modules*"
+
+            # Create workflow artifact.
+            - uses: actions/upload-artifact@v4
+              if: github.event_name != 'release'
+              with:
+                  name: fame-lahjoitukset.zip
+                  path: ${{ steps.release-setup.outputs.PACKAGE }}
+
+            # Attach package to the release.
+            - name: Publish package
+              if: github.event_name == 'release'
+              run: |
+                  gh release upload ${{ github.event.release.tag_name }} ${{ steps.release-setup.outputs.PACKAGE }}
+              env:
+                  GITHUB_TOKEN: ${{ github.TOKEN }}
