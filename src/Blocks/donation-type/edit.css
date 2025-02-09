@@ -1,0 +1,12 @@
+.donation-type {
+	display: flex;
+	gap: 16px;
+}
+
+.donation-type__label {
+	display: flex;
+}
+
+.donation-type__input {
+	width: 1.5em;
+}

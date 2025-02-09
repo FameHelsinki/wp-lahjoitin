@@ -1,0 +1,59 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/donation-amounts",
+	"version": "0.1.0",
+	"title": "Donation amounts",
+	"category": "widgets",
+	"description": "Allows selecting donation amounts.",
+	"parent": ["famehelsinki/donation-form"],
+	"example": {},
+	"attributes": {
+		"amounts": {
+			"type": "array",
+			"source": "query",
+			"selector": ".donation-amounts__amount input[type=\"radio\"]",
+			"query": {
+				"amount": {
+					"type": "integer",
+					"source": "attribute",
+					"attribute": "value"
+				}
+			},
+			"default": [
+				{
+					"amount": "10"
+				}
+			]
+		},
+		"otherAmount": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".donation-amounts__other",
+			"attribute": "class"
+		},
+		"otherAmountLabel": {
+			"type": "rich-text",
+			"source": "rich-text",
+			"selector": ".donation-amounts__other span",
+			"role": "content",
+			"default": "Other amount"
+		}
+	},
+	"supports": {
+		"multiple": false,
+		"color": {
+			"background": false,
+			"text": true
+		},
+		"html": false,
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"icon": "database",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}

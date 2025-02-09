@@ -1,0 +1,29 @@
+.donation-amounts__other,
+.donation-amounts {
+	display: flex;
+	align-items: stretch;
+	gap: 16px;
+}
+
+.donation-amounts__other {
+	align-items: center;
+}
+
+.donation-amounts .rich-text {
+	text-wrap: nowrap !important;
+}
+
+.donation-amounts > * {
+	flex: 1;
+}
+
+.donation-amounts__other__placeholder,
+.donation-amounts__amount {
+	padding: var(--form-element-padding);
+	border: var(--form-element-border);
+}
+
+.donation-amounts__other__placeholder {
+	align-self: stretch;
+	width: 10ch;
+}

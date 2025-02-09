@@ -7,14 +7,22 @@
 	"main": "build/index.js",
 	"scripts": {
 		"build": "wp-scripts build",
-		"format": "wp-scripts format",
+		"format": "wp-scripts format src",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
-		"start": "wp-scripts start"
+		"dev": "wp-scripts start",
+		"start": "npm run start"
 	},
 	"devDependencies": {
-		"@wordpress/scripts": "^30.9.0"
+		"@types/wordpress__block-editor": "^11.5.16",
+		"@wordpress/dom-ready": "^4.16.0",
+		"@wordpress/scripts": "^30.9.0",
+		"eslint-config-prettier": "^10.0.1",
+		"prettier": "^3.5.0"
+	},
+	"dependencies": {
+		"react": "^18.3.1"
 	}
 }

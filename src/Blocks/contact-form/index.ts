@@ -3,14 +3,15 @@
  *
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
-import { registerBlockType } from '@wordpress/blocks';
+import { registerBlockType } from '@wordpress/blocks'
 
 /**
  * Internal dependencies
  */
-import Edit from './edit';
-import save from './save';
-import metadata from './block.json';
+import Edit from './edit'
+import save from './save'
+import metadata from './block.json'
+import './edit.css'
 
 /**
  * Every block starts by registering a new block type definition.
@@ -18,12 +19,12 @@ import metadata from './block.json';
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
 registerBlockType(metadata.name, {
-    /**
-     * @see ./edit.js
-     */
-    edit: Edit,
-    /**
-     * @see ./save.js
-     */
-    save,
-});
+	/**
+	 * @see ./edit.js
+	 */
+	edit: Edit,
+	/**
+	 * @see ./save.js
+	 */
+	save,
+} as any)

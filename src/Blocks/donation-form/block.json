@@ -1,0 +1,79 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/donation-form",
+	"version": "0.1.0",
+	"title": "Donation form",
+	"category": "widgets",
+	"description": "Gutenberg block for Fame donation system.",
+	"example": {},
+	"allowedBlocks": [
+		"famehelsinki/donation-type",
+		"famehelsinki/donation-amounts",
+		"core/paragraph",
+		"core/heading"
+	],
+	"providesContext": {
+		"famehelsinki/donation-form/types": "types"
+	},
+	"attributes": {
+		"types": {
+			"type": "array"
+		},
+		"noTypeSelect": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".donation-form input[name=\"type\"][type=\"hidden\"]",
+			"attribute": "value"
+		},
+		"defaultAmount": {
+			"type": "integer",
+			"default": 10
+		},
+		"token": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".donation-form",
+			"attribute": "data-token"
+		},
+		"campaign": {
+			"type": "string",
+			"source": "attribute",
+			"selector": ".donation-form input[name=\"campaign\"]",
+			"attribute": "value"
+		},
+		"returnAddress": {
+			"type": "string",
+			"source": "attribute",
+			"selector": ".donation-form input[name=\"return_address\"]",
+			"attribute": "value",
+			"default": "/"
+		},
+		"submitLabel": {
+			"type": "string",
+			"source": "html",
+			"selector": ".donation-form__controls [type=\"submit\"] span",
+			"default": "Donate"
+		}
+	},
+	"supports": {
+		"align": ["left", "right", "center"],
+		"color": {
+			"background": false,
+			"text": true
+		},
+		"spacing": {
+			"margin": true
+		},
+		"html": false,
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"icon": "money",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}
