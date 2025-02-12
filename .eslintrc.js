@@ -1,6 +1,10 @@
 module.exports = {
 	root: true,
-	extends: ['plugin:@wordpress/eslint-plugin/recommended', 'prettier'],
+	extends: [
+                'plugin:@wordpress/eslint-plugin/recommended',
+                'prettier',
+                'plugin:react-hooks/recommended'
+        ],
 	overrides: [
 		{
 			// Unit test files and their helpers only.

@@ -1,7 +1,9 @@
-import { useBlockProps } from '@wordpress/block-editor'
-import { DONATION_TYPES } from '../common/DonationType.ts'
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
 import React, { useEffect } from 'react'
-import Radio from '../common/Radio.tsx'
+import DonationTypes from './DonationTypes.tsx'
+import { DONATION_TYPES, DonationType } from '../common/DonationType.ts'
+import { RadioControl, PanelBody } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -9,26 +11,85 @@ import Radio from '../common/Radio.tsx'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
-export default function Edit({ context, setAttributes }): React.JSX.Element {
-	const { 'famehelsinki/donation-form/types': types } = context
+export default function Edit({
+	context,
+	attributes,
+	setAttributes,
+}): React.JSX.Element {
+	const { 'famehelsinki/donation-form/types': enabledTypes } = context
+	const { types, value } = attributes as {
+		types?: DonationType[]
+		value?: string
+	}
 
 	useEffect(() => {
-		setAttributes({ types })
-	}, [types, setAttributes])
+		// Calculate updated types.
+		//  - enabled types might have changed.
+		//  - enabled types might have been removed.
+		const update = DONATION_TYPES
+			// Filter all enabled types.
+			.filter(({ value }) => enabledTypes?.includes(value))
+			// Use existing type from if it exists, otherwise add
+			// new with default label from DONATION_TYPES array.
+			.map((t) => types?.find(({ value }) => t.value === value) ?? t)
+
+		// Check if update includes current default value.
+		// If not, set first element as the new default value.
+		const defaultValue =
+			update?.find((type) => type.value === value)?.value ||
+			update?.[0]?.value
+
+		// Update if the list has changed. Calling setAttributes
+		// without this check leads to infinite recursion.
+		// This assumes that DONATION_TYPES and types attribute
+		// have the same order.
+		if (
+			update?.length !== types?.length ||
+			!update.every((item, idx) => item.value === types?.[idx]?.value)
+		) {
+			setAttributes({
+				types: update,
+				value: defaultValue,
+			})
+		} else if (value !== defaultValue) {
+			setAttributes({
+				value: defaultValue,
+			})
+		}
+	}, [types, value, enabledTypes, setAttributes])
+
+	console.log('editt', enabledTypes, types, value)
 
 	return (
-		<div {...useBlockProps({ className: 'donation-type' })}>
-			{DONATION_TYPES.filter((type) => types.includes(type.value)).map(
-				({ value, label }) => (
-					<div key={value} className="donation-type__label">
-						<Radio
-							checked={value === types[0]}
-							className="donation-type__input"
+		<>
+			<InspectorControls>
+				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
+					{types?.length && types?.length > 1 && (
+						<RadioControl
+							label={__(
+								'Default donation type',
+								'fame_lahjoitukset'
+							)}
+							help={__(
+								'Select donation type that will be used by default.',
+								'fame_lahjoitukset'
+							)}
+							selected={value ?? types?.[0]?.value}
+							options={types}
+							onChange={(value) => setAttributes({ value })}
 						/>
-						{label}
-					</div>
-				)
-			)}
-		</div>
+					)}
+				</PanelBody>
+			</InspectorControls>
+			<div {...useBlockProps({ className: 'donation-type' })}>
+				{types?.length && types.length > 1 && (
+					<DonationTypes
+						types={types}
+						value={value}
+						onChange={(types) => setAttributes({ types })}
+					/>
+				)}
+			</div>
+		</>
 	)
 }

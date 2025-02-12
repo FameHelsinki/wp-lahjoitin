@@ -8,8 +8,6 @@
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
 	"allowedBlocks": [
-		"famehelsinki/donation-type",
-		"famehelsinki/donation-amounts",
 		"core/paragraph",
 		"core/heading"
 	],
@@ -19,16 +17,6 @@
 	"attributes": {
 		"types": {
 			"type": "array"
-		},
-		"noTypeSelect": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": ".donation-form input[name=\"type\"][type=\"hidden\"]",
-			"attribute": "value"
-		},
-		"defaultAmount": {
-			"type": "integer",
-			"default": 10
 		},
 		"token": {
 			"type": "boolean",
@@ -48,12 +36,6 @@
 			"selector": ".donation-form input[name=\"return_address\"]",
 			"attribute": "value",
 			"default": "/"
-		},
-		"submitLabel": {
-			"type": "string",
-			"source": "html",
-			"selector": ".donation-form__controls [type=\"submit\"] span",
-			"default": "Donate"
 		}
 	},
 	"supports": {

@@ -28,7 +28,7 @@ import {
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/components/
  */
-import { PanelBody, PanelRow, ToggleControl } from '@wordpress/components'
+import {PanelBody, PanelRow, TextControl, ToggleControl} from '@wordpress/components'
 
 /**
  * Imports the useEffect React Hook. This is used to set an attribute when the
@@ -38,6 +38,7 @@ import { PanelBody, PanelRow, ToggleControl } from '@wordpress/components'
  */
 import React from 'react'
 import AmountControl from './AmountControl.tsx'
+import {formatAmount} from "../common/utils.ts";
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -53,21 +54,45 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<PanelRow>
-						<AmountControl
-							amountLabel={__('Amount', 'fame_lahjoitukset')}
-							removeLabel={__('Remove', 'fame_lahjoitukset')}
-							addLabel={__('Add', 'fame_lahjoitukset')}
-							amounts={amounts}
-							onChange={(amounts) => setAttributes({ amounts })}
+						<div>
+							<AmountControl
+								amountLabel={__('Amount', 'fame_lahjoitukset')}
+								removeLabel={__('Remove', 'fame_lahjoitukset')}
+								addLabel={__('Add', 'fame_lahjoitukset')}
+								amounts={amounts}
+								onChange={(amounts) => setAttributes({ amounts })}
+							/>
+						</div>
+						<TextControl
+							label={__('Default amount', 'fame_lahjoitukset')}
+							help={__('Default amount.', 'fame_lahjoitukset')}
+							value={0}
+							onChange={(value) =>
+								setAttributes({
+									defaultAmount: formatAmount(value),
+								})
+							}
 						/>
 					</PanelRow>
 					<PanelRow>
-						<AmountControl
-							amountLabel={__('Amount', 'fame_lahjoitukset')}
-							removeLabel={__('Remove', 'fame_lahjoitukset')}
-							addLabel={__('Add', 'fame_lahjoitukset')}
-							amounts={amounts}
-							onChange={(amounts) => setAttributes({ amounts })}
+						<div>
+							<AmountControl
+								amountLabel={__('Amount', 'fame_lahjoitukset')}
+								removeLabel={__('Remove', 'fame_lahjoitukset')}
+								addLabel={__('Add', 'fame_lahjoitukset')}
+								amounts={amounts}
+								onChange={(amounts) => setAttributes({ amounts })}
+							/>
+						</div>
+						<TextControl
+							label={__('Default amount', 'fame_lahjoitukset')}
+							help={__('Default amount.', 'fame_lahjoitukset')}
+							value={0}
+							onChange={(value) =>
+								setAttributes({
+									defaultAmount: formatAmount(value),
+								})
+							}
 						/>
 					</PanelRow>
 					<PanelRow>

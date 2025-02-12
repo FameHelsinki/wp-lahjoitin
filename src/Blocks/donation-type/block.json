@@ -9,8 +9,28 @@
 	"parent": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
+		"value": {
+			"type": "string",
+			"source": "attribute",
+			"selector": ".donation-type input[name=\"type\"]:checked",
+			"attribute": "value"
+		},
 		"types": {
-			"type": "array"
+			"type": "array",
+			"source": "query",
+			"selector": ".donation-type__label",
+			"query": {
+				"value": {
+					"type": "string",
+					"source": "attribute",
+					"selector": "input[name=\"type\"]",
+					"attribute": "value"
+				},
+				"label": {
+					"type": "string",
+					"source": "text"
+				}
+			}
 		}
 	},
 	"usesContext": ["famehelsinki/donation-form/types"],

@@ -1,9 +1,9 @@
 import {
-	RichText,
 	useBlockProps,
 	useInnerBlocksProps,
 } from '@wordpress/block-editor'
 import React from 'react'
+import {DEFAULT_DONATION_TYPE} from "../common/DonationType.ts"
 
 /**
  * The save function defines the way in which the different attributes should
@@ -13,15 +13,13 @@ import React from 'react'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
 export default function save({ attributes }): React.JSX.Element {
-	const { submitLabel, returnAddress, campaign, token, types, noTypeSelect } =
+	const { returnAddress, campaign, token, types, noTypeSelect } =
 		attributes
 
 	const blockProps = useBlockProps.save()
 	const { children, ...innerBlockProps } = useInnerBlocksProps.save({
 		className: 'donation-form__inner-blocks',
 	})
-
-	console.log(noTypeSelect)
 
 	return (
 		<div {...blockProps}>
@@ -36,20 +34,9 @@ export default function save({ attributes }): React.JSX.Element {
 					{campaign && (
 						<input type="hidden" name="campaign" value={campaign} />
 					)}
-					{noTypeSelect && types && (
-						<input type="hidden" name="type" value={types[0]} />
+					{noTypeSelect && (
+						<input type="hidden" name="type" value={types ? types[0] : DEFAULT_DONATION_TYPE.value} />
 					)}
-					<div className="donation-form__controls">
-						<button
-							type="submit"
-							className="wp-element-button is-primary"
-						>
-							<RichText.Content
-								tagName="span"
-								value={submitLabel}
-							/>
-						</button>
-					</div>
 				</div>
 			</form>
 		</div>

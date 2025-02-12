@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button, Flex, TextControl } from '@wordpress/components'
 import { formatAmount } from '../common/utils.ts'
+import {__} from "@wordpress/i18n";
 
 export type Amount = {
 	amount: number
