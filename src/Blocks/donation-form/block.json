@@ -8,8 +8,7 @@
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
 	"allowedBlocks": [
-		"core/paragraph",
-		"core/heading"
+		"core/paragraph"
 	],
 	"providesContext": {
 		"famehelsinki/donation-form/types": "types"

@@ -9,6 +9,13 @@ import React, { useEffect } from 'react'
 import { DEFAULT_DONATION_TYPE } from '../common/DonationType.ts'
 import TypeControl from './TypeControl.tsx'
 
+const TEMPLATE_LOCK = { lock: { remove: 'true' } }
+const TEMPLATE = [
+	'famehelsinki/donation-amounts',
+	'famehelsinki/donation-type',
+	'famehelsinki/form-controls',
+].map((block) => [block, TEMPLATE_LOCK, []] as const)
+
 /**
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
@@ -70,25 +77,18 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div {...useBlockProps()}>
-				<div
-					{...useInnerBlocksProps(
-						{
-							className: 'donation-form__inner-blocks',
-						},
-						{
-							// prevents inserting or removing blocks,
-							// but allows moving existing ones.
-							templateLock: 'insert',
-							template: [
-								['famehelsinki/donation-type'],
-								['famehelsinki/donation-amounts'],
-								['famehelsinki/form-controls'],
-							],
-						}
-					)}
-				/>
-			</div>
+			<div
+				{...useInnerBlocksProps(
+					useBlockProps({
+						className: 'donation-form__inner-blocks',
+					}),
+					{
+						// prevents inserting or removing blocks,
+						// but allows moving existing ones.
+						template: TEMPLATE,
+					}
+				)}
+			/>
 		</>
 	)
 }

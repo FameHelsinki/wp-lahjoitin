@@ -1,6 +1,6 @@
-import {RichText, useBlockProps} from '@wordpress/block-editor'
+import { RichText, useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
-import {__} from "@wordpress/i18n";
+import { __ } from '@wordpress/i18n'
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -12,23 +12,17 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 	const { submitLabel } = attributes
 
 	return (
-		<div {...useBlockProps({ className: "donation-form__controls" })}>
-			<div className="wp-element-button is-primary">
-				<RichText
-					multiline={false}
-					tagName="span"
-					aria-label={__(
-						'Submit button text',
-						'fame_lahjoitukset'
-					)}
-					allowedFormats={[]}
-					onChange={(submitLabel) =>
-						setAttributes({ submitLabel })
-					}
-					placeholder={__('Donate')}
-					value={submitLabel}
-				/>
-			</div>
+		<div {...useBlockProps({ className: 'donation-form__controls' })}>
+			<RichText
+				multiline={false}
+				tagName="div"
+				className="wp-element-button is-primary"
+				aria-label={__('Submit button text', 'fame_lahjoitukset')}
+				allowedFormats={[]}
+				onChange={(submitLabel) => setAttributes({ submitLabel })}
+				placeholder={__('Donate')}
+				value={submitLabel}
+			/>
 		</div>
 	)
 }

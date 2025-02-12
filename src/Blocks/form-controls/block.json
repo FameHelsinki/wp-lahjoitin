@@ -7,7 +7,6 @@
 	"category": "widgets",
 	"description": "Adds form controls.",
 	"parent": ["famehelsinki/donation-form"],
-	"example": {},
 	"attributes": {
 		"submitLabel": {
 			"type": "string",
@@ -16,7 +15,6 @@
 			"default": "Donate"
 		}
 	},
-	"usesContext": [],
 	"supports": {
 		"multiple": false,
 		"color": {
@@ -30,7 +28,5 @@
 	},
 	"icon": "button",
 	"textdomain": "fame_lahjoitukset",
-	"editorScript": "file:./index.js",
-	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+	"editorScript": "file:./index.js"
 }
