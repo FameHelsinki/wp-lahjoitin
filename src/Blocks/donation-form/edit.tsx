@@ -32,7 +32,7 @@ export default function Edit({
 	clientId,
 }): React.JSX.Element {
 	const {
-		types,
+		types = [],
 		defaultAmount,
 		submitLabel,
 		returnAddress,

@@ -36,7 +36,7 @@ export default function save({ attributes }): React.JSX.Element {
 					{campaign && (
 						<input type="hidden" name="campaign" value={campaign} />
 					)}
-					{noTypeSelect && (
+					{noTypeSelect && types && (
 						<input type="hidden" name="type" value={types[0]} />
 					)}
 					<div className="donation-form__controls">
