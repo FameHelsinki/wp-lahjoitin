@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Flex, TextControl } from '@wordpress/components'
 import { formatAmount } from '../common/utils.ts'
-import {__} from "@wordpress/i18n";
+import { __ } from '@wordpress/i18n'
 
 export type Amount = {
 	amount: number
@@ -9,24 +9,15 @@ export type Amount = {
 
 type Props = {
 	amounts: Amount[]
-	amountLabel: string
-	removeLabel: string
-	addLabel: string
 	onChange: (amounts: Amount[]) => void
 }
 
-const AmountControl: React.FC<Props> = ({
-	amounts,
-	amountLabel,
-	removeLabel,
-	addLabel,
-	onChange,
-}) => (
+const AmountControl: React.FC<Props> = ({ amounts, onChange }) => (
 	<div>
 		{amounts.map(({ amount }, idx) => (
 			<Flex key={idx}>
 				<TextControl
-					label={amountLabel}
+					label={`${__('Amount', 'fame_lahjoitukset')} ${idx + 1}`}
 					value={amount}
 					onChange={(value) =>
 						onChange(
@@ -42,7 +33,7 @@ const AmountControl: React.FC<Props> = ({
 					variant="secondary"
 					onClick={() => onChange(amounts.toSpliced(idx, 1))}
 				>
-					{removeLabel}
+					{__('Remove', 'fame_lahjoitukset')}
 				</Button>
 			</Flex>
 		))}
@@ -60,7 +51,7 @@ const AmountControl: React.FC<Props> = ({
 				])
 			}
 		>
-			{addLabel}
+			{__('Add', 'fame_lahjoitukset')}
 		</Button>
 	</div>
 )

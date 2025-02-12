@@ -15,7 +15,7 @@ export default function save({ attributes }): React.JSX.Element {
 	const { amounts, otherAmount, otherAmountLabel } = attributes
 
 	return (
-		<div {...useBlockProps.save()}>
+		<div {...useBlockProps.save({ className: 'donation-amounts' })}>
 			<Amounts
 				amounts={amounts}
 				otherAmount={otherAmount}

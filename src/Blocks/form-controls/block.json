@@ -10,7 +10,7 @@
 	"attributes": {
 		"submitLabel": {
 			"type": "string",
-			"source": "html",
+			"source": "text",
 			"selector": ".donation-form__controls [type=\"submit\"]",
 			"default": "Donate"
 		}

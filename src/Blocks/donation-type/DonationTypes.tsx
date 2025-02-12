@@ -50,8 +50,6 @@ const Component: Control<Props, ContentProps> = ({
 
 Component.Content = ({ types, value: defaultValue }) => {
 	if (!Array.isArray(types) || types.length <= 1) {
-		console.log('save 1', types, defaultValue)
-
 		return (
 			<input
 				type="hidden"
@@ -60,8 +58,6 @@ Component.Content = ({ types, value: defaultValue }) => {
 			/>
 		)
 	}
-
-	console.log('save 2', types, defaultValue)
 
 	return (
 		<>

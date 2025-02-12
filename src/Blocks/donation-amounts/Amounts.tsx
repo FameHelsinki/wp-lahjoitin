@@ -16,7 +16,7 @@ const Amounts: React.FC<Props> = ({
 	otherAmountLabel,
 	unit,
 }) => (
-	<div className="donation-amounts">
+	<>
 		{amounts.map(({ amount }, idx) => (
 			<div className="donation-amounts__amount" key={idx}>
 				<label htmlFor={`amount-${idx}-${amount}`} key={idx}>
@@ -39,7 +39,7 @@ const Amounts: React.FC<Props> = ({
 				{unit}
 			</div>
 		)}
-	</div>
+	</>
 )
 
 export default Amounts

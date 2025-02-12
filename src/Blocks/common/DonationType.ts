@@ -5,18 +5,29 @@ export type DonationType = {
 	label: string
 }
 
-/**
- * Note: Typescript enums are cursed, use JS constants instead.
- */
-export const DONATION_TYPES: DonationType[] = [
-	{
-		value: 'single',
-		label: __('Single', 'fame_lahjoitukset'),
-	},
-	{
-		value: 'recurring',
-		label: __('Recurring', 'fame_lahjoitukset'),
-	},
-]
+const TYPES = {
+	single: __('Single', 'fame_lahjoitukset'),
+	recurring: __('Recurring', 'fame_lahjoitukset'),
+}
+
+export const DONATION_TYPES: DonationType[] = Object.entries(TYPES).map(
+	([value, label]) => ({
+		value,
+		label,
+	})
+)
 
 export const DEFAULT_DONATION_TYPE = DONATION_TYPES[0]
+
+/**
+ * Get donation label from type value.
+ *
+ * @param type
+ *   Donation type.
+ *
+ * @returns
+ *   Donation type label.
+ */
+export function getDonationLabel(type: string): string | undefined {
+	return TYPES[type]
+}
