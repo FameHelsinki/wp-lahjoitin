@@ -1,20 +1,17 @@
 import { __ } from '@wordpress/i18n'
-import {
-	InspectorControls,
-	useBlockProps,
-	useInnerBlocksProps,
-} from '@wordpress/block-editor'
+import { InspectorControls, useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
 import React, { useEffect } from 'react'
-import { DEFAULT_DONATION_TYPE } from '../common/DonationType.ts'
+import { DEFAULT_DONATION_TYPE } from '../common/donation-type.ts'
 import TypeControl from './TypeControl.tsx'
+import { EditProps } from '../common/types.ts'
 
 const TEMPLATE_LOCK = { lock: { remove: 'true' } }
 const TEMPLATE = [
 	'famehelsinki/donation-amounts',
 	'famehelsinki/donation-type',
 	'famehelsinki/form-controls',
-].map((block) => [block, TEMPLATE_LOCK, []] as const)
+].map(block => [block, TEMPLATE_LOCK, []] as const)
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -22,7 +19,7 @@ const TEMPLATE = [
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
-export default function Edit({ attributes, setAttributes }): React.JSX.Element {
+export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
 	const { types, returnAddress, campaign, token } = attributes as {
 		types?: string[]
 		returnAddress?: string
@@ -42,10 +39,7 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 		<>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
-					<TypeControl
-						types={types}
-						onChange={(types) => setAttributes({ types })}
-					/>
+					<TypeControl types={types} onChange={types => setAttributes({ types })} />
 					<TextControl
 						label={__('Return address', 'fame_lahjoitukset')}
 						help={__(
@@ -53,9 +47,7 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 							'fame_lahjoitukset'
 						)}
 						value={returnAddress ?? ''}
-						onChange={(returnAddress) =>
-							setAttributes({ returnAddress })
-						}
+						onChange={returnAddress => setAttributes({ returnAddress })}
 					/>
 					<TextControl
 						label={__('Campaign', 'fame_lahjoitukset')}
@@ -64,7 +56,7 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 							'fame_lahjoitukset'
 						)}
 						value={campaign ?? ''}
-						onChange={(campaign) => setAttributes({ campaign })}
+						onChange={campaign => setAttributes({ campaign })}
 					/>
 					<ToggleControl
 						label={__('Return userinfo token', 'fame_lahjoitukset')}
@@ -73,7 +65,7 @@ export default function Edit({ attributes, setAttributes }): React.JSX.Element {
 							'fame_lahjoitukset'
 						)}
 						checked={token}
-						onChange={(token) => setAttributes({ token })}
+						onChange={token => setAttributes({ token })}
 					/>
 				</PanelBody>
 			</InspectorControls>

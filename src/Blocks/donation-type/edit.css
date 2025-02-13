@@ -1,5 +1,5 @@
 .donation-type__control,
-.donation-type {
+.donation-type__controls {
 	display: flex;
 	gap: 16px;
 }

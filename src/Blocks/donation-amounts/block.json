@@ -7,7 +7,7 @@
 	"category": "widgets",
 	"description": "Allows selecting donation amounts.",
 	"parent": ["famehelsinki/donation-form"],
-	"usesContext": ["famehelsinki/donation-form/types"],
+	"usesContext": ["famehelsinki/donation-types"],
 	"example": {},
 	"attributes": {
 		"amounts": {
@@ -20,14 +20,15 @@
 					"source": "attribute",
 					"attribute": "value"
 				}
-			},
-			"default": [
-				{
-					"amount": "10"
-				}
-			]
+			}
 		},
-		"otherAmount": {
+		"showLegend": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".donation-amounts__legend",
+			"attribute": "class"
+		},
+		"other": {
 			"type": "boolean",
 			"source": "attribute",
 			"selector": ".donation-amounts__other",

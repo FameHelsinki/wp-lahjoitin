@@ -1,4 +1,4 @@
-import {__} from "@wordpress/i18n";
+import { __ } from '@wordpress/i18n'
 
 export type Provider = {
 	/** Provider machine name. */
@@ -16,21 +16,21 @@ export const PROVIDERS: Provider[] = [
 	{
 		value: 'mobilepay',
 		label: __('MobilePay', 'fame_lahjoitukset'),
-		types: ['single', 'recurring']
+		types: ['single', 'recurring'],
 	},
 	{
 		value: 'checkout',
 		label: __('Paytrail', 'fame_lahjoitukset'),
-		types: ['single']
+		types: ['single'],
 	},
 	{
 		value: 'finvoice',
 		label: __('Finvoice', 'fame_lahjoitukset'),
-		types: []
+		types: [],
 	},
 	{
 		value: 'paymenthighway',
 		label: __('Payment Highway', 'fame_lahjoitukset'),
-		types: []
+		types: [],
 	},
 ]

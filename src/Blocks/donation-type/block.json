@@ -33,7 +33,7 @@
 			}
 		}
 	},
-	"usesContext": ["famehelsinki/donation-form/types"],
+	"usesContext": ["famehelsinki/donation-types"],
 	"supports": {
 		"multiple": false,
 		"color": {

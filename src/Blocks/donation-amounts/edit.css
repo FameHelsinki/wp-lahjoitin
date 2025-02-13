@@ -1,5 +1,5 @@
 .donation-amounts__other,
-.donation-amounts {
+.donation-amounts__controls {
 	display: flex;
 	align-items: stretch;
 	gap: 16px;
@@ -13,7 +13,7 @@
 	text-wrap: nowrap !important;
 }
 
-.donation-amounts > * {
+.donation-amounts__controls > * {
 	flex: 1;
 }
 
@@ -21,6 +21,10 @@
 .donation-amounts__amount {
 	padding: var(--form-element-padding);
 	border: var(--form-element-border);
+}
+
+.donation-amounts__amount--default {
+	border-color: #00308F;
 }
 
 .donation-amounts__other__placeholder {

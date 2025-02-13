@@ -28,15 +28,13 @@ domReady(() => {
 		form.addEventListener('submit', event => {
 			event.preventDefault()
 
-			const data = Object.fromEntries(new FormData(form));
+			const data = Object.fromEntries(new FormData(form))
 			console.log('FormData', data)
 
 			// Amount must be in cents.
 			data.amount = (data.amount * 100).toString()
 
-			submit(data)
-				.then(console.log)
-				.catch(console.error)
+			submit(data).then(console.log).catch(console.error)
 		})
 	}
 })

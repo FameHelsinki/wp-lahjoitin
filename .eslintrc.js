@@ -1,10 +1,11 @@
 module.exports = {
 	root: true,
 	extends: [
-                'plugin:@wordpress/eslint-plugin/recommended',
-                'prettier',
-                'plugin:react-hooks/recommended'
-        ],
+		'plugin:@wordpress/eslint-plugin/recommended',
+		'prettier',
+		'plugin:react-hooks/recommended',
+		'plugin:react/recommended',
+	],
 	overrides: [
 		{
 			// Unit test files and their helpers only.
@@ -22,5 +23,6 @@ module.exports = {
 		'@typescript-eslint/no-shadow': 'warn',
 		'no-console': 'warn',
 		'jsdoc/require-param': 'off',
+		'react/prop-types': 'off',
 	},
 }

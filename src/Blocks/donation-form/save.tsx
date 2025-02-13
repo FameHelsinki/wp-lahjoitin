@@ -1,5 +1,6 @@
 import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
 import React from 'react'
+import { SaveProps } from '../common/types.ts'
 
 /**
  * The save function defines the way in which the different attributes should
@@ -8,7 +9,7 @@ import React from 'react'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
-export default function save({ attributes }): React.JSX.Element {
+export default function save({ attributes }: SaveProps): React.JSX.Element {
 	const { returnAddress, campaign, token } = attributes
 
 	const blockProps = useBlockProps.save()
@@ -21,15 +22,9 @@ export default function save({ attributes }): React.JSX.Element {
 			<form className="donation-form" data-token={token || undefined}>
 				<div {...innerBlockProps} />
 
-				<input
-					type="hidden"
-					name="return_address"
-					value={returnAddress || '/'}
-				/>
+				<input type="hidden" name="return_address" value={returnAddress || '/'} />
 
-				{campaign && (
-					<input type="hidden" name="campaign" value={campaign} />
-				)}
+				{campaign && <input type="hidden" name="campaign" value={campaign} />}
 			</form>
 		</div>
 	)

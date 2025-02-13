@@ -1,6 +1,6 @@
 import React from 'react'
 import { RichText } from '@wordpress/block-editor'
-import { Control } from '../common/Types.ts'
+import { Control } from '../common/types.ts'
 import { formatPlaceholder } from '../common/utils.ts'
 
 export type Props = {
@@ -25,21 +25,16 @@ const ContactInputControl: Control<Props, ContentProps> = ({
 	<div className={className}>
 		<RichText
 			multiline={false}
-			className={
-				'contact-form__label' +
-				(required ? ' contact-form__label--required' : '')
-			}
+			className={'contact-form__label' + (required ? ' contact-form__label--required' : '')}
 			allowedFormats={['core/bold', 'core/italic']}
-			onChange={(value) => setAttributes({ [`${name}_label`]: value })}
+			onChange={value => setAttributes({ [`${name}_label`]: value })}
 			value={attributes[`${name}_label`]}
 			placeholder={`${formatPlaceholder(name)} label`}
 		/>
 		<div
 			className="contact-form__input"
 			id={`contact-${name}`}
-			aria-describedby={
-				ariaDescribedBy ? ariaDescribedBy : `contact-${name}-help`
-			}
+			aria-describedby={ariaDescribedBy ? ariaDescribedBy : `contact-${name}-help`}
 		></div>
 		{!ariaDescribedBy && (
 			<RichText
@@ -47,7 +42,7 @@ const ContactInputControl: Control<Props, ContentProps> = ({
 				className="contact-form__help"
 				multiline={false}
 				allowedFormats={['core/bold', 'core/italic']}
-				onChange={(value) => setAttributes({ [`${name}_help`]: value })}
+				onChange={value => setAttributes({ [`${name}_help`]: value })}
 				value={attributes[`${name}_help`]}
 				placeholder={`${formatPlaceholder(name)} help`}
 			/>
@@ -64,8 +59,7 @@ ContactInputControl.Content = ({
 	attributes,
 }) => {
 	const ariaDescribedById =
-		ariaDescribedBy ||
-		(attributes[`${name}_help`] ? `contact-${name}-help` : undefined)
+		ariaDescribedBy || (attributes[`${name}_help`] ? `contact-${name}-help` : undefined)
 
 	return (
 		<div className={className}>
@@ -73,8 +67,7 @@ ContactInputControl.Content = ({
 				htmlFor={`contact-${name}`}
 				tagName="label"
 				className={
-					'contact-form__label' +
-					(required ? ' contact-form__label--required' : '')
+					'contact-form__label' + (required ? ' contact-form__label--required' : '')
 				}
 				value={attributes[`${name}_label`]}
 			/>

@@ -2,6 +2,7 @@ import { useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
 import ContactInputGroup from './ContactInputGroup.tsx'
 import ContactInputControl from './ContactInputControl.tsx'
+import { SaveProps } from '../common/types.ts'
 
 /**
  * The save function defines the way in which the different attributes should
@@ -12,11 +13,14 @@ import ContactInputControl from './ContactInputControl.tsx'
  * @param root0.attributes
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
-export default function save({ attributes }): React.JSX.Element {
+export default function save({ attributes }: SaveProps): React.JSX.Element {
 	const { contact, showAddress, showPhone } = attributes
 
 	return (
-		<div {...useBlockProps.save({ className: 'contact-form' })}>
+		<div
+			{...useBlockProps.save({ className: 'contact-form' })}
+			data-contact={contact || undefined}
+		>
 			<ContactInputGroup.Content
 				className="contact-form__row"
 				name="name"

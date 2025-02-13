@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { SelectControl } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
-import { DONATION_TYPES } from '../common/DonationType.ts'
+import { DONATION_TYPES } from '../common/donation-type.ts'
 
 type Props = {
 	types?: string[]

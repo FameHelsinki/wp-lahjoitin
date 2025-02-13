@@ -4,7 +4,7 @@ import ContactInputControl, {
 	ContentProps as ContactInputContentProps,
 } from './ContactInputControl.tsx'
 import { RichText } from '@wordpress/block-editor'
-import { Control } from '../common/Types.ts'
+import { Control } from '../common/types.ts'
 import { formatPlaceholder } from '../common/utils.ts'
 
 type ContactInput = Omit<ContactInputProps, 'setAttributes' | 'attributes'>
@@ -31,7 +31,7 @@ const ContactInputGroup: Control<Props, ContentProps> = ({
 }) => (
 	<div className={className}>
 		<div className="contact-form__group">
-			{controls.map((props) => (
+			{controls.map(props => (
 				<ContactInputControl
 					key={props.name}
 					{...props}
@@ -46,7 +46,7 @@ const ContactInputGroup: Control<Props, ContentProps> = ({
 			className="contact-form__help"
 			multiline={false}
 			allowedFormats={['core/bold', 'core/italic']}
-			onChange={(help) => setAttributes({ [`${name}_help`]: help })}
+			onChange={help => setAttributes({ [`${name}_help`]: help })}
 			value={attributes[`${name}_help`]}
 			placeholder={`${formatPlaceholder(name)} help`}
 		/>
@@ -56,7 +56,7 @@ const ContactInputGroup: Control<Props, ContentProps> = ({
 ContactInputGroup.Content = ({ name, className, controls, attributes }) => (
 	<div className={className}>
 		<div className="contact-form__group">
-			{controls.map((props) => (
+			{controls.map(props => (
 				<ContactInputControl.Content
 					key={props.name}
 					{...props}

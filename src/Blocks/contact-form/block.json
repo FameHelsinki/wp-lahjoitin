@@ -12,8 +12,8 @@
 		"contact": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".contact-form__label--required[for=\"contact-email\"]",
-			"attribute": "for",
+			"selector": ".contact-form",
+			"attribute": "data-contact",
 			"default": false
 		},
 		"showAddress": {

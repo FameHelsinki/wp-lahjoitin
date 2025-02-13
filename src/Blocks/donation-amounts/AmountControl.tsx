@@ -1,59 +1,61 @@
 import React from 'react'
 import { Button, Flex, TextControl } from '@wordpress/components'
-import { formatAmount } from '../common/utils.ts'
 import { __ } from '@wordpress/i18n'
-
-export type Amount = {
-	amount: number
-}
+import { Amount, DEFAULT_AMOUNT, formatAmount } from '../common/donation-amount.ts'
 
 type Props = {
+	type: string
 	amounts: Amount[]
 	onChange: (amounts: Amount[]) => void
 }
 
-const AmountControl: React.FC<Props> = ({ amounts, onChange }) => (
-	<div>
-		{amounts.map(({ amount }, idx) => (
-			<Flex key={idx}>
-				<TextControl
-					label={`${__('Amount', 'fame_lahjoitukset')} ${idx + 1}`}
-					value={amount}
-					onChange={(value) =>
-						onChange(
-							amounts.map((prevAmount, prevIdx) =>
-								prevIdx === idx
-									? { amount: formatAmount(value, 0) }
-									: prevAmount
+/**
+ * Get default value for new amount.
+ */
+function nextAmount(amounts: Amount[]): number {
+	const previous = amounts.at(-1)?.amount
+	return previous ? previous + DEFAULT_AMOUNT : DEFAULT_AMOUNT
+}
+
+const AmountControl: React.FC<Props> = ({ amounts, type, onChange }) => {
+	if (!amounts) return null
+
+	return (
+		<div>
+			{amounts.map(({ amount }, idx) => (
+				<Flex key={idx}>
+					<TextControl
+						label={`${__('Amount', 'fame_lahjoitukset')} ${idx + 1}`}
+						value={(amount ?? 0).toString()}
+						onChange={value =>
+							onChange(
+								amounts.toSpliced(idx, 1, {
+									amount: formatAmount(value, 0),
+									type,
+								})
 							)
-						)
-					}
-				/>
-				<Button
-					variant="secondary"
-					onClick={() => onChange(amounts.toSpliced(idx, 1))}
-				>
-					{__('Remove', 'fame_lahjoitukset')}
-				</Button>
-			</Flex>
-		))}
-		<Button
-			variant="primary"
-			onClick={() =>
-				onChange([
-					...amounts,
-					{
-						amount:
-							parseInt(
-								(amounts?.at(-1)?.amount ?? 0).toString()
-							) + 10,
-					},
-				])
-			}
-		>
-			{__('Add', 'fame_lahjoitukset')}
-		</Button>
-	</div>
-)
+						}
+					/>
+					<Button variant="secondary" onClick={() => onChange(amounts.toSpliced(idx, 1))}>
+						{__('Remove', 'fame_lahjoitukset')}
+					</Button>
+				</Flex>
+			))}
+			<Button
+				variant="primary"
+				onClick={() =>
+					onChange(
+						amounts.toSpliced(amounts.length, 0, {
+							amount: nextAmount(amounts),
+							type,
+						})
+					)
+				}
+			>
+				{__('Add', 'fame_lahjoitukset')}
+			</Button>
+		</div>
+	)
+}
 
 export default AmountControl
