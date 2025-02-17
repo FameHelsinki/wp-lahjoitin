@@ -1,12 +1,8 @@
-import { useBlockProps } from '@wordpress/block-editor'
+import { RichText, useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
-import { DEFAULT_DONATION_TYPE, DonationType } from '../common/donation-type.ts'
+import { DEFAULT_DONATION_TYPE } from '../common/donation-type.ts'
 import { SaveProps } from '../common/types.ts'
-
-type Attributes = {
-	types?: DonationType[]
-	value?: string
-}
+import { Attributes } from './edit.tsx'
 
 /**
  * The save function defines the way in which the different attributes should
@@ -16,7 +12,7 @@ type Attributes = {
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
 export default function save({ attributes }: SaveProps<Attributes>): React.JSX.Element {
-	const { types, value: defaultValue } = attributes
+	const { legend, showLegend, types, value: defaultValue } = attributes
 
 	if (!Array.isArray(types) || types.length <= 1) {
 		return (
@@ -31,7 +27,11 @@ export default function save({ attributes }: SaveProps<Attributes>): React.JSX.E
 
 	return (
 		<fieldset {...useBlockProps.save({ className: 'donation-type' })}>
-			{/* todo: add legend here */}
+			<RichText.Content
+				tagName="legend"
+				className={'donation-type__legend' + (showLegend ? '' : ' screen-reader-text')}
+				value={legend ?? ''}
+			/>
 			<div className="donation-type__controls">
 				{types.map(({ value, label }) => (
 					<label

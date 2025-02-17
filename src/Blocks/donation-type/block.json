@@ -9,6 +9,19 @@
 	"parent": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
+		"showLegend": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": "donation-type__legend:not(.screen-reader-text)",
+			"attribute": "class",
+			"default": true
+		},
+		"legend": {
+			"type": "string",
+			"source": "text",
+			"selector": "donation-type__legend",
+			"default": "Donation type"
+		},
 		"value": {
 			"type": "string",
 			"source": "attribute",

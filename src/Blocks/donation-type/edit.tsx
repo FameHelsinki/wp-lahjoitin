@@ -1,10 +1,17 @@
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
-import { RadioControl, PanelBody } from '@wordpress/components'
-import { __ } from '@wordpress/i18n'
 import React, { useEffect } from 'react'
-import DonationTypes from './DonationTypes.tsx'
+import { __ } from '@wordpress/i18n'
+import { RadioControl, PanelBody, TextControl, ToggleControl } from '@wordpress/components'
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
 import { DEFAULT_DONATION_TYPE, DONATION_TYPES, DonationType } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
+import DonationTypes from './DonationTypes.tsx'
+
+export type Attributes = {
+	legend?: string
+	types?: DonationType[]
+	value?: string
+	showLegend?: boolean
+}
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -12,12 +19,13 @@ import { EditProps } from '../common/types.ts'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
-export default function Edit({ context, attributes, setAttributes }: EditProps): React.JSX.Element {
+export default function Edit({
+	context,
+	attributes,
+	setAttributes,
+}: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': enabledTypes } = context
-	const { types, value } = attributes as {
-		types?: DonationType[]
-		value?: string
-	}
+	const { types, value } = attributes
 
 	useEffect(() => {
 		// Calculate updated types.
@@ -53,6 +61,8 @@ export default function Edit({ context, attributes, setAttributes }: EditProps):
 		}
 	}, [types, value, enabledTypes, setAttributes])
 
+	const visible = types && types.length > 1
+
 	return (
 		<>
 			<InspectorControls>
@@ -69,17 +79,45 @@ export default function Edit({ context, attributes, setAttributes }: EditProps):
 							onChange={value => setAttributes({ value })}
 						/>
 					)}
+					<ToggleControl
+						label={__('Show legend', 'fame_lahjoitukset')}
+						help={__(
+							'If disabled, the legend is marked visually hidden.',
+							'fame_lahjoitukset'
+						)}
+						disabled={!visible}
+						checked={visible && attributes.showLegend}
+						onChange={showLegend => setAttributes({ showLegend })}
+					/>
+					{visible && !attributes.showLegend && (
+						<TextControl
+							label={__('Legend', 'fame_lahjoitukset')}
+							help={__('Description for screen readers.', 'fame_lahjoitukset')}
+							value={attributes.legend ?? __('Donation type')}
+							onChange={legend => setAttributes({ legend })}
+						/>
+					)}
 				</PanelBody>
 			</InspectorControls>
 			<div {...useBlockProps({ className: 'donation-type' })}>
-				{/* todo: add legend here */}
-				<div className="donatin-type__controls">
-					{types?.length && types.length > 1 ? (
+				{visible ? (
+					<>
+						{attributes.showLegend && (
+							<RichText
+								multiline={false}
+								className="donation-type__legend"
+								aria-label={__('Donation type legend', 'fame_lahjoitukset')}
+								placeholder={__('Donation type', 'fame_lahjoitukset')}
+								allowedFormats={[]}
+								value={attributes.legend ?? ''}
+								onChange={legend => setAttributes({ legend })}
+							/>
+						)}
 						<DonationTypes types={types} value={value} onChange={setAttributes} />
-					) : (
-						`Type: ${types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)`
-					)}
-				</div>
+					</>
+				) : (
+					`Type: ${types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)`
+				)}
 			</div>
 		</>
 	)

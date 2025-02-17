@@ -13,7 +13,7 @@ type Props = {
 }
 
 const Component: FC<Props> = ({ types, value: defaultValue, onChange }) => (
-	<>
+	<div className="donatin-type__controls">
 		{types?.map(({ value, label }) => (
 			<div key={value} className="donation-type__control">
 				<Radio
@@ -38,7 +38,7 @@ const Component: FC<Props> = ({ types, value: defaultValue, onChange }) => (
 				/>
 			</div>
 		))}
-	</>
+	</div>
 )
 
 export default Component
