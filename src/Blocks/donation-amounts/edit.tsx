@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react'
 import { __ } from '@wordpress/i18n'
-import { PanelBody, PanelRow, ToggleControl } from '@wordpress/components'
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, PanelRow, TextControl, ToggleControl } from '@wordpress/components'
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import {
 	Amount,
 	AmountSetting,
+	DEFAULT_LEGEND,
 	spliceSettings,
-	useDerivedAmounts,
+	derivedAmounts,
 } from '../common/donation-amount.ts'
 import AmountControl from './AmountControl.tsx'
 import AmountSettingsControl from './AmountSettingsControl.tsx'
@@ -18,6 +19,7 @@ export type Attributes = {
 	amounts?: Amount[]
 	settings?: AmountSetting[]
 	showLegend?: boolean
+	legend?: string
 	type?: string
 	other?: boolean
 	otherLabel?: string
@@ -36,9 +38,9 @@ export default function Edit({
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': types } = context
-	const { other, showLegend, otherLabel } = attributes
+	const { other, legend, showLegend, otherLabel } = attributes
 	const currentType = useCurrentDonationType(clientId)
-	const derived = useDerivedAmounts(types, attributes)
+	const derived = derivedAmounts(types, attributes)
 	const current = derived.find(({ type }) => type === currentType)
 
 	// Filter invalid values from amounts.
@@ -56,6 +58,9 @@ export default function Edit({
 		}
 	}, [currentType, attributes, setAttributes])
 
+	// Visible if other amount is shown or amount buttons is not empty.
+	const visible = other || derived.some(type => type.amounts.length)
+
 	return (
 		<>
 			<InspectorControls>
@@ -72,9 +77,18 @@ export default function Edit({
 							'If disabled, the legend is marked visually hidden.',
 							'fame_lahjoitukset'
 						)}
-						checked={showLegend}
+						disabled={!visible}
+						checked={visible && showLegend}
 						onChange={value => setAttributes({ showLegend: value })}
 					/>
+					{visible && !showLegend && (
+						<TextControl
+							label={__('Legend', 'fame_lahjoitukset')}
+							help={__('Description for screen readers.', 'fame_lahjoitukset')}
+							value={legend ?? DEFAULT_LEGEND}
+							onChange={value => setAttributes({ legend: value })}
+						/>
+					)}
 				</PanelBody>
 				{derived.map(({ type, amounts, ...settings }) => (
 					<PanelBody title={getDonationLabel(type)} key={type}>
@@ -109,11 +123,21 @@ export default function Edit({
 				))}
 			</InspectorControls>
 			<div {...useBlockProps({ className: 'donation-amounts' })}>
+				{visible && showLegend && (
+					<RichText
+						multiline={false}
+						className="donation-amounts__legend"
+						aria-label={__('Donation amount legend', 'fame_lahjoitukset')}
+						placeholder={__('Donation amount', 'fame_lahjoitukset')}
+						allowedFormats={[]}
+						value={legend ?? DEFAULT_LEGEND}
+						onChange={value => setAttributes({ legend: value })}
+					/>
+				)}
 				<EditContent
 					current={current}
 					other={other}
 					otherLabel={otherLabel}
-					showLegend={showLegend}
 					setAttributes={setAttributes}
 				/>
 			</div>

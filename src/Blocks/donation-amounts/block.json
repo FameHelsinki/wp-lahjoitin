@@ -25,20 +25,27 @@
 		"showLegend": {
 			"type": "boolean",
 			"source": "attribute",
+			"selector": ".donation-amounts__legend:not(.screen-reader-text)",
+			"attribute": "class",
+			"default": true
+		},
+		"legend": {
+			"type": "string",
+			"source": "text",
 			"selector": ".donation-amounts__legend",
-			"attribute": "class"
+			"default": "Donation type"
 		},
 		"other": {
 			"type": "boolean",
 			"source": "attribute",
 			"selector": ".donation-amounts__other",
-			"attribute": "class"
+			"attribute": "class",
+			"default": false
 		},
-		"otherAmountLabel": {
-			"type": "rich-text",
-			"source": "rich-text",
-			"selector": ".donation-amounts__other span",
-			"role": "content",
+		"otherLabel": {
+			"type": "string",
+			"source": "text",
+			"selector": ".donation-amounts__other label",
 			"default": "Other amount"
 		}
 	},

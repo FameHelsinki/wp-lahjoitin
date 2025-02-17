@@ -10,7 +10,6 @@ export type Amount = {
 }
 
 export type AmountSetting = Amount & {
-	legend?: string
 	unit?: string
 }
 
@@ -21,7 +20,7 @@ export type DerivedAmount = Required<AmountSetting> & { amounts: Amount[] }
 /**
  * Convert block attributes to nicer format.
  */
-export function useDerivedAmounts(
+export function derivedAmounts(
 	types: string[],
 	attributes: { amounts?: Amount[]; settings?: AmountSetting[] }
 ): DerivedAmount[] {
@@ -31,7 +30,6 @@ export function useDerivedAmounts(
 		derived.push({
 			amount: DEFAULT_AMOUNT,
 			unit: DEFAULT_UNIT,
-			legend: DEFAULT_LEGEND,
 			...settings?.find(setting => setting.type === type),
 			amounts: amounts?.filter(amount => amount.type === type) ?? [
 				{

@@ -3,10 +3,9 @@ import { __ } from '@wordpress/i18n'
 import { RadioControl, TextControl } from '@wordpress/components'
 import {
 	DEFAULT_AMOUNT,
+	DEFAULT_UNIT,
 	AmountSetting,
 	formatAmount,
-	DEFAULT_UNIT,
-	DEFAULT_LEGEND,
 	Amount,
 } from '../common/donation-amount.ts'
 
@@ -19,30 +18,15 @@ type Props = {
 	onChange: (value: AmountSetting) => void
 }
 
-const AmountSettingsControl: FC<Props> = ({
-	settings,
-	other,
-	amounts,
-	type,
-	showLegend,
-	onChange,
-}) => (
+const AmountSettingsControl: FC<Props> = ({ settings, other, amounts, type, onChange }) => (
 	<>
-		{(!showLegend || (!other && !amounts?.length)) && (
-			<TextControl
-				label={__('Legend', 'fame_lahjoitukset')}
-				help={__('Description for screen readers.', 'fame_lahjoitukset')}
-				value={settings.legend ?? DEFAULT_LEGEND}
-				onChange={value => onChange({ ...settings, type, legend: value })}
-			/>
-		)}
 		<TextControl
 			label={__('Currency unit', 'fame_lahjoitukset')}
 			help={__('Unit that is shown next to amounts.', 'fame_lahjoitukset')}
 			value={settings.unit ?? DEFAULT_UNIT}
 			onChange={value => onChange({ ...settings, type, unit: value })}
 		/>
-		{other ? (
+		{other || !amounts.length ? (
 			<TextControl
 				label={__('Default amount', 'fame_lahjoitukset')}
 				help={__('Amount that is preselected.', 'fame_lahjoitukset')}
