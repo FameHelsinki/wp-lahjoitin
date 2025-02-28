@@ -10,15 +10,42 @@
 	"usesContext": ["famehelsinki/donation-types"],
 	"example": {},
 	"attributes": {
-		"amounts": {
+		"settings": {
 			"type": "array",
 			"source": "query",
-			"selector": ".donation-amounts__amount input[type=\"radio\"]",
+			"selector": ".donation-amounts__controls",
 			"query": {
-				"amount": {
+				"type": {
+					"type": "string",
+					"source": "attribute",
+					"attribute": "data-type"
+				},
+				"default": {
+					"type": "boolean",
+					"source": "attribute",
+					"attribute": "style"
+				},
+				"defaultAmount": {
 					"type": "integer",
 					"source": "attribute",
-					"attribute": "value"
+					"attribute": "data-default"
+				},
+				"unit": {
+					"type": "string",
+					"selector": ".donation-amounts__unit",
+					"source": "text"
+				},
+				"amounts": {
+					"type": "array",
+					"source": "query",
+					"selector": "input[type=\"radio\"]",
+					"query": {
+						"value": {
+							"type": "string",
+							"source": "attribute",
+							"attribute": "value"
+						}
+					}
 				}
 			}
 		},

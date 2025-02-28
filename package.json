@@ -10,6 +10,7 @@
 		"format": "wp-scripts format src",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
+		"test:unit": "wp-scripts test-unit-jest",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"dev": "wp-scripts start",
@@ -26,6 +27,7 @@
 		"prettier": "^3.5.0"
 	},
 	"dependencies": {
+		"@jest/globals": "^29.7.0",
 		"react": "^18.3.1"
 	}
 }

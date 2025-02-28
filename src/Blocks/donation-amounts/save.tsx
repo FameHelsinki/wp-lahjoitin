@@ -1,8 +1,7 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
 import { SaveProps } from '../common/types.ts'
-import { DEFAULT_AMOUNT, DEFAULT_LEGEND, derivedAmounts } from '../common/donation-amount.ts'
-import { DONATION_TYPES } from '../common/donation-type.ts'
+import { DEFAULT_AMOUNT, DEFAULT_LEGEND } from '../common/donation-amount.ts'
 import { Attributes } from './edit.tsx'
 import { __ } from '@wordpress/i18n'
 
@@ -16,51 +15,45 @@ type SaveAttributes = Attributes & {
  * editor into `post_content`.
  */
 export default function save({ attributes }: SaveProps<SaveAttributes>): React.JSX.Element {
-	const { type: defaultType, other, otherLabel, showLegend, legend } = attributes
+	const { settings, other, otherLabel, showLegend, legend } = attributes
 
-	const derived = derivedAmounts(
-		DONATION_TYPES.map(({ value }) => value),
-		attributes
-	)
+	console.log('save', settings)
 
 	// Visible if other amount is shown or amount buttons is not empty.
-	const visible = other || derived.some(type => type.amounts.length)
+	const visible = other || settings?.some(type => type?.amounts?.length)
 
 	if (!visible) {
 		return <></>
 	}
 
-	console.log('save', derived, attributes, defaultType)
-
 	return (
-		<fieldset
-			{...useBlockProps.save({ className: 'donation-amounts' })}
-			data-default={defaultType}
-		>
+		<fieldset {...useBlockProps.save({ className: 'donation-amounts' })}>
 			<RichText.Content
 				tagName="legend"
 				className={'donation-amounts__legend' + (showLegend ? '' : ' screen-reader-text')}
 				value={legend || DEFAULT_LEGEND}
 			/>
 
-			{derived.map(type => (
+			{settings?.map(type => (
 				<div
-					className="donation-amounts__controls"
 					key={type.type}
+					className={`donation-amounts__controls donation-amounts--${type.type}`}
 					data-type={type.type}
-					style={{ display: type.type === defaultType ? 'initial' : 'none' }}
+					data-default={type.defaultAmount}
+					style={{ display: type.default ? undefined : 'none' }}
 				>
-					{type.amounts.map(({ amount }, idx) => (
-						<div className="donation-amounts__amount" key={amount}>
+					{type.amounts?.map(({ value }, idx) => (
+						<div className="donation-amounts__amount" key={value}>
 							<input
+								data-type={type.type}
 								id={`${type.type}-amount-${idx}`}
-								checked={amount === type.amount}
+								checked={value?.toString() === type.defaultAmount?.toString()}
 								name={`amount-radio-${type.type}`}
-								value={amount}
+								value={value}
 								type="radio"
 							/>
 							<label htmlFor={`${type.type}-amount-${idx}`} key={idx}>
-								{amount} <span className="donation-amounts__unit">{type.unit}</span>
+								{value} <span className="donation-amounts__unit">{type.unit}</span>
 							</label>
 						</div>
 					))}
@@ -93,7 +86,7 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 			<input
 				name="amount"
 				type="hidden"
-				value={derived.find(({ type }) => type === defaultType)?.amount || DEFAULT_AMOUNT}
+				value={settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT}
 			/>
 		</fieldset>
 	)

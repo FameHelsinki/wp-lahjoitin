@@ -12,20 +12,33 @@ import {
 type Props = {
 	type: string
 	other?: boolean
+	visible: boolean
 	amounts: Amount[]
 	settings: AmountSetting
 	showLegend?: boolean
 	onChange: (value: AmountSetting) => void
 }
 
-const AmountSettingsControl: FC<Props> = ({ settings, other, amounts, type, onChange }) => (
+const AmountSettingsControl: FC<Props> = ({
+	settings,
+	other,
+	visible,
+	amounts,
+	type,
+	onChange,
+}) => (
 	<>
-		<TextControl
-			label={__('Currency unit', 'fame_lahjoitukset')}
-			help={__('Unit that is shown next to amounts.', 'fame_lahjoitukset')}
-			value={settings.unit ?? DEFAULT_UNIT}
-			onChange={value => onChange({ ...settings, type, unit: value })}
-		/>
+		{visible && (
+			<TextControl
+				label={__('Currency label', 'fame_lahjoitukset')}
+				help={__(
+					'Label that is shown next to amounts. This does not control actual donation currency. Currently only euros are supported.',
+					'fame_lahjoitukset'
+				)}
+				value={settings.unit ?? DEFAULT_UNIT}
+				onChange={value => onChange({ ...settings, type, unit: value })}
+			/>
+		)}
 		{other || !amounts.length ? (
 			<TextControl
 				label={__('Default amount', 'fame_lahjoitukset')}

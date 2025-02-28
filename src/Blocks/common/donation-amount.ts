@@ -5,44 +5,32 @@ export const DEFAULT_UNIT = '€'
 export const DEFAULT_LEGEND = __('Donation amount', 'fame_lahjoitukset')
 
 export type Amount = {
+	value?: number | string
+}
+
+export type AmountSetting = {
 	type?: string
-	amount?: number
-}
-
-export type AmountSetting = Amount & {
 	unit?: string
+	default?: boolean
+	defaultAmount?: number | string
+	amounts?: Amount[]
 }
 
-export const formatAmount = (amount: string, def = DEFAULT_AMOUNT) => parseInt(amount, 10) || def
-
-export type DerivedAmount = Required<AmountSetting> & { amounts: Amount[] }
+export const formatAmount = (amount?: string | number, def = DEFAULT_AMOUNT) =>
+	typeof amount === 'number' ? amount : (amount && parseInt(amount, 10)) || def
 
 /**
- * Convert block attributes to nicer format.
+ * Get default value for new amount.
  */
-export function derivedAmounts(
-	types: string[],
-	attributes: { amounts?: Amount[]; settings?: AmountSetting[] }
-): DerivedAmount[] {
-	const { amounts, settings } = attributes
-
-	return types?.reduce((derived, type: string) => {
-		derived.push({
-			amount: DEFAULT_AMOUNT,
-			unit: DEFAULT_UNIT,
-			...settings?.find(setting => setting.type === type),
-			amounts: amounts?.filter(amount => amount.type === type) ?? [
-				{
-					type,
-					amount: DEFAULT_AMOUNT,
-				},
-			],
-			type,
-		})
-
-		return derived
-	}, [] as DerivedAmount[])
+export function nextAmount(amounts?: Amount[]): number {
+	const previous = amounts?.at(-1)?.value
+	return formatAmount(previous, 0) + DEFAULT_AMOUNT
 }
+
+export const isVisible = (other?: boolean, settings?: AmountSetting[]) =>
+	!!(other || settings?.some(type => type?.amounts?.length))
+
+export type DerivedAmount = Required<AmountSetting> & { amounts: Amount[] }
 
 export function spliceSettings(settings: AmountSetting[] | undefined, value: AmountSetting) {
 	return (
