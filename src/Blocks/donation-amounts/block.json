@@ -23,12 +23,12 @@
 				"default": {
 					"type": "boolean",
 					"source": "attribute",
-					"attribute": "style"
+					"attribute": "data-default"
 				},
 				"defaultAmount": {
 					"type": "integer",
 					"source": "attribute",
-					"attribute": "data-default"
+					"attribute": "data-default-amount"
 				},
 				"unit": {
 					"type": "string",

@@ -1,11 +1,10 @@
 import React, { FC } from 'react'
-import { AmountSetting, DerivedAmount } from '../common/donation-amount.ts'
+import { AmountSetting, DEFAULT_AMOUNT } from '../common/donation-amount.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 
 type Props = {
-	current?: DerivedAmount
-	settings?: AmountSetting[]
+	current?: AmountSetting
 	showLegend?: boolean
 	other?: boolean
 	otherLabel?: string
@@ -15,23 +14,27 @@ type Props = {
 const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) => {
 	if (!current) return null
 
-	if (!other && !current.amounts.length) {
-		return `Amount: ${current.amount} (hidden)`
+	if (!other && !current?.amounts?.length) {
+		return `Amount: ${current?.defaultAmount} (hidden)`
 	}
 
 	return (
 		<div className="donation-amounts__controls">
-			{current.amounts.map(({ amount }) => (
-				<div
-					className={
-						'donation-amounts__amount' +
-						(current.amount === amount ? ' donation-amounts__amount--default' : '')
-					}
-					key={amount}
-				>
-					{amount} {current.unit}
-				</div>
-			))}
+			{current.amounts
+				?.filter(({ value }) => value)
+				?.map(({ value }) => (
+					<div
+						className={
+							'donation-amounts__amount' +
+							(+(current.defaultAmount ?? DEFAULT_AMOUNT) === +value!
+								? ' donation-amounts__amount--default'
+								: '')
+						}
+						key={`${current.type}-${value}`}
+					>
+						{value} {current.unit}
+					</div>
+				))}
 
 			{other && (
 				<div className="donation-amounts__other">
@@ -46,7 +49,7 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 					/>
 					{/* Placeholder mimics input field in Gutenberg UI. */}
 					<div className="donation-amounts__other__placeholder">
-						{current.amount} {current.unit}
+						{current.defaultAmount} {current.unit}
 					</div>
 				</div>
 			)}

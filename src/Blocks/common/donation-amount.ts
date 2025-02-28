@@ -33,11 +33,11 @@ export const isVisible = (other?: boolean, settings?: AmountSetting[]) =>
 export type DerivedAmount = Required<AmountSetting> & { amounts: Amount[] }
 
 export function spliceSettings(settings: AmountSetting[] | undefined, value: AmountSetting) {
+	const idx = settings?.findIndex(type => type?.type === value.type) ?? -1
+
 	return (
 		(settings ?? [])
-			// Filter out currently edited setting.
-			.filter(setting => setting.type !== value.type)
 			// Add new settings at the end.
-			.toSpliced(-1, 0, value)
+			.toSpliced(idx, 1, value)
 	)
 }

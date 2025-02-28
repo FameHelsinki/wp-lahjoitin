@@ -39,7 +39,8 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 					key={type.type}
 					className={`donation-amounts__controls donation-amounts--${type.type}`}
 					data-type={type.type}
-					data-default={type.defaultAmount}
+					data-default={type.default || undefined}
+					data-default-amount={type.defaultAmount ?? DEFAULT_AMOUNT}
 					style={{ display: type.default ? undefined : 'none' }}
 				>
 					{type.amounts?.map(({ value }, idx) => (
@@ -68,6 +69,7 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 								id={`${type.type}-other`}
 								name={`amount-${type.type}`}
 								type="number"
+								value={type.defaultAmount ?? DEFAULT_AMOUNT}
 								aria-describedby={`${type.type}-other-unit`}
 							/>
 							<span id={`${type.type}-other-unit`} className="donation-amounts__unit">

@@ -6,27 +6,17 @@ import {
 	DEFAULT_UNIT,
 	AmountSetting,
 	formatAmount,
-	Amount,
 } from '../common/donation-amount.ts'
 
 type Props = {
-	type: string
 	other?: boolean
 	visible: boolean
-	amounts: Amount[]
 	settings: AmountSetting
 	showLegend?: boolean
 	onChange: (value: AmountSetting) => void
 }
 
-const AmountSettingsControl: FC<Props> = ({
-	settings,
-	other,
-	visible,
-	amounts,
-	type,
-	onChange,
-}) => (
+const AmountSettingsControl: FC<Props> = ({ settings, other, visible, onChange }) => (
 	<>
 		{visible && (
 			<TextControl
@@ -36,26 +26,30 @@ const AmountSettingsControl: FC<Props> = ({
 					'fame_lahjoitukset'
 				)}
 				value={settings.unit ?? DEFAULT_UNIT}
-				onChange={value => onChange({ ...settings, type, unit: value })}
+				onChange={value => onChange({ ...settings, unit: value })}
 			/>
 		)}
-		{other || !amounts.length ? (
+		{other || !settings.amounts?.length ? (
 			<TextControl
 				label={__('Default amount', 'fame_lahjoitukset')}
 				help={__('Amount that is preselected.', 'fame_lahjoitukset')}
-				value={settings.amount ?? DEFAULT_AMOUNT}
-				onChange={value => onChange({ ...settings, type, amount: formatAmount(value, 0) })}
+				value={settings.defaultAmount ?? DEFAULT_AMOUNT}
+				onChange={value => onChange({ ...settings, defaultAmount: formatAmount(value, 0) })}
 			/>
 		) : (
 			<RadioControl
 				label={__('Default amount', 'fame_lahjoitukset')}
 				help={__('Amount that is preselected.', 'fame_lahjoitukset')}
-				selected={(settings.amount ?? amounts?.[0]?.amount ?? DEFAULT_AMOUNT).toString()}
-				options={amounts?.map(({ amount = DEFAULT_AMOUNT }) => ({
-					label: `${amount} ${settings.unit ?? DEFAULT_UNIT}`,
-					value: amount.toString(),
+				selected={(
+					settings.defaultAmount ??
+					settings.amounts?.[0]?.value ??
+					DEFAULT_AMOUNT
+				).toString()}
+				options={settings.amounts?.map(({ value }) => ({
+					label: `${value} ${settings.unit ?? DEFAULT_UNIT}`,
+					value: (value ?? DEFAULT_AMOUNT).toString(),
 				}))}
-				onChange={value => onChange({ ...settings, type, amount: formatAmount(value, 0) })}
+				onChange={value => onChange({ ...settings, defaultAmount: formatAmount(value, 0) })}
 			/>
 		)}
 	</>

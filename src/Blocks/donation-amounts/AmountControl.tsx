@@ -1,42 +1,38 @@
 import React from 'react'
 import { TextControl } from '@wordpress/components'
 import { __ } from '@wordpress/i18n'
-import { Amount, AmountSetting, formatAmount } from '../common/donation-amount.ts'
+import { AmountSetting, formatAmount } from '../common/donation-amount.ts'
 
 type Props = {
-	type: string
-	amounts: Amount[]
 	settings: AmountSetting
-	onChange: (amounts: Amount[], settings: AmountSetting) => void
+	onChange: (settings: AmountSetting) => void
 }
 
-const AmountControl: React.FC<Props> = ({ amounts, settings, type, onChange }) => {
+const AmountControl: React.FC<Props> = ({ settings, onChange }) => {
+	const amounts = settings.amounts
 	if (!amounts) return null
 
 	return (
 		<div>
-			{amounts.map(({ amount }, idx) => (
+			{amounts.map((amount, idx) => (
 				<TextControl
 					key={idx}
 					label={`${__('Amount', 'fame_lahjoitukset')} ${idx + 1}`}
-					value={(amount ?? 0).toString()}
+					value={(amount.value ?? 0).toString()}
 					onChange={value => {
 						const newAmount = formatAmount(value, 0)
 						const newAmounts = amounts.toSpliced(idx, 1, {
-							amount: newAmount,
-							type,
+							value: newAmount,
 						})
 
-						onChange(
-							newAmounts,
-							settings.amount === amount
-								? {
-										...settings,
-										type,
-										amount: newAmount,
-									}
-								: settings
-						)
+						onChange({
+							...settings,
+							defaultAmount:
+								settings.defaultAmount === amount.value
+									? newAmount
+									: settings.defaultAmount,
+							amounts: newAmounts,
+						})
 					}}
 				/>
 			))}
