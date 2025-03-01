@@ -31,7 +31,7 @@
 		"types": {
 			"type": "array",
 			"source": "query",
-			"selector": ".donation-type__label",
+			"selector": ".donation-type",
 			"query": {
 				"value": {
 					"type": "string",
@@ -41,7 +41,8 @@
 				},
 				"label": {
 					"type": "string",
-					"source": "text"
+					"source": "text",
+					"selector": "donation-type__label"
 				}
 			}
 		}

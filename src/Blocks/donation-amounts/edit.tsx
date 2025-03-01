@@ -87,11 +87,12 @@ export default function Edit({
 			return
 		}
 
+		const exists = !!settings?.find(({ type }) => type === currentType)
 		const needsUpdate = settings?.some(
 			value => !types.includes(value.type) || value.default !== (value.type === currentType)
 		)
 
-		if (!needsUpdate) {
+		if (exists && !needsUpdate) {
 			return
 		}
 

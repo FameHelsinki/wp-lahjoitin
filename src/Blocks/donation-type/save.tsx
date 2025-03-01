@@ -13,20 +13,22 @@ import { Attributes } from './edit.tsx'
  */
 export default function save({ attributes }: SaveProps<Attributes>): React.JSX.Element {
 	const { legend, showLegend, types, value: defaultValue } = attributes
+	const blockProps = useBlockProps.save({ className: 'donation-type' })
 
 	if (!Array.isArray(types) || types.length <= 1) {
 		return (
-			<input
-				{...useBlockProps.save({ className: 'donation-type' })}
-				type="hidden"
-				name="type"
-				value={types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value}
-			/>
+			<div {...blockProps}>
+				<input
+					type="hidden"
+					name="type"
+					value={types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value}
+				/>
+			</div>
 		)
 	}
 
 	return (
-		<fieldset {...useBlockProps.save({ className: 'donation-type' })}>
+		<fieldset {...blockProps}>
 			<RichText.Content
 				tagName="legend"
 				className={'donation-type__legend' + (showLegend ? '' : ' screen-reader-text')}
