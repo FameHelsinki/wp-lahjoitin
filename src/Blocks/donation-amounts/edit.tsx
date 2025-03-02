@@ -91,8 +91,10 @@ export default function Edit({
 		const needsUpdate = settings?.some(
 			value => !types.includes(value.type) || value.default !== (value.type === currentType)
 		)
+		const missingTypes: any[] =
+			types?.filter((type: any) => !settings?.find(setting => setting.type === type)) ?? []
 
-		if (exists && !needsUpdate) {
+		if (exists && !needsUpdate && !missingTypes.length) {
 			return
 		}
 
@@ -106,15 +108,15 @@ export default function Edit({
 					return setting
 				}) ?? []
 
-		// Initialize new type with default values.
-		if (!settings?.find(({ type }) => type === currentType)) {
+		// Initialize missing types with default values.
+		for (const type of missingTypes) {
 			newSettings.push({
-				type: currentType,
-				default: true,
+				type,
+				// Copy existing amounts from first available.
+				amounts: settings?.find(setting => setting?.amounts?.length)?.amounts ?? [],
+				default: type === currentType,
 				defaultAmount: DEFAULT_AMOUNT,
 				unit: DEFAULT_UNIT,
-				// Copy existing amounts from first available.
-				amounts: settings?.find(type => type?.amounts?.length)?.amounts ?? [],
 			})
 		}
 
@@ -123,7 +125,7 @@ export default function Edit({
 		})
 	}, [types, currentType, settings, setAttributes])
 
-	const blockProps = useBlockProps({ className: 'donation-amounts' })
+	const blockProps = useBlockProps({ className: 'fame-form__fieldset--amounts' })
 
 	// Use effect hook should ensure that settings will be set to an array.
 	if (!settings) return <div {...blockProps}>Loading...</div>
@@ -207,7 +209,7 @@ export default function Edit({
 				{visible && showLegend && (
 					<RichText
 						multiline={false}
-						className="donation-amounts__legend"
+						className="fame-form__legend"
 						aria-label={__('Donation amount legend', 'fame_lahjoitukset')}
 						placeholder={__('Donation amount', 'fame_lahjoitukset')}
 						allowedFormats={[]}

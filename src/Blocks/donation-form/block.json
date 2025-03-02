@@ -18,19 +18,19 @@
 		"token": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".donation-form",
+			"selector": ".fame-form",
 			"attribute": "data-token"
 		},
 		"campaign": {
 			"type": "string",
 			"source": "attribute",
-			"selector": ".donation-form input[name=\"campaign\"]",
+			"selector": ".fame-form input[name=\"campaign\"]",
 			"attribute": "value"
 		},
 		"returnAddress": {
 			"type": "string",
 			"source": "attribute",
-			"selector": ".donation-form input[name=\"return_address\"]",
+			"selector": ".fame-form input[name=\"return_address\"]",
 			"attribute": "value",
 			"default": "/"
 		}

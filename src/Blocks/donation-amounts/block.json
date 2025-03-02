@@ -13,7 +13,7 @@
 		"settings": {
 			"type": "array",
 			"source": "query",
-			"selector": ".donation-amounts__controls",
+			"selector": ".donation-amounts",
 			"query": {
 				"type": {
 					"type": "string",
@@ -52,14 +52,14 @@
 		"showLegend": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".donation-amounts__legend:not(.screen-reader-text)",
+			"selector": ".fame-form__legend:not(.screen-reader-text)",
 			"attribute": "class",
 			"default": true
 		},
 		"legend": {
 			"type": "string",
 			"source": "text",
-			"selector": ".donation-amounts__legend",
+			"selector": ".fame-form__legend",
 			"default": "Donation type"
 		},
 		"other": {

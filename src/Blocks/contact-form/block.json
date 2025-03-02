@@ -12,34 +12,34 @@
 		"contact": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".contact-form",
-			"attribute": "data-contact",
+			"selector": ".fame-form__group--required:has(input[name=\"email\"])",
+			"attribute": "class",
 			"default": false
 		},
 		"showAddress": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".contact-form input[name=\"address\"]",
+			"selector": "input[name=\"address\"]",
 			"attribute": "name",
 			"default": true
 		},
 		"showPhone": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".contact-form input[name=\"phone\"]",
+			"selector": "input[name=\"phone\"]",
 			"attribute": "name",
 			"default": true
 		},
 		"first_name_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-first_name\"]",
+			"selector": ".fame-form__label[for=\"contact-first_name\"]",
 			"default": "First name"
 		},
 		"last_name_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-last_name\"]",
+			"selector": ".fame-form__label[for=\"contact-last_name\"]",
 			"default": "Last name"
 		},
 		"name_help": {
@@ -51,7 +51,7 @@
 		"email_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-email\"]",
+			"selector": ".fame-form__label[for=\"contact-email\"]",
 			"default": "Email"
 		},
 		"email_help": {
@@ -63,7 +63,7 @@
 		"address_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-address\"]",
+			"selector": ".fame-form__label[for=\"contact-address\"]",
 			"default": "Address"
 		},
 		"address_help": {
@@ -75,7 +75,7 @@
 		"city_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-city\"]",
+			"selector": ".fame-form__label[for=\"contact-city\"]",
 			"default": "City"
 		},
 		"city_postal_code_help": {
@@ -87,19 +87,19 @@
 		"postal_code_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-postal_code\"]",
+			"selector": ".fame-form__label[for=\"contact-postal_code\"]",
 			"default": "Postal code"
 		},
 		"postal_code_help": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-postal_code-help",
+			"selector": "#contact-postal_code-help",
 			"default": "Postal code"
 		},
 		"phone_label": {
 			"type": "string",
 			"source": "html",
-			"selector": ".contact-form__label[for=\"contact-phone\"]",
+			"selector": ".fame-form__label[for=\"contact-phone\"]",
 			"default": "Phone"
 		},
 		"phone_help": {

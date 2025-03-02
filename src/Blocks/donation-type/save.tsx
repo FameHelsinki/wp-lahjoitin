@@ -13,9 +13,14 @@ import { Attributes } from './edit.tsx'
  */
 export default function save({ attributes }: SaveProps<Attributes>): React.JSX.Element {
 	const { legend, showLegend, types, value: defaultValue } = attributes
-	const blockProps = useBlockProps.save({ className: 'donation-type' })
+	const isHidden = !Array.isArray(types) || types.length <= 1
+	const blockProps = useBlockProps.save({
+		className: isHidden
+			? 'fame-form__hidden'
+			: 'fame-form__fieldset fame-form__fieldset--donation-type',
+	})
 
-	if (!Array.isArray(types) || types.length <= 1) {
+	if (isHidden) {
 		return (
 			<div {...blockProps}>
 				<input
@@ -31,19 +36,15 @@ export default function save({ attributes }: SaveProps<Attributes>): React.JSX.E
 		<fieldset {...blockProps}>
 			<RichText.Content
 				tagName="legend"
-				className={'donation-type__legend' + (showLegend ? '' : ' screen-reader-text')}
+				className={'fame-form__legend' + (showLegend ? '' : ' screen-reader-text')}
 				value={legend ?? ''}
 			/>
-			<div className="donation-type__controls">
-				{types.map(({ value, label }) => (
-					<label
-						key={value}
-						htmlFor={`donation-type-${value}`}
-						className="donation-type__label"
-					>
+			{types.map(({ value, label }) => (
+				<div key={value} className="fame-form__group">
+					<label htmlFor={`donation-type-${value}`} className="fame-form__label">
 						<input
 							id={`donation-type-${value}`}
-							className="donation-type__input"
+							className="fame-form__input"
 							checked={value === defaultValue}
 							type="radio"
 							name="type"
@@ -51,8 +52,8 @@ export default function save({ attributes }: SaveProps<Attributes>): React.JSX.E
 						/>
 						{label}
 					</label>
-				))}
-			</div>
+				</div>
+			))}
 		</fieldset>
 	)
 }

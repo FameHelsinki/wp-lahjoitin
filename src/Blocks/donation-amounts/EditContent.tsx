@@ -19,20 +19,21 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 	}
 
 	return (
-		<div className="donation-amounts__controls">
+		<div className={`donation-amounts donaton-amounts--${current.type}`}>
 			{current.amounts
 				?.filter(({ value }) => value)
 				?.map(({ value }) => (
-					<div
-						className={
-							'donation-amounts__amount' +
-							(+(current.defaultAmount ?? DEFAULT_AMOUNT) === +value!
-								? ' donation-amounts__amount--default'
-								: '')
-						}
-						key={`${current.type}-${value}`}
-					>
-						{value} {current.unit}
+					<div className="fame-form__group" key={`${current.type}-${value}`}>
+						<div
+							className={
+								'fame-form__label' +
+								(+(current.defaultAmount ?? DEFAULT_AMOUNT) === +value!
+									? ' fame-form__label--default'
+									: '')
+							}
+						>
+							{value} <span className="donation-amounts__unit">{current.unit}</span>
+						</div>
 					</div>
 				))}
 

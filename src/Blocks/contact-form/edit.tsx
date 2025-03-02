@@ -41,7 +41,6 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 			</InspectorControls>
 			<div {...useBlockProps({ className: 'contact-form' })}>
 				<ContactInputGroup
-					className="contact-form__row"
 					name="name"
 					controls={[
 						{
@@ -57,7 +56,6 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 					setAttributes={setAttributes}
 				/>
 				<ContactInputControl
-					className="contact-form__row"
 					name="email"
 					required={contact}
 					attributes={attributes}
@@ -66,13 +64,11 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 				{showAddress && (
 					<>
 						<ContactInputControl
-							className="contact-form__row"
 							name="address"
 							attributes={attributes}
 							setAttributes={setAttributes}
 						/>
 						<ContactInputGroup
-							className="contact-form__row"
 							name="city_postal_code"
 							controls={[{ name: 'city' }, { name: 'postal_code' }]}
 							attributes={attributes}
@@ -82,7 +78,6 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 				)}
 				{showPhone && (
 					<ContactInputControl
-						className="contact-form__row"
 						name="phone"
 						attributes={attributes}
 						setAttributes={setAttributes}

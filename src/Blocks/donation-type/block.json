@@ -12,26 +12,26 @@
 		"showLegend": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".donation-type__legend:not(.screen-reader-text)",
+			"selector": ".fame-form__legend:not(.screen-reader-text)",
 			"attribute": "class",
 			"default": true
 		},
 		"legend": {
 			"type": "string",
 			"source": "text",
-			"selector": ".donation-type__legend",
+			"selector": ".fame-form__legend",
 			"default": "Donation type"
 		},
 		"value": {
 			"type": "string",
 			"source": "attribute",
-			"selector": ".donation-type input[name=\"type\"]:checked",
+			"selector": "input[name=\"type\"]:checked",
 			"attribute": "value"
 		},
 		"types": {
 			"type": "array",
 			"source": "query",
-			"selector": ".donation-type",
+			"selector": ".fame-form__group,.fame-form__hidden",
 			"query": {
 				"value": {
 					"type": "string",
@@ -42,7 +42,7 @@
 				"label": {
 					"type": "string",
 					"source": "text",
-					"selector": "donation-type__label"
+					"selector": ".fame-form__label"
 				}
 			}
 		}

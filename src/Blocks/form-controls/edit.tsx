@@ -13,14 +13,14 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 	const { submitLabel } = attributes
 
 	return (
-		<div {...useBlockProps({ className: 'donation-form__controls' })}>
+		<div {...useBlockProps({ className: 'fame-form__controls' })}>
 			<RichText
 				multiline={false}
 				tagName="div"
 				className="wp-element-button is-primary"
 				aria-label={__('Submit button text', 'fame_lahjoitukset')}
 				allowedFormats={[]}
-				onChange={submitLabel => setAttributes({ submitLabel })}
+				onChange={value => setAttributes({ submitLabel: value })}
 				placeholder={__('Donate')}
 				value={submitLabel}
 			/>

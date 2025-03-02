@@ -11,7 +11,7 @@
 		"submitLabel": {
 			"type": "string",
 			"source": "text",
-			"selector": ".donation-form__controls [type=\"submit\"]",
+			"selector": ".fame-form__controls [type=\"submit\"]",
 			"default": "Donate"
 		}
 	},

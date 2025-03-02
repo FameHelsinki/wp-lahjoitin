@@ -72,7 +72,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 			<div
 				{...useInnerBlocksProps(
 					useBlockProps({
-						className: 'donation-form__inner-blocks',
+						className: 'fame-form__wrapper',
 					}),
 					{
 						// prevents inserting or removing blocks,

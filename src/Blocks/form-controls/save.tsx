@@ -10,11 +10,11 @@ import { SaveProps } from '../common/types.ts'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
-export default ({ attributes: { submitLabel } }: SaveProps): React.JSX.Element => {
+const Save = ({ attributes: { submitLabel } }: SaveProps): React.JSX.Element => {
 	// Submit button has disabled attribute by default.
 	// The attribute is removed when JavaScript is loaded.
 	return (
-		<div {...useBlockProps.save({ className: 'donation-form__controls' })}>
+		<div {...useBlockProps.save({ className: 'fame-form__controls' })}>
 			<RichText.Content
 				disabled
 				type="submit"
@@ -28,3 +28,5 @@ export default ({ attributes: { submitLabel } }: SaveProps): React.JSX.Element =
 		</div>
 	)
 }
+
+export default Save

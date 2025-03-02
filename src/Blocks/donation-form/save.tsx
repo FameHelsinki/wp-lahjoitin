@@ -14,12 +14,12 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 
 	const blockProps = useBlockProps.save()
 	const innerBlockProps = useInnerBlocksProps.save({
-		className: 'donation-form__inner-blocks',
+		className: 'fame-form__wrapper',
 	})
 
 	return (
 		<div {...blockProps}>
-			<form className="donation-form" data-token={token || undefined}>
+			<form className="fame-form fame-form--donations" data-token={token || undefined}>
 				<div {...innerBlockProps} />
 
 				<input type="hidden" name="return_address" value={returnAddress || '/'} />

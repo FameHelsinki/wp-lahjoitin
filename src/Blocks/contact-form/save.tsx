@@ -1,7 +1,7 @@
 import { useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
-import ContactInputGroup from './ContactInputGroup.tsx'
-import ContactInputControl from './ContactInputControl.tsx'
+import { ContactInputContent } from './ContactInputControl.tsx'
+import { ContactGroupContent } from './ContactInputGroup.tsx'
 import { SaveProps } from '../common/types.ts'
 
 /**
@@ -18,11 +18,10 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 
 	return (
 		<div
-			{...useBlockProps.save({ className: 'contact-form' })}
+			{...useBlockProps.save({ className: 'fame-form__wrapper' })}
 			data-contact={contact || undefined}
 		>
-			<ContactInputGroup.Content
-				className="contact-form__row"
+			<ContactGroupContent
 				name="name"
 				controls={[
 					{
@@ -38,8 +37,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 				]}
 				attributes={attributes}
 			/>
-			<ContactInputControl.Content
-				className="contact-form__row"
+			<ContactInputContent
 				name="email"
 				type="email"
 				required={contact}
@@ -47,14 +45,8 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 			/>
 			{showAddress && (
 				<>
-					<ContactInputControl.Content
-						className="contact-form__row"
-						name="address"
-						type="text"
-						attributes={attributes}
-					/>
-					<ContactInputGroup.Content
-						className="contact-form__row"
+					<ContactInputContent name="address" type="text" attributes={attributes} />
+					<ContactGroupContent
 						name="city_postal_code"
 						controls={[
 							{ name: 'city', type: 'text' },
@@ -64,14 +56,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 					/>
 				</>
 			)}
-			{showPhone && (
-				<ContactInputControl.Content
-					className="contact-form__row"
-					name="phone"
-					type="tel"
-					attributes={attributes}
-				/>
-			)}
+			{showPhone && <ContactInputContent name="phone" type="tel" attributes={attributes} />}
 		</div>
 	)
 }
