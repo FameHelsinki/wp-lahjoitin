@@ -28,13 +28,13 @@
 	flex: 1;
 }
 
-.fame-form__row > .fame-form__help {
-	flex-basis: 100%;
-}
-
 .fame-form__help {
 	font-size: 0.8em;
 	color: #444;
+}
+
+.fame-form__row > .fame-form__help {
+	flex-basis: 100%;
 }
 
 .fame-form__group--required .fame-form__label::after {
