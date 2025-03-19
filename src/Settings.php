@@ -57,6 +57,6 @@ class Settings implements ComponentInterface
 
     public function getBackendUrl(): string
     {
-        return $this->settings->getField('backend_url')->getValue();
+        return $this->settings->getField('backend_url')->getValue('');
     }
 }
