@@ -1,11 +1,9 @@
-import React from 'react'
+import React, { FC } from 'react'
 import { RichText } from '@wordpress/block-editor'
-import { Control } from '../common/Types.ts'
 import { formatPlaceholder } from '../common/utils.ts'
 
 export type Props = {
 	name: string
-	className?: string
 	ariaDescribedBy?: string
 	attributes: any
 	required?: boolean
@@ -14,40 +12,34 @@ export type Props = {
 
 export type ContentProps = Omit<Props, 'setAttributes'> & { type: string }
 
-const ContactInputControl: Control<Props, ContentProps> = ({
+const ContactInputControl: FC<Props> = ({
 	name,
-	className,
 	ariaDescribedBy,
 	required,
 	attributes,
 	setAttributes,
 }) => (
-	<div className={className}>
+	<div className={'fame-form__group' + (required ? ' fame-form__group--required' : '')}>
 		<RichText
 			multiline={false}
-			className={
-				'contact-form__label' +
-				(required ? ' contact-form__label--required' : '')
-			}
+			className="fame-form__label"
 			allowedFormats={['core/bold', 'core/italic']}
-			onChange={(value) => setAttributes({ [`${name}_label`]: value })}
+			onChange={value => setAttributes({ [`${name}_label`]: value })}
 			value={attributes[`${name}_label`]}
 			placeholder={`${formatPlaceholder(name)} label`}
 		/>
 		<div
-			className="contact-form__input"
+			className="fame-form__fake-input"
 			id={`contact-${name}`}
-			aria-describedby={
-				ariaDescribedBy ? ariaDescribedBy : `contact-${name}-help`
-			}
+			aria-describedby={ariaDescribedBy ? ariaDescribedBy : `contact-${name}-help`}
 		></div>
 		{!ariaDescribedBy && (
 			<RichText
 				id={`contact-${name}-help`}
-				className="contact-form__help"
+				className="fame-form__help"
 				multiline={false}
 				allowedFormats={['core/bold', 'core/italic']}
-				onChange={(value) => setAttributes({ [`${name}_help`]: value })}
+				onChange={value => setAttributes({ [`${name}_help`]: value })}
 				value={attributes[`${name}_help`]}
 				placeholder={`${formatPlaceholder(name)} help`}
 			/>
@@ -55,34 +47,29 @@ const ContactInputControl: Control<Props, ContentProps> = ({
 	</div>
 )
 
-ContactInputControl.Content = ({
+export const ContactInputContent: FC<ContentProps> = ({
 	name,
 	type,
-	className,
 	ariaDescribedBy,
 	required,
 	attributes,
 }) => {
 	const ariaDescribedById =
-		ariaDescribedBy ||
-		(attributes[`${name}_help`] ? `contact-${name}-help` : undefined)
+		ariaDescribedBy || (attributes[`${name}_help`] ? `contact-${name}-help` : undefined)
 
 	return (
-		<div className={className}>
+		<div className={'fame-form__group' + (required ? ' fame-form__group--required' : '')}>
 			<RichText.Content
 				htmlFor={`contact-${name}`}
 				tagName="label"
-				className={
-					'contact-form__label' +
-					(required ? ' contact-form__label--required' : '')
-				}
+				className="fame-form__label"
 				value={attributes[`${name}_label`]}
 			/>
 			<input
 				type={type}
 				name={name}
 				required={required}
-				className="contact-form__input"
+				className="fame-form__input"
 				id={`contact-${name}`}
 				aria-describedby={ariaDescribedById}
 			/>
@@ -90,7 +77,7 @@ ContactInputControl.Content = ({
 				<RichText.Content
 					tagName="small"
 					id={`contact-${name}-help`}
-					className="contact-form__help"
+					className="fame-form__help"
 					value={attributes[`${name}_help`]}
 				/>
 			)}

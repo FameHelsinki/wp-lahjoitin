@@ -6,10 +6,38 @@
 	--form-element-padding: 4px 16px;
 }
 
-.donation-form__inner-blocks > * + * {
+.fame-form__wrapper > * + * {
 	margin-top: 16px;
 }
 
-.donation-form__controls div.wp-element-button {
+/**
+ * Gutenberg editor draws button as a div,
+ * since it should not be a real button.
+ */
+.fame-form__controls .wp-element-button {
 	display: inline;
+}
+
+.fame-form__row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0 16px;
+}
+
+.fame-form__row > * {
+	flex: 1;
+}
+
+.fame-form__help {
+	font-size: 0.8em;
+	color: #444;
+}
+
+.fame-form__row > .fame-form__help {
+	flex-basis: 100%;
+}
+
+.fame-form__group--required .fame-form__label::after {
+	content: "*";
+	color: #f00;
 }

@@ -7,53 +7,32 @@
 	"category": "widgets",
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
-	"allowedBlocks": [
-		"famehelsinki/donation-type",
-		"famehelsinki/donation-amounts",
-		"core/paragraph",
-		"core/heading"
-	],
+	"allowedBlocks": ["core/paragraph"],
 	"providesContext": {
-		"famehelsinki/donation-form/types": "types"
+		"famehelsinki/donation-types": "types"
 	},
 	"attributes": {
 		"types": {
 			"type": "array"
 		},
-		"noTypeSelect": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": ".donation-form input[name=\"type\"][type=\"hidden\"]",
-			"attribute": "value"
-		},
-		"defaultAmount": {
-			"type": "integer",
-			"default": 10
-		},
 		"token": {
 			"type": "boolean",
 			"source": "attribute",
-			"selector": ".donation-form",
+			"selector": ".fame-form",
 			"attribute": "data-token"
 		},
 		"campaign": {
 			"type": "string",
 			"source": "attribute",
-			"selector": ".donation-form input[name=\"campaign\"]",
+			"selector": ".fame-form input[name=\"campaign\"]",
 			"attribute": "value"
 		},
 		"returnAddress": {
 			"type": "string",
 			"source": "attribute",
-			"selector": ".donation-form input[name=\"return_address\"]",
+			"selector": ".fame-form input[name=\"return_address\"]",
 			"attribute": "value",
 			"default": "/"
-		},
-		"submitLabel": {
-			"type": "string",
-			"source": "html",
-			"selector": ".donation-form__controls [type=\"submit\"] span",
-			"default": "Donate"
 		}
 	},
 	"supports": {
@@ -74,6 +53,6 @@
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css",
-	"viewScript": "file:./view.js"
+	"viewScript": "file:./view.js",
+	"style": "file:./view.css"
 }

@@ -1,67 +1,43 @@
 import React from 'react'
-import { Button, Flex, TextControl } from '@wordpress/components'
-import { formatAmount } from '../common/utils.ts'
-
-export type Amount = {
-	amount: number
-}
+import { TextControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
+import { AmountSetting, formatAmount } from '../common/donation-amount.ts'
 
 type Props = {
-	amounts: Amount[]
-	amountLabel: string
-	removeLabel: string
-	addLabel: string
-	onChange: (amounts: Amount[]) => void
+	settings: AmountSetting
+	onChange: (settings: AmountSetting) => void
 }
 
-const AmountControl: React.FC<Props> = ({
-	amounts,
-	amountLabel,
-	removeLabel,
-	addLabel,
-	onChange,
-}) => (
-	<div>
-		{amounts.map(({ amount }, idx) => (
-			<Flex key={idx}>
+const AmountControl: React.FC<Props> = ({ settings, onChange }) => {
+	const amounts = settings.amounts
+	if (!amounts) return null
+
+	return (
+		<div>
+			{amounts.map((amount, idx) => (
 				<TextControl
-					label={amountLabel}
-					value={amount}
-					onChange={(value) =>
-						onChange(
-							amounts.map((prevAmount, prevIdx) =>
-								prevIdx === idx
-									? { amount: formatAmount(value, 0) }
-									: prevAmount
-							)
-						)
-					}
+					key={idx}
+					label={`${__('Amount', 'fame_lahjoitukset')} ${idx + 1}`}
+					value={(amount.value ?? 0).toString()}
+					onChange={value => {
+						const newAmount = formatAmount(value, 0)
+						const newAmounts = amounts.toSpliced(idx, 1, {
+							value: newAmount,
+						})
+
+						onChange({
+							...settings,
+							defaultAmount:
+								settings.defaultAmount === amount.value
+									? newAmount
+									: settings.defaultAmount,
+							amounts: newAmounts,
+						})
+					}}
 				/>
-				<Button
-					variant="secondary"
-					onClick={() => onChange(amounts.toSpliced(idx, 1))}
-				>
-					{removeLabel}
-				</Button>
-			</Flex>
-		))}
-		<Button
-			variant="primary"
-			onClick={() =>
-				onChange([
-					...amounts,
-					{
-						amount:
-							parseInt(
-								(amounts?.at(-1)?.amount ?? 0).toString()
-							) + 10,
-					},
-				])
-			}
-		>
-			{addLabel}
-		</Button>
-	</div>
-)
+			))}
+		</div>
+	)
+}
 
 export default AmountControl

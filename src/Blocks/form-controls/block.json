@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/form-controls",
+	"version": "0.1.0",
+	"title": "Form controls",
+	"category": "widgets",
+	"description": "Adds form controls.",
+	"parent": ["famehelsinki/donation-form"],
+	"attributes": {
+		"submitLabel": {
+			"type": "string",
+			"source": "text",
+			"selector": ".fame-form__controls [type=\"submit\"]",
+			"default": "Donate"
+		}
+	},
+	"supports": {
+		"multiple": false,
+		"color": {
+			"background": false,
+			"text": true
+		},
+		"html": false,
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"icon": "button",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js"
+}

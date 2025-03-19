@@ -1,26 +1,4 @@
-.contact-form input {
-	width: 100%;
-}
-
-.contact-form__row + .contact-form__row {
-	margin-top: 8px;
-}
-
-.contact-form__group {
-	display: flex;
-	gap: 16px;
-}
-
-.contact-form__group > * {
-	flex: 1;
-}
-
-.contact-form__help {
-	font-size: 0.8em;
-	color: #444;
-}
-
-.contact-form__input {
+.contact-form .fame-form__fake-input {
 	border: var(--form-element-border);
 	padding: var(--form-element-padding);
 
@@ -29,7 +7,3 @@
 	height: 1.7em;
 }
 
-.contact-form__label--required::after {
-	content: "*";
-	color: #f00;
-}

@@ -1,24 +1,23 @@
 import { useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
-import ContactInputGroup from './ContactInputGroup.tsx'
-import ContactInputControl from './ContactInputControl.tsx'
+import { ContactInputContent } from './ContactInputControl.tsx'
+import { ContactGroupContent } from './ContactInputGroup.tsx'
+import { SaveProps } from '../common/types.ts'
 
 /**
  * The save function defines the way in which the different attributes should
  * be combined into the final markup, which is then serialized by the block
  * editor into `post_content`.
- *
- * @param root0
- * @param root0.attributes
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
-export default function save({ attributes }): React.JSX.Element {
+export default function save({ attributes }: SaveProps): React.JSX.Element {
 	const { contact, showAddress, showPhone } = attributes
 
 	return (
-		<div {...useBlockProps.save({ className: 'contact-form' })}>
-			<ContactInputGroup.Content
-				className="contact-form__row"
+		<div
+			{...useBlockProps.save({ className: 'fame-form__wrapper' })}
+			data-contact={contact || undefined}
+		>
+			<ContactGroupContent
 				name="name"
 				controls={[
 					{
@@ -34,8 +33,7 @@ export default function save({ attributes }): React.JSX.Element {
 				]}
 				attributes={attributes}
 			/>
-			<ContactInputControl.Content
-				className="contact-form__row"
+			<ContactInputContent
 				name="email"
 				type="email"
 				required={contact}
@@ -43,14 +41,8 @@ export default function save({ attributes }): React.JSX.Element {
 			/>
 			{showAddress && (
 				<>
-					<ContactInputControl.Content
-						className="contact-form__row"
-						name="address"
-						type="text"
-						attributes={attributes}
-					/>
-					<ContactInputGroup.Content
-						className="contact-form__row"
+					<ContactInputContent name="address" type="text" attributes={attributes} />
+					<ContactGroupContent
 						name="city_postal_code"
 						controls={[
 							{ name: 'city', type: 'text' },
@@ -60,14 +52,8 @@ export default function save({ attributes }): React.JSX.Element {
 					/>
 				</>
 			)}
-			{showPhone && (
-				<ContactInputControl.Content
-					className="contact-form__row"
-					name="phone"
-					type="tel"
-					attributes={attributes}
-				/>
-			)}
+			{showPhone && <ContactInputContent name="phone" type="tel" attributes={attributes} />}
+
 		</div>
 	)
 }

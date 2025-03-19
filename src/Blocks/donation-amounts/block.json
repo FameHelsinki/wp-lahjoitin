@@ -7,36 +7,72 @@
 	"category": "widgets",
 	"description": "Allows selecting donation amounts.",
 	"parent": ["famehelsinki/donation-form"],
+	"usesContext": ["famehelsinki/donation-types"],
 	"example": {},
 	"attributes": {
-		"amounts": {
+		"settings": {
 			"type": "array",
 			"source": "query",
-			"selector": ".donation-amounts__amount input[type=\"radio\"]",
+			"selector": ".donation-amounts",
 			"query": {
-				"amount": {
+				"type": {
+					"type": "string",
+					"source": "attribute",
+					"attribute": "data-type"
+				},
+				"default": {
+					"type": "boolean",
+					"source": "attribute",
+					"attribute": "data-default"
+				},
+				"defaultAmount": {
 					"type": "integer",
 					"source": "attribute",
-					"attribute": "value"
+					"attribute": "data-default-amount"
+				},
+				"unit": {
+					"type": "string",
+					"selector": ".donation-amounts__unit",
+					"source": "text"
+				},
+				"amounts": {
+					"type": "array",
+					"source": "query",
+					"selector": "input[type=\"radio\"]",
+					"query": {
+						"value": {
+							"type": "string",
+							"source": "attribute",
+							"attribute": "value"
+						}
+					}
 				}
-			},
-			"default": [
-				{
-					"amount": "10"
-				}
-			]
+			}
 		},
-		"otherAmount": {
+		"showLegend": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".fame-form__legend:not(.screen-reader-text)",
+			"attribute": "class",
+			"default": true
+		},
+		"legend": {
+			"type": "string",
+			"source": "text",
+			"selector": ".fame-form__legend",
+			"default": "Donation type"
+		},
+		"other": {
 			"type": "boolean",
 			"source": "attribute",
 			"selector": ".donation-amounts__other",
-			"attribute": "class"
+			"attribute": "class",
+			"default": false
 		},
-		"otherAmountLabel": {
-			"type": "rich-text",
-			"source": "rich-text",
-			"selector": ".donation-amounts__other span",
-			"role": "content",
+		"otherLabel": {
+			"type": "string",
+			"source": "text",
+			"selector": ".donation-amounts__other label",
 			"default": "Other amount"
 		}
 	},

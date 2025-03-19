@@ -1,9 +1,6 @@
-import {
-	RichText,
-	useBlockProps,
-	useInnerBlocksProps,
-} from '@wordpress/block-editor'
+import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
 import React from 'react'
+import { SaveProps } from '../common/types.ts'
 
 /**
  * The save function defines the way in which the different attributes should
@@ -12,46 +9,32 @@ import React from 'react'
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
-export default function save({ attributes }): React.JSX.Element {
-	const { submitLabel, returnAddress, campaign, token, types, noTypeSelect } =
-		attributes
+export default function save({ attributes }: SaveProps): React.JSX.Element {
+	const { returnAddress, campaign, token } = attributes
 
-	const blockProps = useBlockProps.save()
-	const { children, ...innerBlockProps } = useInnerBlocksProps.save({
-		className: 'donation-form__inner-blocks',
+	const blockProps = useBlockProps.save({ className: 'fame-form-container' })
+	const innerBlockProps = useInnerBlocksProps.save({
+		className: 'fame-form__wrapper',
 	})
-
-	console.log(noTypeSelect)
 
 	return (
 		<div {...blockProps}>
-			<form className="donation-form" data-token={token || undefined}>
-				<div {...innerBlockProps}>
-					{children as any}
-					<input
-						type="hidden"
-						name="return_address"
-						value={returnAddress || '/'}
-					/>
-					{campaign && (
-						<input type="hidden" name="campaign" value={campaign} />
-					)}
-					{noTypeSelect && types && (
-						<input type="hidden" name="type" value={types[0]} />
-					)}
-					<div className="donation-form__controls">
-						<button
-							type="submit"
-							className="wp-element-button is-primary"
-						>
-							<RichText.Content
-								tagName="span"
-								value={submitLabel}
-							/>
-						</button>
-					</div>
-				</div>
+			<form className="fame-form fame-form--donations" data-token={token || undefined} noValidate>
+
+				<div {...innerBlockProps} />
+
+				<input type="hidden" name="return_address" value={returnAddress || '/'} />
+
+				{/** @todo implement configurable providers */}
+				<input type="hidden" name="provider" value="mobilepay" />
+
+				{campaign && <input type="hidden" name="campaign" value={campaign} />}
 			</form>
+			<div className="fame-form-overlay">
+				<div className="fame-form-spinner" role="status">
+					<span className="screen-reader-text">Loading</span>
+				</div>
+			</div>
 		</div>
 	)
 }

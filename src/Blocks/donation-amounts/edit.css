@@ -1,26 +1,30 @@
-.donation-amounts__other,
+.donation-amounts__other-edit,
 .donation-amounts {
 	display: flex;
 	align-items: stretch;
 	gap: 16px;
 }
 
-.donation-amounts__other {
-	align-items: center;
-}
-
-.donation-amounts .rich-text {
-	text-wrap: nowrap !important;
-}
-
 .donation-amounts > * {
 	flex: 1;
 }
 
+.donation-amounts__other-edit {
+	align-items: center;
+}
+
+.wp-block-famehelsinki-donation-amounts .rich-text {
+	text-wrap: nowrap !important;
+}
+
 .donation-amounts__other__placeholder,
-.donation-amounts__amount {
+.donation-amounts .fame-form__label {
 	padding: var(--form-element-padding);
 	border: var(--form-element-border);
+
+	&.fame-form__label--default {
+		border-color: #db1414;
+	}
 }
 
 .donation-amounts__other__placeholder {

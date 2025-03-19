@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 
 type Props = {
 	checked?: boolean
 	className?: string
+	onClick?: MouseEventHandler
 }
 
-const Radio: React.FC<Props> = ({ checked, className }) => (
+const Radio: React.FC<Props> = ({ checked, onClick, className }) => (
 	<svg
 		className={className}
 		viewBox="0 0 24 24"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
+		onClick={onClick}
 	>
 		<g>
 			<path
