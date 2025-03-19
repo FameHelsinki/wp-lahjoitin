@@ -19,10 +19,13 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 
 	return (
 		<div {...blockProps}>
-			<form className="fame-form fame-form--donations" data-token={token || undefined}>
+			<form className="fame-form fame-form--donations" data-token={token || undefined} noValidate>
 				<div {...innerBlockProps} />
 
 				<input type="hidden" name="return_address" value={returnAddress || '/'} />
+
+				{/** @todo implement configurable providers */}
+				<input type="hidden" name="provider" value="mobilepay" />
 
 				{campaign && <input type="hidden" name="campaign" value={campaign} />}
 			</form>

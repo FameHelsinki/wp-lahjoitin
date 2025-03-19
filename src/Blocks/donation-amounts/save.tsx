@@ -25,13 +25,16 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 			: 'fame-form__hidden',
 	})
 
+	// Amount must be in cents.
+	const defaultAmount = parseInt((settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT).toString()) * 100
+
 	if (!visible) {
 		return (
 			<div {...blockProps}>
 				<input
 					name="amount"
 					type="hidden"
-					value={settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT}
+					value={defaultAmount}
 				/>
 			</div>
 		)
@@ -103,7 +106,7 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 			<input
 				name="amount"
 				type="hidden"
-				value={settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT}
+				value={defaultAmount}
 			/>
 		</fieldset>
 	)
