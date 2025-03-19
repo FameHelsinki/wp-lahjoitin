@@ -1,4 +1,4 @@
-class AmountWrapper {
+export class AmountWrapper {
 	readonly #onChange: (amount: number) => void
 	readonly #wrapper: HTMLElement
 	readonly #buttons: NodeListOf<HTMLInputElement>
