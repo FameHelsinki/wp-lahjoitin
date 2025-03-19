@@ -2,7 +2,7 @@ import { ValidationResult } from './Validation.ts'
 import FormHandler from './FormHandler.ts'
 
 export type FormSubmitEvent = CustomEvent<{
-	url: URL,
+	url: URL
 	data: { [key: string]: FormDataEntryValue }
 	handler: FormHandler
 	errors: ValidationResult
@@ -20,4 +20,3 @@ export type FormResultEvent = CustomEvent<{
 	result: FormResult
 	handler: FormHandler
 }>
-

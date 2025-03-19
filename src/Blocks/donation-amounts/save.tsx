@@ -26,16 +26,15 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 	})
 
 	// Amount must be in cents.
-	const defaultAmount = parseInt((settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT).toString()) * 100
+	const defaultAmount =
+		parseInt(
+			(settings?.find(type => type.default)?.defaultAmount || DEFAULT_AMOUNT).toString()
+		) * 100
 
 	if (!visible) {
 		return (
 			<div {...blockProps}>
-				<input
-					name="amount"
-					type="hidden"
-					value={defaultAmount}
-				/>
+				<input name="amount" type="hidden" value={defaultAmount} />
 			</div>
 		)
 	}
@@ -106,11 +105,7 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 				input field must be kept up to date with radio buttons
 				and free amount field with javascript.
 			*/}
-			<input
-				name="amount"
-				type="hidden"
-				value={defaultAmount}
-			/>
+			<input name="amount" type="hidden" value={defaultAmount} />
 		</fieldset>
 	)
 }

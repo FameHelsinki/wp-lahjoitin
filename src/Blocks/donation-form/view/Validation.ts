@@ -26,4 +26,3 @@ export default class Validation extends Error {
 		this.errors = errors
 	}
 }
-

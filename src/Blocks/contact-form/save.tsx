@@ -53,7 +53,6 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 				</>
 			)}
 			{showPhone && <ContactInputContent name="phone" type="tel" attributes={attributes} />}
-
 		</div>
 	)
 }

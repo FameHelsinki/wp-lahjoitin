@@ -34,7 +34,7 @@ class AmountWrapper {
 	}
 
 	#onChangeOther(event: Event) {
-		const target= event.target
+		const target = event.target
 		if (target instanceof HTMLInputElement) {
 			const amount = parseInt(target.value) || 0
 
@@ -43,7 +43,7 @@ class AmountWrapper {
 
 			// Select radiobuttons that have the selected amount.
 			this.#buttons.forEach(button => {
-				button.checked = (button.value === target.value)
+				button.checked = button.value === target.value
 			})
 
 			this.#onChange(amount)
@@ -51,9 +51,9 @@ class AmountWrapper {
 	}
 
 	#onChangeButton(event: Event) {
-		const target= event.target
+		const target = event.target
 		if (target instanceof HTMLInputElement) {
-			const amount = target.value;
+			const amount = target.value
 
 			// Keep other amount in sync.
 			if (this.#other) {
@@ -89,19 +89,17 @@ export default class AmountHandler {
 
 		this.#amount = amount
 
-		const onChangeAmount= this.#onChangeAmount.bind(this)
+		const onChangeAmount = this.#onChangeAmount.bind(this)
 		const onChangeType = this.#onChangeType.bind(this)
 
-		form
-			.querySelectorAll('.donation-amounts')
-			.forEach(wrapper => {
-				if (wrapper instanceof HTMLElement) {
-					this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount))
+		form.querySelectorAll('.donation-amounts').forEach(wrapper => {
+			if (wrapper instanceof HTMLElement) {
+				this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount))
 
-					const eventTarget: any = wrapper
-					eventTarget.addEventListener('fame-lahjoitukset-change', onChangeAmount)
-				}
-			})
+				const eventTarget: any = wrapper
+				eventTarget.addEventListener('fame-lahjoitukset-change', onChangeAmount)
+			}
+		})
 
 		const types = form.elements.namedItem('type')
 		if (types instanceof RadioNodeList) {
@@ -128,11 +126,10 @@ export default class AmountHandler {
 
 	#updateType(type: string) {
 		this.#wrappers.forEach(wrapper => {
-			const disabled = wrapper.disabled = wrapper.type !== type
+			const disabled = (wrapper.disabled = wrapper.type !== type)
 			if (!disabled) {
 				this.#onChangeAmount(wrapper.value || 0)
 			}
 		})
 	}
-
 }

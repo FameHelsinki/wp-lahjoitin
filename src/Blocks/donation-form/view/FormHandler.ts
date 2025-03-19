@@ -2,7 +2,11 @@ import AmountHandler from './AmountHandler.ts'
 import Validation, { ErrorTranslations, getErrorType } from './Validation.ts'
 import { FormResultEvent, FormSubmitEvent } from './Events.ts'
 
-type FormControlElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLButtonElement
+type FormControlElement =
+	| HTMLInputElement
+	| HTMLTextAreaElement
+	| HTMLSelectElement
+	| HTMLButtonElement
 
 function isFormControl(element: any): element is FormControlElement {
 	return (
@@ -31,19 +35,25 @@ export default class FormHandler {
 	constructor(url: string, form: HTMLFormElement, translations: ErrorTranslations = {}) {
 		this.#url = url
 		this.#form = form
-		this.#form.addEventListener('submit', this.#onSubmit.bind(this));
+		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
 		this.#amount = new AmountHandler(this.#form)
 		this.#translations = translations
 
-		Array.prototype.forEach.call(this.#form.elements, element => element.addEventListener('change', (event: Event) => {
-			const target = event.target
+		Array.prototype.forEach.call(this.#form.elements, element =>
+			element.addEventListener('change', (event: Event) => {
+				const target = event.target
 
-			// Clear any custom errors on change.
-			if (isFormControl(target) && target.dataset['custom-validator'] === undefined && target.validity.customError) {
-				target.setCustomValidity('')
-			}
-		}))
+				// Clear any custom errors on change.
+				if (
+					isFormControl(target) &&
+					target.dataset['custom-validator'] === undefined &&
+					target.validity.customError
+				) {
+					target.setCustomValidity('')
+				}
+			})
+		)
 
 		// Form submit requires javascript, so all
 		// submit buttons are disabled by default.
@@ -69,7 +79,7 @@ export default class FormHandler {
 				data,
 				handler: this,
 				errors: {},
-			}
+			},
 		})
 
 		window.dispatchEvent(alterFormDataEvent)
@@ -82,15 +92,17 @@ export default class FormHandler {
 			// Run built-in validators. This should fail if
 			// any validation errors were added by the event.
 			if (!this.validate()) {
-				return;
+				return
 			}
 
 			// Events can cancel form submit by calling
 			if (!alterFormDataEvent.defaultPrevented) {
-				await this.#submitForm(alterFormDataEvent.detail.url, alterFormDataEvent.detail.data)
+				await this.#submitForm(
+					alterFormDataEvent.detail.url,
+					alterFormDataEvent.detail.data
+				)
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			console.error('Submit failed', error)
 
 			if (error instanceof Validation) {
@@ -100,9 +112,8 @@ export default class FormHandler {
 				return
 			}
 
-			throw error;
-		}
-		finally {
+			throw error
+		} finally {
 			this.#allowSubmit(true)
 			this.#form.classList.remove('fame-form--submitting')
 		}
@@ -127,8 +138,8 @@ export default class FormHandler {
 		const formResultEvent: FormResultEvent = new CustomEvent('fame-lahjoitukset-result', {
 			detail: {
 				result,
-				handler: this
-			}
+				handler: this,
+			},
 		})
 
 		this.#form.classList.add('fame-form--submitted')
@@ -165,9 +176,12 @@ export default class FormHandler {
 
 		if (!valid) {
 			// Create error messages from built in validation values.
-			Array.prototype.forEach.call(this.#form.elements, (element) => {
+			Array.prototype.forEach.call(this.#form.elements, element => {
 				if (!element.validity.valid && !element.validity.customError) {
-					this.#addErrorToElement(element, this.#getErrorMessage(element.name, element.validity))
+					this.#addErrorToElement(
+						element,
+						this.#getErrorMessage(element.name, element.validity)
+					)
 				}
 			})
 		}
@@ -195,8 +209,7 @@ export default class FormHandler {
 					}
 				}
 			})
-		}
-		else if (isFormControl(element)) {
+		} else if (isFormControl(element)) {
 			if (element.type === 'hidden') {
 				throw new Error(`Trying to set validation message to hidden element ${name}`)
 			}
@@ -204,8 +217,7 @@ export default class FormHandler {
 			element.setCustomValidity(error)
 
 			this.#addErrorToElement(element, error)
-		}
-		else {
+		} else {
 			throw new Error(`Trying to set validation message to unknown element ${name}`)
 		}
 	}
@@ -213,7 +225,9 @@ export default class FormHandler {
 	#addErrorToElement(element: FormControlElement, message: string) {
 		const parent = element.closest('.fame-form__fieldset') || element.parentElement
 		if (parent) {
-			const feedback = parent.querySelector('.fame-form__feedback') ?? parent.appendChild(document.createElement('span'))
+			const feedback =
+				parent.querySelector('.fame-form__feedback') ??
+				parent.appendChild(document.createElement('span'))
 			feedback.className = 'fame-form__feedback fame-form__feedback--invalid'
 			feedback.setAttribute('aria-live', 'polite')
 			feedback.textContent = message
@@ -225,14 +239,14 @@ export default class FormHandler {
 			throw new Error(`Element ${name} is valid`)
 		}
 
-		return this.#translations[name]?.[getErrorType(validity)] ?? 'Invalid value';
+		return this.#translations[name]?.[getErrorType(validity)] ?? 'Invalid value'
 	}
 
 	/**
 	 * Allow form submit.
 	 */
 	#allowSubmit(allow: boolean) {
-		this.#submit.forEach(submit => submit.disabled = !allow)
+		this.#submit.forEach(submit => (submit.disabled = !allow))
 	}
 
 	/**
