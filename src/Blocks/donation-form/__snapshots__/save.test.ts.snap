@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Gutenberg Block Save Function renders correctly and matches snapshot 1`] = `
+<div>
+  <div
+    class="mock-block-props"
+  >
+    <form
+      class="fame-form fame-form--donations"
+      data-token="true"
+      novalidate=""
+    >
+      <div
+        class="mock-inner-block-props"
+      />
+      <input
+        name="return_address"
+        type="hidden"
+        value="https://example.com/return"
+      />
+      <input
+        name="provider"
+        type="hidden"
+        value="mobilepay"
+      />
+      <input
+        name="campaign"
+        type="hidden"
+        value="test-campaign"
+      />
+    </form>
+    <div
+      class="fame-form-overlay"
+    >
+      <div
+        class="fame-form-spinner"
+        role="status"
+      >
+        <span
+          class="screen-reader-text"
+        >
+          Loading
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
