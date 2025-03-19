@@ -8,10 +8,6 @@ import { SaveProps } from '../common/types.ts'
  * The save function defines the way in which the different attributes should
  * be combined into the final markup, which is then serialized by the block
  * editor into `post_content`.
- *
- * @param root0
- * @param root0.attributes
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
 export default function save({ attributes }: SaveProps): React.JSX.Element {
 	const { contact, showAddress, showPhone } = attributes
@@ -57,6 +53,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 				</>
 			)}
 			{showPhone && <ContactInputContent name="phone" type="tel" attributes={attributes} />}
+
 		</div>
 	)
 }

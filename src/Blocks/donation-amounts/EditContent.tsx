@@ -38,7 +38,7 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 				))}
 
 			{other && (
-				<div className="donation-amounts__other">
+				<div className="donation-amounts__other-edit">
 					<RichText
 						multiline={false}
 						tagName="div"

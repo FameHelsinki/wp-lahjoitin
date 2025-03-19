@@ -44,7 +44,7 @@ export default function save({ attributes }: SaveProps<Attributes>): React.JSX.E
 					<label htmlFor={`donation-type-${value}`} className="fame-form__label">
 						<input
 							id={`donation-type-${value}`}
-							className="fame-form__input"
+							className="fame-form__check-input"
 							checked={value === defaultValue}
 							type="radio"
 							name="type"

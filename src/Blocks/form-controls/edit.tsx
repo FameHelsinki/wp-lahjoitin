@@ -18,7 +18,6 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 				multiline={false}
 				tagName="div"
 				className="wp-element-button is-primary"
-				aria-label={__('Submit button text', 'fame_lahjoitukset')}
 				allowedFormats={[]}
 				onChange={value => setAttributes({ submitLabel: value })}
 				placeholder={__('Donate')}

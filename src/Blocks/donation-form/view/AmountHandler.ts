@@ -30,24 +30,23 @@ class AmountWrapper {
 		this.#buttons = wrapper.querySelectorAll('input[type="radio"]')
 		this.#buttons.forEach(radio => radio.addEventListener('change', onChangeButton))
 		this.#other = wrapper.querySelector('input[type="number"]')
-		if (this.#other) {
-			this.#other.addEventListener('change', this.#onChangeOther.bind(this))
-		}
+		this.#other?.addEventListener('input', this.#onChangeOther.bind(this))
 	}
 
 	#onChangeOther(event: Event) {
 		const target= event.target
 		if (target instanceof HTMLInputElement) {
-			const amount = target.value
+			const amount = parseInt(target.value) || 0
+
+			// Only allow numbers.
+			target.value = amount.toString()
 
 			// Select radiobuttons that have the selected amount.
 			this.#buttons.forEach(button => {
-				if (button.value === amount.toString()) {
-					button.checked
-				}
+				button.checked = (button.value === target.value)
 			})
 
-			this.#onChange(parseInt(amount))
+			this.#onChange(amount)
 		}
 	}
 
@@ -74,10 +73,11 @@ export default class AmountHandler {
 	readonly #wrappers: AmountWrapper[] = []
 
 	get amount() {
-		return parseInt(this.#amount.value)
+		return parseInt(this.#amount.value) / 100
 	}
 
 	set amount(value: number) {
+		// Amount should be in cents.
 		this.#amount.value = (value * 100).toString()
 	}
 
@@ -123,8 +123,7 @@ export default class AmountHandler {
 	}
 
 	#onChangeAmount(amount: number) {
-		// Amount should be in cents.
-		this.#amount.value = (amount * 100).toString();
+		this.amount = amount * 100
 	}
 
 	#updateType(type: string) {

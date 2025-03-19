@@ -24,7 +24,7 @@ const Component: FC<Props> = ({ types, value: defaultValue, onChange }) => (
 				<RichText
 					multiline={false}
 					className="donation-type__label"
-					aria-label={__('Donation type label', 'fame_lahjoitukset')}
+					aria-label={__('Donation type', 'fame_lahjoitukset')}
 					allowedFormats={[]}
 					onChange={label =>
 						onChange({

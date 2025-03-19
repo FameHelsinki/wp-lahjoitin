@@ -1,4 +1,4 @@
-.donation-amounts__other,
+.donation-amounts__other-edit,
 .donation-amounts {
 	display: flex;
 	align-items: stretch;
@@ -9,7 +9,7 @@
 	flex: 1;
 }
 
-.donation-amounts__other {
+.donation-amounts__other-edit {
 	align-items: center;
 }
 

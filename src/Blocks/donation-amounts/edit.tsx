@@ -210,8 +210,8 @@ export default function Edit({
 					<RichText
 						multiline={false}
 						className="fame-form__legend"
-						aria-label={__('Donation amount legend', 'fame_lahjoitukset')}
-						placeholder={__('Donation amount', 'fame_lahjoitukset')}
+						aria-label={__('Legend', 'fame_lahjoitukset')}
+						placeholder={__('Amount', 'fame_lahjoitukset')}
 						allowedFormats={[]}
 						value={legend ?? DEFAULT_LEGEND}
 						onChange={value => setAttributes({ legend: value })}

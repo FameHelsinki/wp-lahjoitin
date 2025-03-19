@@ -29,7 +29,7 @@ const ContactInputControl: FC<Props> = ({
 			placeholder={`${formatPlaceholder(name)} label`}
 		/>
 		<div
-			className="fame-form__input"
+			className="fame-form__fake-input"
 			id={`contact-${name}`}
 			aria-describedby={ariaDescribedBy ? ariaDescribedBy : `contact-${name}-help`}
 		></div>
@@ -58,7 +58,7 @@ export const ContactInputContent: FC<ContentProps> = ({
 		ariaDescribedBy || (attributes[`${name}_help`] ? `contact-${name}-help` : undefined)
 
 	return (
-		<div className={'fame-form__group' + required ? ' fame-form__group--required' : ''}>
+		<div className={'fame-form__group' + (required ? ' fame-form__group--required' : '')}>
 			<RichText.Content
 				htmlFor={`contact-${name}`}
 				tagName="label"

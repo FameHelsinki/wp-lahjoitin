@@ -1,5 +1,20 @@
-.fame-form {
-	--fame-clr-danger: #f00;
+/**
+ * @file Basic styling for form so that it looks OK by default.
+ * Feel free to extend these styles as you wish.
+ */
+
+:root {
+	--fame-clr-primary: #80bdff;
+	--fame-clr-muted: #6c757d;
+	--fame-clr-danger: #dc3545;
+}
+
+.fame-form-container * {
+	box-sizing: border-box;
+}
+
+.fame-form-container {
+	position: relative;
 }
 
 .fame-form__wrapper > * + * {
@@ -16,13 +31,17 @@
 	}
 }
 
-.fame-form__help {
-	font-size: 0.8em;
-	color: #444;
-}
+.fame-form__input {
+	display: block;
+	width: 100%;
+	padding: .375rem .75rem;
+	border: 1px solid;
 
-.fame-form__row > .fame-form__help {
-	flex-basis: 100%;
+	&:focus {
+		outline: 0;
+		border-color: var(--fame-clr-primary);
+		box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--fame-clr-primary) 35%, transparent);
+	}
 }
 
 .fame-form__group--required .fame-form__label::after {
@@ -30,10 +49,95 @@
 	color: var(--fame-clr-danger);
 }
 
-.fame-form input:invalid {
-	box-shadow: 0 0 5px 1px var(--fame-clr-danger);
+.fame-form__help {
+	display: block;
+	margin-top: .25rem;
+	font-size: 0.8em;
+	color: var(--fame-clr-muted);
+}
 
-	&:focus:invalid {
-		box-shadow: none;
+.fame-form__row > .fame-form__help {
+	flex-basis: 100%;
+}
+
+.fame-form__feedback {
+	display: none;
+	font-size: 0.8em;
+	margin-top: .25rem;
+
+	&.fame-form__feedback--invalid {
+		color: var(--fame-clr-danger);
+	}
+}
+
+.fame-form {
+	&.was-validated :invalid {
+		border-color: var(--fame-clr-danger);
+		outline: 0;
+
+		&:focus:invalid {
+			box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--fame-clr-danger) 35%, transparent);
+		}
+	}
+
+	& :invalid > .fame-form__feedback--invalid,
+	& :invalid ~ .fame-form__feedback--invalid {
+		display: block;
+	}
+}
+
+.donation-amounts {
+	display: flex;
+	align-items: stretch;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.donation-amounts__other {
+	display: flex;
+	flex-wrap: wrap;
+	flex-basis: 100%;
+
+	& .fame-form__label {
+		flex-basis: 100%;
+	}
+
+	& .fame-form__input {
+		flex: 1
+	}
+}
+
+.donation-amounts__unit {
+	padding: 0 .25rem;
+}
+
+.fame-form-overlay {
+	display: none;
+	position: absolute;
+	inset: 0;
+}
+
+.fame-form--submitting ~ .fame-form-overlay {
+	display: flex;
+
+	.fame-form-spinner {
+		width: 5rem;
+		height: 5rem;
+		border: 8px solid var(--fame-clr-primary);
+		border-bottom-color: transparent;
+		border-radius: 50%;
+		animation: fame-form-rotation 1s linear infinite;
+
+		align-self: center;
+		margin: auto;
+	}
+}
+
+@keyframes fame-form-rotation {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
 	}
 }

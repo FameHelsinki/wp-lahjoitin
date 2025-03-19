@@ -12,7 +12,7 @@ import { SaveProps } from '../common/types.ts'
 export default function save({ attributes }: SaveProps): React.JSX.Element {
 	const { returnAddress, campaign, token } = attributes
 
-	const blockProps = useBlockProps.save()
+	const blockProps = useBlockProps.save({ className: 'fame-form-container' })
 	const innerBlockProps = useInnerBlocksProps.save({
 		className: 'fame-form__wrapper',
 	})
@@ -20,6 +20,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 	return (
 		<div {...blockProps}>
 			<form className="fame-form fame-form--donations" data-token={token || undefined} noValidate>
+
 				<div {...innerBlockProps} />
 
 				<input type="hidden" name="return_address" value={returnAddress || '/'} />
@@ -29,6 +30,11 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 
 				{campaign && <input type="hidden" name="campaign" value={campaign} />}
 			</form>
+			<div className="fame-form-overlay">
+				<div className="fame-form-spinner" role="status">
+					<span className="screen-reader-text">Loading</span>
+				</div>
+			</div>
 		</div>
 	)
 }

@@ -1,29 +1,24 @@
 import AmountHandler from './AmountHandler.ts'
+import Validation, { ErrorTranslations, getErrorType } from './Validation.ts'
+import { FormResultEvent, FormSubmitEvent } from './Events.ts'
 
-type ValidationResult = {
-	[key: string]: any
+type FormControlElement = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | HTMLButtonElement
+
+function isFormControl(element: any): element is FormControlElement {
+	return (
+		element instanceof HTMLInputElement ||
+		element instanceof HTMLTextAreaElement ||
+		element instanceof HTMLSelectElement ||
+		element instanceof HTMLButtonElement
+	)
 }
-
-class ValidationError extends Error {
-	errors: ValidationResult
-
-	constructor(message: string, errors: ValidationResult) {
-		super(message)
-		this.errors = errors
-	}
-}
-
-export type FormSubmitEvent = CustomEvent<{
-	data: { [key: string]: FormDataEntryValue }
-	handler: FormHandler
-	errors: ValidationResult
-}>
 
 export default class FormHandler {
 	readonly #url: string
 	readonly #form: HTMLFormElement
 	readonly #submit: NodeListOf<HTMLButtonElement | HTMLInputElement>
 	readonly #amount: AmountHandler
+	readonly #translations: ErrorTranslations
 
 	get form() {
 		return this.#form
@@ -33,12 +28,22 @@ export default class FormHandler {
 		return this.#amount
 	}
 
-	constructor(url: string, form: HTMLFormElement) {
+	constructor(url: string, form: HTMLFormElement, translations: ErrorTranslations = {}) {
 		this.#url = url
 		this.#form = form
 		this.#form.addEventListener('submit', this.#onSubmit.bind(this));
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
 		this.#amount = new AmountHandler(this.#form)
+		this.#translations = translations
+
+		Array.prototype.forEach.call(this.#form.elements, element => element.addEventListener('change', (event: Event) => {
+			const target = event.target
+
+			// Clear any custom errors on change.
+			if (isFormControl(target) && target.dataset['custom-validator'] === undefined && target.validity.customError) {
+				target.setCustomValidity('')
+			}
+		}))
 
 		// Form submit requires javascript, so all
 		// submit buttons are disabled by default.
@@ -50,15 +55,17 @@ export default class FormHandler {
 
 		// Disable form submit.
 		this.#allowSubmit(false)
-		this.clearErrors()
+		this.#form.classList.add('fame-form--submitting')
 
 		const form = event.target as HTMLFormElement
 		const formData = new FormData(form)
 		const data = Object.fromEntries(formData)
+		const url = this.getSubmitUrl()
 
 		// Allow plugins to alter form data.
 		const alterFormDataEvent: FormSubmitEvent = new CustomEvent('fame-lahjoitukset-submit', {
 			detail: {
+				url,
 				data,
 				handler: this,
 				errors: {},
@@ -80,12 +87,14 @@ export default class FormHandler {
 
 			// Events can cancel form submit by calling
 			if (!alterFormDataEvent.defaultPrevented) {
-				await this.#submitForm(alterFormDataEvent.detail.data)
+				await this.#submitForm(alterFormDataEvent.detail.url, alterFormDataEvent.detail.data)
 			}
 		}
 		catch (error) {
-			if (error instanceof ValidationError) {
-				Object.entries(alterFormDataEvent.detail.errors).forEach(([key, error]) => {
+			console.error('Submit failed', error)
+
+			if (error instanceof Validation) {
+				Object.entries(error.errors).forEach(([key, error]) => {
 					this.addError(key, error)
 				})
 				return
@@ -95,13 +104,12 @@ export default class FormHandler {
 		}
 		finally {
 			this.#allowSubmit(true)
+			this.#form.classList.remove('fame-form--submitting')
 		}
 	}
 
-	async #submitForm(data: any) {
-		console.log('submit data', data)
-
-		const response = await fetch(this.getSubmitUrl(), {
+	async #submitForm(url: URL, data: any) {
+		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -115,9 +123,22 @@ export default class FormHandler {
 
 		const result = await response.json()
 
-		console.log(result)
+		// Allow plugins to alter form result.
+		const formResultEvent: FormResultEvent = new CustomEvent('fame-lahjoitukset-result', {
+			detail: {
+				result,
+				handler: this
+			}
+		})
 
-		return result
+		this.#form.classList.add('fame-form--submitted')
+
+		window.dispatchEvent(formResultEvent)
+
+		// Redirect to success URL.
+		if (!formResultEvent.defaultPrevented) {
+			window.location.href = formResultEvent.detail.result.redirect_url
+		}
 	}
 
 	/**
@@ -132,7 +153,7 @@ export default class FormHandler {
 
 		// If API returned validation errors.
 		if (body.error) {
-			throw new ValidationError(message, body.error)
+			throw new Validation(message, body.error)
 		}
 
 		throw new Error(response.statusText)
@@ -144,9 +165,9 @@ export default class FormHandler {
 
 		if (!valid) {
 			// Create error messages from built in validation values.
-			Array.prototype.forEach.call(this.#form.elements, (element: HTMLObjectElement) => {
+			Array.prototype.forEach.call(this.#form.elements, (element) => {
 				if (!element.validity.valid && !element.validity.customError) {
-					this.addError(element.name, element.validity)
+					this.#addErrorToElement(element, this.#getErrorMessage(element.name, element.validity))
 				}
 			})
 		}
@@ -155,61 +176,56 @@ export default class FormHandler {
 	}
 
 	/**
-	 * Clears validation errors.
-	 */
-	clearErrors() {
-		Array.prototype.forEach.call(this.#form.elements, (element: HTMLObjectElement) => {
-			// Remove all custom errors.
-			if (element.validity.customError) {
-				element.setCustomValidity('');
-			}
-		})
-	}
-
-	/**
-	 * Adds error message to given form element.
+	 * Adds custom error message to given form element.
 	 *
 	 * @param name
 	 * @param error
 	 */
-	addError(name: string, error: string|ValidityState) {
+	addError(name: string, error: string) {
 		const element = this.#form.elements.namedItem(name)
 
-		if (error instanceof ValidityState && (error.valid || error.customError)) {
-			throw new Error(`Invalid error ${error} for ${element}`)
-		}
-
-		const message = typeof error === 'string' ? error : this.#getErrorMessage(name, error)
-
 		if (element instanceof RadioNodeList) {
-			if (typeof error === 'string') {
-				Array.prototype.forEach.call(element, item => {
-					if (item instanceof HTMLObjectElement) {
-						item.setCustomValidity(message)
+			Array.prototype.forEach.call(element, (item, idx) => {
+				if (item instanceof HTMLInputElement) {
+					item.setCustomValidity(error)
+
+					// For the first element only.
+					if (idx === 0) {
+						this.#addErrorToElement(item, error)
 					}
-				})
-			}
+				}
+			})
 		}
-		else if (element instanceof HTMLObjectElement || element instanceof HTMLInputElement) {
+		else if (isFormControl(element)) {
 			if (element.type === 'hidden') {
 				throw new Error(`Trying to set validation message to hidden element ${name}`)
 			}
 
-			if (typeof error === 'string') {
-				element.setCustomValidity(message)
-			}
+			element.setCustomValidity(error)
+
+			this.#addErrorToElement(element, error)
 		}
 		else {
 			throw new Error(`Trying to set validation message to unknown element ${name}`)
 		}
 	}
 
+	#addErrorToElement(element: FormControlElement, message: string) {
+		const parent = element.closest('.fame-form__fieldset') || element.parentElement
+		if (parent) {
+			const feedback = parent.querySelector('.fame-form__feedback') ?? parent.appendChild(document.createElement('span'))
+			feedback.className = 'fame-form__feedback fame-form__feedback--invalid'
+			feedback.setAttribute('aria-live', 'polite')
+			feedback.textContent = message
+		}
+	}
+
 	#getErrorMessage(name: string, validity: ValidityState) {
-		if (!validity.valid) {
-			return 'Invalid value';
+		if (validity.valid) {
+			throw new Error(`Element ${name} is valid`)
 		}
 
-		throw new Error(`Element ${name} is valid`)
+		return this.#translations[name]?.[getErrorType(validity)] ?? 'Invalid value';
 	}
 
 	/**
