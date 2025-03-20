@@ -71,13 +71,17 @@ describe('AmountWrapper', () => {
 
 describe('AmountHandler', () => {
 	let form: HTMLFormElement, mockAmountInput: HTMLInputElement
-	const mockAmountWrapper = jest.fn()
 
 	beforeEach(() => {
 		document.body.innerHTML = `
             <form>
                 <input type="hidden" name="amount" value="1000">
-                <div class="donation-amounts"></div>
+				<div class="donation-amounts" data-type="recurring">
+					<input name="amount-recurring" type="number" min="1" value="10">
+				</div>
+				<div class="donation-amounts" data-type="single">
+					<input name="amount-recurring" type="number" min="1" value="10">
+				</div>
                 <input type="radio" name="type" value="single">
                 <input type="radio" name="type" value="recurring">
             </form>
@@ -85,8 +89,6 @@ describe('AmountHandler', () => {
 
 		form = document.querySelector('form')!
 		mockAmountInput = form.querySelector('input[name="amount"]')!
-		mockAmountWrapper.mockReset()
-		global.AmountWrapper = mockAmountWrapper
 	})
 
 	test('should initialize with the correct amount', () => {
@@ -98,6 +100,15 @@ describe('AmountHandler', () => {
 		const amountHandler = new AmountHandler(form)
 		amountHandler.amount = 20
 		expect(mockAmountInput.value).toBe('2000')
+	})
+
+	test('should update hidden amount correctly', () => {
+		const amountHandler = new AmountHandler(form)
+		const numberInput = form.querySelector('input[type="number"]') as HTMLInputElement
+		numberInput.value = '20'
+		numberInput.dispatchEvent(new Event('input'))
+		expect(amountHandler.amount).toBe(20)
+		expect(form.querySelector<HTMLInputElement>('input[type="hidden"]')?.value).toBe('2000')
 	})
 
 	test('should throw an error if amount input is missing', () => {

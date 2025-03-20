@@ -121,7 +121,7 @@ export default class AmountHandler {
 	}
 
 	#onChangeAmount(amount: number) {
-		this.amount = amount * 100
+		this.amount = amount
 	}
 
 	#updateType(type: string) {
