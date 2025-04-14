@@ -3,7 +3,7 @@
 	"apiVersion": 3,
 	"name": "famehelsinki/donation-form",
 	"version": "0.1.0",
-	"title": "Donation form",
+	"title": "Lahjoitin",
 	"category": "widgets",
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},

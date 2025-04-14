@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Fame\WordPress\Lahjoitukset\Plugin;
 
 /**
- * Plugin Name:       Fame lahjoitukset
+ * Plugin Name:       Lahjoitin
  * Description:       Wordpress plugin for Fame lahjoitukset system.
  * Version:           1.x
  * Requires at least: 6.7
