@@ -10,7 +10,9 @@ Wordpress plugin for Fame lahjoitukset backend.
 
 == Description ==
 
-This block adds support for Fame donation system.
+Lahjoitin is a WordPress plugin that provides a Gutenberg block for adding a donation form to your website. It is part of the Lahjoitin.fi donation platform, developed by Fame, and integrates seamlessly into WordPress to support easy and accessible online donations.
+
+👉 Learn more at [Lahjoitin.fi](https://lahjoitin.fi)
 
 == Installation ==
 
