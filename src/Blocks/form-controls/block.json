@@ -7,6 +7,7 @@
 	"category": "widgets",
 	"description": "Adds form controls.",
 	"parent": ["famehelsinki/donation-form"],
+	"allowedBlocks": ["core/group"],
 	"attributes": {
 		"submitLabel": {
 			"type": "string",
