@@ -8,6 +8,7 @@
 	"description": "Allows selecting donation amounts.",
 	"parent": ["famehelsinki/donation-form"],
 	"usesContext": ["famehelsinki/donation-types"],
+	"allowedBlocks": ["core/group"],
 	"example": {},
 	"attributes": {
 		"settings": {

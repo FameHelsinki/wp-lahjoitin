@@ -8,6 +8,7 @@
 	"description": "Allows selecting donation type.",
 	"parent": ["famehelsinki/donation-form"],
 	"example": {},
+	"allowedBlocks": ["core/group"],
 	"attributes": {
 		"showLegend": {
 			"type": "boolean",
