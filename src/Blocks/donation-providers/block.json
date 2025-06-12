@@ -1,0 +1,58 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/donation-providers",
+	"version": "0.1.0",
+	"title": "Donation providers",
+	"category": "widgets",
+	"description": "Allows selecting donation providers.",
+	"parent": ["famehelsinki/donation-form"],
+	"usesContext": ["famehelsinki/donation-types"],
+	"attributes": {
+		"showLegend": {
+			"type": "boolean",
+			"default": true
+		},
+		"legend": {
+			"type": "string",
+			"source": "text",
+			"selector": "legend.fame-form__legend",
+			"default": "Provider type"
+		},
+		"providers": {
+			"type": "array",
+			"source": "query",
+			"selector": ".payment-method-selector > div",
+			"query": {
+				"value": {
+					"type": "string",
+					"source": "attribute",
+					"selector": "input",
+					"attribute": "value"
+				},
+				"label": {
+					"type": "string",
+					"source": "text",
+					"selector": ".provider-type__label"
+				}
+			},
+			"default": []
+		}
+	},
+	"supports": {
+		"multiple": false,
+		"color": {
+			"background": false,
+			"text": true
+		},
+		"html": false,
+		"typography": {
+			"fontSize": true
+		}
+	},
+	"icon": "edit-page",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
