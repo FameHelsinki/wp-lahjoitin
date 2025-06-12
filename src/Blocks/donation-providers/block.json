@@ -34,6 +34,12 @@
 					"type": "string",
 					"source": "text",
 					"selector": ".provider-type__label"
+				},
+				"type": {
+					"type": "string",
+					"source": "attribute",
+					"selector": "input",
+					"attribute": "data-type"
 				}
 			},
 			"default": []
@@ -50,9 +56,10 @@
 			"fontSize": true
 		}
 	},
-	"icon": "edit-page",
+	"icon": "bank",
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
+	"script": "file:./view.js",
 	"style": "file:./style-index.css"
 }
