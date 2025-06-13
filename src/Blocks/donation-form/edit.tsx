@@ -8,8 +8,9 @@ import { EditProps } from '../common/types.ts'
 
 const TEMPLATE_LOCK = { lock: { remove: 'true' } }
 const TEMPLATE = [
-	'famehelsinki/donation-amounts',
 	'famehelsinki/donation-type',
+	'famehelsinki/donation-amounts',
+	'famehelsinki/donation-providers',
 	'famehelsinki/form-controls',
 ].map(block => [block, TEMPLATE_LOCK, []] as const)
 
