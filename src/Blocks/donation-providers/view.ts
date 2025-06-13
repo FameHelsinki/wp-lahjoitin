@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (!selectedType) return
 
 		providerRows.forEach(row => {
-			row.style.display = row.dataset.type === selectedType ? 'block' : 'none'
+			row.style.display = row.dataset.type === selectedType ? 'inline-block' : 'none'
 		})
 	}
 

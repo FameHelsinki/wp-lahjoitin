@@ -10,6 +10,26 @@ domReady(() => {
 		throw new Error('Backend URL is missing')
 	}
 
+	const form = document.querySelector<HTMLFormElement>('form.fame-form--donations')
+	if (!form) return
+
+	const providerField = form.querySelector<HTMLInputElement>(
+		'input[name="provider"][data-selected-provider]'
+	)
+	const providerRadios = document.querySelectorAll<HTMLInputElement>(
+		'input[type="radio"][name^="provider"]'
+	)
+
+	const updateProvider = () => {
+		const selected = Array.from(providerRadios).find(r => r.checked)
+		if (selected && providerField) {
+			providerField.value = selected.value
+		}
+	}
+
+	updateProvider()
+	providerRadios.forEach(radio => radio.addEventListener('change', updateProvider))
+
 	const translations = {
 		amount: {
 			unknown: __('Invalid amount', 'fame_lahjoitukset'),
@@ -31,10 +51,5 @@ domReady(() => {
 		},
 	}
 
-	document
-		.querySelectorAll('form.fame-form--donations')
-		.forEach(
-			form =>
-				form instanceof HTMLFormElement && new FormHandler(backendUrl, form, translations)
-		)
+	new FormHandler(backendUrl, form, translations)
 })

@@ -14,6 +14,12 @@ export type Attributes = {
 	showLegend?: boolean
 }
 
+/**
+ * The edit function describes the structure of your block in the context of the
+ * editor. This represents what the editor will render when the block is used.
+ *
+ * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
+ */
 export default function Edit({ attributes, setAttributes, context }: EditProps<Attributes>) {
 	const {
 		providers = [],
@@ -82,8 +88,8 @@ export default function Edit({ attributes, setAttributes, context }: EditProps<A
 		const newGrouped = { ...grouped, [donationType]: updated }
 
 		setAttributes({
-			providers: Object.entries(newGrouped).flatMap(([groupType, list]) =>
-				list.map(p => ({ ...p, type: groupType }))
+			providers: Object.entries(newGrouped).flatMap(([key, list]) =>
+				list.map(p => ({ ...p, type: key }))
 			),
 		})
 	}

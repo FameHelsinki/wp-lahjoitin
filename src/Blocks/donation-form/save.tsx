@@ -28,8 +28,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 
 				<input type="hidden" name="return_address" value={returnAddress || '/'} />
 
-				{/** @todo implement configurable providers */}
-				<input type="hidden" name="provider" value="mobilepay" />
+				<input type="hidden" name="provider" data-selected-provider />
 
 				{campaign && <input type="hidden" name="campaign" value={campaign} />}
 			</form>
