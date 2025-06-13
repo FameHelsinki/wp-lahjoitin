@@ -23,14 +23,4 @@ export const PROVIDERS: Provider[] = [
 		label: __('Paytrail', 'fame_lahjoitukset'),
 		types: ['single', 'recurring'],
 	},
-	{
-		value: 'finvoice',
-		label: __('Finvoice', 'fame_lahjoitukset'),
-		types: [],
-	},
-	{
-		value: 'paymenthighway',
-		label: __('Payment Highway', 'fame_lahjoitukset'),
-		types: ['single'],
-	},
 ]
