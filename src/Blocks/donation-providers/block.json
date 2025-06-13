@@ -3,9 +3,9 @@
 	"apiVersion": 3,
 	"name": "famehelsinki/donation-providers",
 	"version": "0.1.0",
-	"title": "Donation providers",
+	"title": "Payment providers",
 	"category": "widgets",
-	"description": "Allows selecting donation providers.",
+	"description": "Allows selecting payment providers.",
 	"parent": ["famehelsinki/donation-form"],
 	"usesContext": ["famehelsinki/donation-types"],
 	"attributes": {
@@ -17,7 +17,7 @@
 			"type": "string",
 			"source": "text",
 			"selector": "legend.fame-form__legend",
-			"default": "Provider type"
+			"default": "Payment provider"
 		},
 		"providers": {
 			"type": "array",
