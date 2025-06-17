@@ -32,6 +32,25 @@ export default function Edit({ attributes, setAttributes, context }: EditProps<A
 	}, [context])
 	const blockProps = useBlockProps()
 
+	// Adds default prviders (first from array providers)
+	useEffect(() => {
+		const missingTypes = donationTypes.filter(type => !providers.some(p => p.type === type))
+
+		if (missingTypes.length === 0) return
+
+		const defaults = missingTypes
+			.map(type => {
+				const match = PROVIDERS.find(p => p.types.includes(type))
+				if (!match) return null
+				return { ...match, type }
+			})
+			.filter(Boolean) as FlatProvider[]
+
+		if (defaults.length > 0) {
+			setAttributes({ providers: [...providers, ...defaults] })
+		}
+	}, [donationTypes, providers, setAttributes])
+
 	// Remove providers which type is no longer selected
 	useEffect(() => {
 		const cleaned = providers.filter(p => donationTypes.includes(p.type))
@@ -140,25 +159,27 @@ export default function Edit({ attributes, setAttributes, context }: EditProps<A
 			</InspectorControls>
 
 			<div {...blockProps}>
-				<fieldset className="payment-method-selector">
-					{showLegend && <legend className="fame-form__legend">{legend}</legend>}
-					{donationTypes.map(type =>
-						(grouped[type] ?? []).map(p => (
-							<div key={`${type}-${p.value}`} data-type={type}>
-								<label htmlFor={`payment_method_${type}_${p.value}`}>
-									<input
-										type="radio"
-										id={`payment_method_${type}_${p.value}`}
-										name={`payment_method_${type}`}
-										value={p.value}
-										disabled
-									/>
-									<span className="provider-type__label">{p.label}</span>
-								</label>
-							</div>
-						))
-					)}
-				</fieldset>
+				{Object.entries(grouped).map(([type, list]) => {
+					return (
+						<fieldset key={type} className="payment-method-selector" data-type={type}>
+							{showLegend && <legend className="fame-form__legend">{legend}</legend>}
+							{list.map(p => (
+								<div key={`${type}-${p.value}`} data-type={type}>
+									<label htmlFor={`payment_method_${type}_${p.value}`}>
+										<input
+											type="radio"
+											id={`payment_method_${type}_${p.value}`}
+											name={`payment_method_${type}`}
+											value={p.value}
+											disabled
+										/>
+										<span className="provider-type__label">{p.label}</span>
+									</label>
+								</div>
+							))}
+						</fieldset>
+					)
+				})}
 			</div>
 		</>
 	)
