@@ -24,6 +24,11 @@ export default class FormHandler {
 	readonly #amount: AmountHandler
 	readonly #translations: ErrorTranslations
 
+	#providerField?: HTMLInputElement
+	#providerRadios: NodeListOf<HTMLInputElement>
+	#providerHiddens: NodeListOf<HTMLInputElement>
+	#typeRadios: NodeListOf<HTMLInputElement>
+
 	get form() {
 		return this.#form
 	}
@@ -35,10 +40,27 @@ export default class FormHandler {
 	constructor(url: string, form: HTMLFormElement, translations: ErrorTranslations = {}) {
 		this.#url = url
 		this.#form = form
-		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
+
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
 		this.#amount = new AmountHandler(this.#form)
 		this.#translations = translations
+
+		// Initialize form elements.
+		this.#providerField = this.#form.querySelector<HTMLInputElement>(
+			'input[name="provider"][data-selected-provider]'
+		)
+		this.#providerRadios = this.#form.querySelectorAll<HTMLInputElement>(
+			'input[type="radio"][name="provider"]'
+		)
+		this.#providerHiddens = this.#form.querySelectorAll<HTMLInputElement>(
+			'input[type="hidden"][name="provider"][data-type]'
+		)
+		this.#typeRadios = this.#form.querySelectorAll<HTMLInputElement>('input[name="type"]')
+
+		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
+
+		// Bind events to provider radios and type radios.
+		this.#bindProviderEvents()
 
 		Array.prototype.forEach.call(this.#form.elements, element =>
 			element.addEventListener('change', (event: Event) => {
@@ -60,15 +82,59 @@ export default class FormHandler {
 		this.#allowSubmit(true)
 	}
 
+	/**
+	 * This method binds events to provider radios and type
+	 */
+	#bindProviderEvents() {
+		this.#updateProvider()
+		this.#providerRadios.forEach(r =>
+			r.addEventListener('change', this.#updateProvider.bind(this))
+		)
+		this.#typeRadios.forEach(r => r.addEventListener('change', this.#updateProvider.bind(this)))
+	}
+
+	/**
+	 * Update providerField value.
+	 */
+	#updateProvider() {
+		const selectedRadio = Array.from(this.#providerRadios).find(r => r.checked)
+		const selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+
+		if (this.#providerField) {
+			if (selectedRadio) {
+				this.#providerField.value = selectedRadio.value
+			} else if (selectedType) {
+				const activeHidden = Array.from(this.#providerHiddens).find(
+					h => h.dataset.type === selectedType && !h.disabled
+				)
+				if (activeHidden) {
+					this.#providerField.value = activeHidden.value
+				} else {
+					this.#providerField.value = ''
+				}
+			} else {
+				this.#providerField.value = ''
+			}
+		}
+	}
+
 	async #onSubmit(event: SubmitEvent) {
 		event.preventDefault()
+
+		this.#updateProvider()
+
+		// Checks provider field value.
+		if (!this.#providerField?.value) {
+			this.addError('provider', 'Select payment method')
+			this.#form.classList.add('was-validated')
+			return
+		}
 
 		// Disable form submit.
 		this.#allowSubmit(false)
 		this.#form.classList.add('fame-form--submitting')
 
-		const form = event.target as HTMLFormElement
-		const formData = new FormData(form)
+		const formData = new FormData(this.#form)
 		const data = Object.fromEntries(formData)
 		const url = this.getSubmitUrl()
 
@@ -171,10 +237,15 @@ export default class FormHandler {
 	}
 
 	validate(): boolean {
+		// Overrides browser validation for the provider field when the provider is hidden.
+		const hasValidProvider =
+			!!this.#providerField?.value && this.#providerField?.value.trim() !== ''
+
 		const valid = this.#form.checkValidity()
+
 		this.#form.classList.add('was-validated')
 
-		if (!valid) {
+		if (!valid && !hasValidProvider) {
 			// Create error messages from built in validation values.
 			Array.prototype.forEach.call(this.#form.elements, element => {
 				if (!element.validity.valid && !element.validity.customError) {
@@ -186,7 +257,7 @@ export default class FormHandler {
 			})
 		}
 
-		return valid
+		return valid || hasValidProvider
 	}
 
 	/**

@@ -13,23 +13,6 @@ domReady(() => {
 	const form = document.querySelector<HTMLFormElement>('form.fame-form--donations')
 	if (!form) return
 
-	const providerField = form.querySelector<HTMLInputElement>(
-		'input[name="provider"][data-selected-provider]'
-	)
-	const providerRadios = document.querySelectorAll<HTMLInputElement>(
-		'input[type="radio"][name^="provider"]'
-	)
-
-	const updateProvider = () => {
-		const selected = Array.from(providerRadios).find(r => r.checked)
-		if (selected && providerField) {
-			providerField.value = selected.value
-		}
-	}
-
-	updateProvider()
-	providerRadios.forEach(radio => radio.addEventListener('change', updateProvider))
-
 	const translations = {
 		amount: {
 			unknown: __('Invalid amount', 'fame_lahjoitukset'),
@@ -43,7 +26,7 @@ domReady(() => {
 			unknown: __('Invalid last name', 'fame_lahjoitukset'),
 		},
 		email: {
-			required: __('Email name is required', 'fame_lahjoitukset'),
+			required: __('Email is required', 'fame_lahjoitukset'),
 			unknown: __('Invalid email', 'fame_lahjoitukset'),
 		},
 		phone: {
