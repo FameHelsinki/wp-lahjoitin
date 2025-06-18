@@ -39,9 +39,16 @@ export default class ProviderHandler {
 	 * Updates the UI based on the selected provider type and provider.
 	 */
 	#updateUI() {
-		const selectedType = Array.from(this.#typeInputs).find(i => i.checked)?.value
+		const typeInputs = Array.from(this.#typeInputs)
+		let selectedType = typeInputs.find(i => i.checked)?.value
 
-		if (!selectedType) return
+		if (!selectedType && typeInputs.length === 1) {
+			selectedType = typeInputs[0].value
+		}
+
+		if (!selectedType) {
+			return
+		}
 
 		this.#providerSections.forEach(section => {
 			const radios = section.querySelectorAll<HTMLInputElement>('input[type="radio"]')
