@@ -60,7 +60,7 @@
 			"type": "string",
 			"source": "text",
 			"selector": ".fame-form__legend",
-			"default": "Donation type"
+			"default": "Donation amount"
 		},
 		"other": {
 			"type": "boolean",

@@ -10,6 +10,9 @@ domReady(() => {
 		throw new Error('Backend URL is missing')
 	}
 
+	const form = document.querySelector<HTMLFormElement>('form.fame-form--donations')
+	if (!form) return
+
 	const translations = {
 		amount: {
 			unknown: __('Invalid amount', 'fame_lahjoitukset'),
@@ -23,7 +26,7 @@ domReady(() => {
 			unknown: __('Invalid last name', 'fame_lahjoitukset'),
 		},
 		email: {
-			required: __('Email name is required', 'fame_lahjoitukset'),
+			required: __('Email is required', 'fame_lahjoitukset'),
 			unknown: __('Invalid email', 'fame_lahjoitukset'),
 		},
 		phone: {
@@ -31,10 +34,5 @@ domReady(() => {
 		},
 	}
 
-	document
-		.querySelectorAll('form.fame-form--donations')
-		.forEach(
-			form =>
-				form instanceof HTMLFormElement && new FormHandler(backendUrl, form, translations)
-		)
+	new FormHandler(backendUrl, form, translations)
 })

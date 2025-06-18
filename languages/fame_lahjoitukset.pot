@@ -217,7 +217,7 @@ msgid "Invalid last name"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:532
-msgid "Email name is required"
+msgid "Email is required"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:533
