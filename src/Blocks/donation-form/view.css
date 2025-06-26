@@ -71,7 +71,6 @@
 }
 
 .fame-form {
-
 	&.was-validated :invalid {
 		border-color: var(--fame-clr-danger);
 		outline: 0;
@@ -87,7 +86,7 @@
 	}
 }
 
-.donation-amounts {
+/* .donation-amounts {
 	display: flex;
 	align-items: stretch;
 	flex-wrap: wrap;
@@ -106,7 +105,7 @@
 	.fame-form__input {
 		flex: 1;
 	}
-}
+} */
 
 .donation-amounts__unit {
 	padding: 0 0.25rem;
@@ -134,13 +133,226 @@
 	}
 }
 
-@keyframes fame-form-rotation {
+.wp-block-famehelsinki-form-controls {
+	button {
+		margin-left: 20px;
+	}
+}
 
+@keyframes fame-form-rotation {
 	0% {
 		transform: rotate(0deg);
 	}
 
 	100% {
 		transform: rotate(360deg);
+	}
+}
+
+/* Gives modern button styles */
+.has-modern-style {
+	.fame-form-container {
+		max-width: none !important;
+	}
+	input {
+		background-color: transparent;
+	}
+	.fame-form__fieldset {
+		border: none;
+	}
+	.fame-form__legend {
+		margin-bottom: 0.5em;
+		font-size: clamp(1rem, 4vw + 0.5rem, 1.5rem);
+	}
+
+	.wp-block-famehelsinki-donation-amounts .fame-form__group,
+	.wp-block-famehelsinki-donation-type .fame-form__group {
+		display: block;
+		width: 100%;
+	}
+
+	.fame-form__check-input {
+		display: none;
+	}
+	.wp-block-famehelsinki-donation-amounts {
+		.donation-amounts {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr); /* flex-wrap: wrap; */
+			gap: 10px;
+		}
+
+		/* OLEVA: säilytä */
+		.donation-amounts__other {
+			position: relative;
+			width: 100%;
+			/* 	max-width: 300px; */
+		}
+
+		.donation-amounts__input-wrapper {
+			position: relative;
+		}
+
+		.donation-amounts__input-wrapper input {
+			padding-right: 2em; /* tilaa valuutalle */
+		}
+
+		.donation-amounts__input-wrapper .donation-amounts__unit {
+			position: absolute;
+			/* left: 0.75em; */
+			right: 40px;
+			top: 22%;
+			/* transform: translateY(-50%); */
+			pointer-events: none; /* klikkaus ei esty */
+			color: #333; /* haluamasi väri */
+			font-size: 0.9em; /* halutessasi */
+		}
+
+		/* Label piiloon mutta ei kokonaan */
+		.donation-amounts__other .fame-form__label {
+			position: relative;
+			display: block;
+			width: 100%;
+			margin-bottom: 0.3em;
+			padding: 0;
+			border: none;
+			cursor: default;
+			font-weight: normal;
+			text-align: left;
+
+			/* Visually hidden mutta säilyy screen readerille */
+			/* 			overflow: hidden;
+			white-space: nowrap;
+			height: 1px;
+			width: 1px;
+			position: absolute;
+			clip: rect(0 0 0 0); */
+		}
+
+		/* Korvaa labelin ::before */
+		/* 		.donation-amounts__other::before {
+			content: "Other amount"; /* <-- SAMA teksti kuin label 
+			display: block;
+			margin-bottom: 0.3em;
+			font-weight: normal;
+			text-align: left;
+		} */
+
+		/* Input */
+		.donation-amounts__other input {
+			display: block;
+			width: 100%;
+			box-sizing: border-box;
+			padding: 0.65rem;
+			border: 2px solid var(--primary-color);
+			border-radius: var(--border-radius);
+			font-size: inherit;
+
+			/* Placeholder sama kuin label */
+		}
+		/* 		.donation-amounts__other .fame-form__input::placeholder {
+			content: "Other amount"; /* joissain selaimissa ei vaadi tätä 
+		} */
+
+		.fame-form__label {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			padding: 0.5rem;
+			border: 2px solid var(--primary-color);
+			border-radius: var(--border-radius);
+			cursor: pointer;
+			margin-right: 0.5em;
+			user-select: none;
+
+			&:has(.fame-form__check-input:checked) {
+				background-color: var(--primary-color);
+				color: var(--secondary-color);
+				border-color: var(--primary-color);
+			}
+		}
+	}
+	.wp-block-famehelsinki-donation-type {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		.fame-form__label {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			padding: 0.5rem;
+			border: 2px solid var(--primary-color);
+			border-radius: var(--border-radius);
+			cursor: pointer;
+			margin-right: 0.5em;
+			user-select: none;
+
+			&:has(.fame-form__check-input:checked) {
+				background-color: var(--primary-color);
+				color: var(--secondary-color);
+				border-color: var(--primary-color);
+			}
+		}
+
+		.fame-form__check-input {
+			display: none;
+		}
+	}
+
+	.wp-block-famehelsinki-donation-providers {
+		display: block;
+		width: 100%;
+		/* Piilota input */
+		.fame-form__check-input {
+			display: none;
+		}
+
+		/* Label rakenteeseen tyyli */
+		.fame-form__group label {
+			display: inline-block;
+			margin-right: 0.5em;
+			cursor: pointer;
+			width: 100%;
+			margin-bottom: 10px;
+		}
+
+		.provider-type__label {
+			display: flex;
+			width: 100%;
+			justify-content: center;
+			align-items: center;
+			padding: 0.5em 1em;
+			border: 2px solid var(--primary-color);
+			border-radius: var(--border-radius);
+			background: transparent;
+			transition:
+				background 0.2s,
+				color 0.2s;
+		}
+
+		/* Valittu tila */
+		.fame-form__check-input:checked + .provider-type__label {
+			background: var(--primary-color);
+			color: var(--secondary-color);
+			border-color: var(--primary-color);
+		}
+
+		/* Hover tila */
+		.provider-type__label:hover {
+			background: #f0f0f0;
+		}
+	}
+
+	.wp-block-famehelsinki-contact-form {
+		label {
+			font-size: 16px;
+		}
+		.fame-form__input {
+			display: block;
+			width: 100%;
+			padding: 0.8rem 0.75rem;
+			border: 2px solid;
+		}
 	}
 }

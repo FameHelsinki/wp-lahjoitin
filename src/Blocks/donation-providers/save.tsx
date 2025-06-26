@@ -30,7 +30,11 @@ export default function Save({
 	return (
 		<div {...blockProps}>
 			{Object.entries(grouped).map(([type, list]) => (
-				<fieldset className="payment-method-selector" data-type={type} key={type}>
+				<fieldset
+					className="payment-method-selector fame-form__fieldset"
+					data-type={type}
+					key={type}
+				>
 					{showLegend && <legend className="fame-form__legend">{legend}</legend>}
 					{list.length === 1 && (
 						<input
@@ -48,6 +52,7 @@ export default function Save({
 						>
 							<label htmlFor={`payment_method_${provider.type}_${provider.value}`}>
 								<input
+									className="fame-form__check-input"
 									type="radio"
 									id={`payment_method_${provider.type}_${provider.value}`}
 									name="provider"

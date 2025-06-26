@@ -161,7 +161,11 @@ export default function Edit({ attributes, setAttributes, context }: EditProps<A
 			<div {...blockProps}>
 				{Object.entries(grouped).map(([type, list]) => {
 					return (
-						<fieldset key={type} className="payment-method-selector" data-type={type}>
+						<fieldset
+							key={type}
+							className="payment-method-selector fame-form__fieldset"
+							data-type={type}
+						>
 							{showLegend && <legend className="fame-form__legend">{legend}</legend>}
 							{list.map(p => (
 								<div key={`${type}-${p.value}`} data-type={type}>

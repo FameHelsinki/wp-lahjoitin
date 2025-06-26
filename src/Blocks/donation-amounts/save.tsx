@@ -77,24 +77,24 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 					))}
 					{other && (
 						<div className="donation-amounts__other">
+							<div className="donation-amounts__input-wrapper">
+								<span className="donation-amounts__unit">{type.unit}</span>
+								<input
+									id={`${type.type}-other`}
+									className="fame-form__input"
+									name={`amount-${type.type}`}
+									type="number"
+									min="1"
+									value={type.defaultAmount ?? DEFAULT_AMOUNT}
+									aria-describedby={`${type.type}-other-unit`}
+								/>
+							</div>
 							<RichText.Content
 								htmlFor={`${type.type}-other`}
 								className="fame-form__label"
 								tagName="label"
 								value={otherLabel || __('Other amount', 'fame_lahjoitukset')}
 							/>
-							<input
-								id={`${type.type}-other`}
-								className="fame-form__input"
-								name={`amount-${type.type}`}
-								type="number"
-								min="1"
-								value={type.defaultAmount ?? DEFAULT_AMOUNT}
-								aria-describedby={`${type.type}-other-unit`}
-							/>
-							<span id={`${type.type}-other-unit`} className="donation-amounts__unit">
-								{type.unit}
-							</span>
 						</div>
 					)}
 				</div>
