@@ -1,9 +1,8 @@
 import { __ } from '@wordpress/i18n'
 import { InspectorControls, useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
-import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
+import { PanelBody, TextControl, ToggleControl, CheckboxControl } from '@wordpress/components'
 import React, { useEffect } from 'react'
-import { DEFAULT_DONATION_TYPE } from '../common/donation-type.ts'
-import TypeControl from './TypeControl.tsx'
+import { DEFAULT_DONATION_TYPE, getDonationLabel, DONATION_TYPES } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 
 const TEMPLATE_LOCK = { lock: { remove: 'true' } }
@@ -31,6 +30,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 		primaryColor,
 		secondaryColor,
 		borderRadius,
+		borderWidth,
 		useModernStyle,
 	} = attributes as {
 		types?: string[]
@@ -39,6 +39,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 		primaryColor?: string
 		secondaryColor?: string
 		borderRadius?: string
+		borderWidth?: string
 		token?: boolean
 		useModernStyle?: boolean
 	}
@@ -46,16 +47,53 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 	// Having a type is always required. Set a default
 	// value if the list is uninitialized or empty.
 	useEffect(() => {
-		if (!types) {
+		if (!types || types.length === 0) {
 			setAttributes({ types: [DEFAULT_DONATION_TYPE.value] })
 		}
 	}, [types, setAttributes])
+
+	const allTypes = (DONATION_TYPES?.map(t => t.value) ?? ['single', 'recurring']) as string[]
+	const order = allTypes
 
 	return (
 		<>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
-					<TypeControl types={types} onChange={types => setAttributes({ types })} />
+					<div
+						role="group"
+						aria-label={__('Enabled donation types', 'fame_lahjoitukset')}
+					>
+						{allTypes.map(type => {
+							const selected = new Set(types ?? [])
+							const checked = selected.has(type)
+							const canUncheck = selected.size > 1
+
+							return (
+								<CheckboxControl
+									help={__(
+										'Choose the donation type to enable.',
+										'fame_lahjoitukset'
+									)}
+									key={type}
+									label={getDonationLabel(type)}
+									checked={checked}
+									onChange={(nextChecked: boolean) => {
+										let next = Array.from(selected)
+
+										if (nextChecked) {
+											if (!checked) next.push(type)
+										} else {
+											if (!canUncheck) return
+											next = next.filter(t => t !== type)
+										}
+										next.sort((a, b) => order.indexOf(a) - order.indexOf(b))
+										setAttributes({ types: next })
+									}}
+								/>
+							)
+						})}
+					</div>
+
 					<TextControl
 						label={__('Return address', 'fame_lahjoitukset')}
 						help={__(
@@ -85,21 +123,24 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 					/>
 					<TextControl
 						label={__('Secondary Color', 'fame_lahjoitukset')}
-						help={__(
-							'This is the text color for primary buttons.',
-							'fame_lahjoitukset'
-						)}
+						help={__('This is the text color for tabs.', 'fame_lahjoitukset')}
 						value={secondaryColor ?? ''}
 						onChange={value => setAttributes({ secondaryColor: value })}
 					/>
 					<TextControl
 						label={__('Border Radius', 'fame_lahjoitukset')}
-						help={__(
-							'This is the border-radius for primary buttons.',
-							'fame_lahjoitukset'
-						)}
+						help={__('This is the border-radius for tabs.', 'fame_lahjoitukset')}
 						value={borderRadius ?? ''}
 						onChange={value => setAttributes({ borderRadius: value })}
+					/>
+					<TextControl
+						label={__('Border Width', 'fame_lahjoitukset')}
+						help={__(
+							'This is the border-width for tabs and input fields.',
+							'fame_lahjoitukset'
+						)}
+						value={borderWidth ?? ''}
+						onChange={value => setAttributes({ borderWidth: value })}
 					/>
 					<ToggleControl
 						label={__('Use modern style', 'fame_lahjoitukset')}

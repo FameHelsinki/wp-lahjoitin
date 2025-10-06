@@ -17,6 +17,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 		primaryColor,
 		secondaryColor,
 		borderRadius,
+		borderWidth,
 		useModernStyle,
 	} = attributes
 
@@ -29,6 +30,7 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 			'--primary-color': primaryColor || 'inherit',
 			'--secondary-color': secondaryColor || 'inherit',
 			'--border-radius': borderRadius || 'inherit',
+			'--border-width': borderWidth || 'inherit',
 		},
 	})
 
