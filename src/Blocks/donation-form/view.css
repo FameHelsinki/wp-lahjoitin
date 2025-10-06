@@ -289,8 +289,7 @@
 	.wp-block-famehelsinki-donation-amounts .fame-form__label:hover,
 	/* stylelint-disable-next-line no-descending-specificity */
 	.wp-block-famehelsinki-donation-type .fame-form__label:hover {
-		background:
- color-mix(in srgb, var(--primary-color) var(--hover-lighten), #fff calc(100% - var(--hover-lighten)));
+		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), #fff calc(100% - var(--hover-lighten)));
 	}
 
 	.wp-block-famehelsinki-donation-providers {
@@ -326,8 +325,7 @@
 	}
 
 	.wp-block-famehelsinki-donation-providers .provider-type__label:hover {
-		background:
- color-mix(in srgb, var(--primary-color) var(--hover-lighten), #fff calc(100% - var(--hover-lighten)));
+		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), #fff calc(100% - var(--hover-lighten)));
 	}
 
 	.wp-block-famehelsinki-donation-providers
