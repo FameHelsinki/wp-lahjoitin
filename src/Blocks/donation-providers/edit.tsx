@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react'
 import { __ } from '@wordpress/i18n'
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor'
+import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor'
 import { PanelBody, Flex, CheckboxControl, TextControl, ToggleControl } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
 import { PROVIDERS, Provider } from '../common/Providers.ts'
@@ -157,11 +157,28 @@ export type Attributes = {
 							className="payment-method-selector fame-form__fieldset"
 							data-type={type}
 						>
-							{showLegend && <legend className="fame-form__legend">{legend}</legend>}
+							{showLegend && (
+								<RichText
+									multiline={false}
+									className="fame-form__legend"
+									aria-label={__('Legend', 'fame_lahjoitukset')}
+									placeholder={__('Donation type', 'fame_lahjoitukset')}
+									allowedFormats={[]}
+									value={attributes.legend ?? ''}
+									onChange={legend => setAttributes({ legend })}
+								/>
+							)}
 
 							{isSingle ? (
 								<div className="fame-form__group" data-type={type}>
-									<span className="provider-type__label">{list[0].label}</span>
+									<RichText
+										tagName="span"
+										className="provider-type__label"
+										value={list[0].label}
+										onChange={val => updateLabel(type, list[0].value, val)}
+										allowedFormats={[]}
+										placeholder={__('Label', 'fame_lahjoitukset')}
+									/>
 								</div>
 							) : (
 								list.map(p => (
@@ -178,7 +195,14 @@ export type Attributes = {
 												value={p.value}
 												disabled
 											/>
-											<span className="provider-type__label">{p.label}</span>
+											<RichText
+												tagName="span"
+												className="provider-type__label"
+												value={p.label}
+												onChange={val => updateLabel(type, p.value, val)}
+												allowedFormats={[]}
+												placeholder={__('Label', 'fame_lahjoitukset')}
+											/>
 										</label>
 									</div>
 								))

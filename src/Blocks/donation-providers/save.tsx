@@ -1,5 +1,5 @@
 import React from 'react'
-import { useBlockProps } from '@wordpress/block-editor'
+import { RichText, useBlockProps } from '@wordpress/block-editor'
 import { SaveProps } from '../common/types.ts'
 
 type Provider = { value: string; label: string; type: string }
@@ -37,7 +37,15 @@ export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Elemen
 						data-type={type}
 						key={type}
 					>
-						{showLegend && <legend className="fame-form__legend">{legend}</legend>}
+						{showLegend && (
+							<RichText.Content
+								tagName="legend"
+								className={
+									'fame-form__legend' + (showLegend ? '' : ' screen-reader-text')
+								}
+								value={legend ?? ''}
+							/>
+						)}
 
 						{single && (
 							<input
@@ -66,7 +74,11 @@ export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Elemen
 										data-type={provider.type}
 										required={true}
 									/>
-									<span className="provider-type__label">{provider.label}</span>
+									<RichText.Content
+										tagName="span"
+										className="provider-type__label"
+										value={provider.label}
+									/>
 								</label>
 							</div>
 						))}
