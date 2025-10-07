@@ -105,7 +105,7 @@ input[type="radio"],
 	justify-content: center;
 	align-items: center;
 	padding: 0.5rem;
-	border: 2px solid var(--primary-color);
+	border: var(--border-width) solid var(--primary-color);
 	border-radius: var(--border-radius);
 	cursor: pointer;
 	user-select: none;
@@ -144,10 +144,11 @@ input[type="radio"],
 	width: 100%;
 	margin-bottom: 0.3em;
 	padding: 0;
-	border: none;
 	cursor: default;
 	font-weight: 400;
 	text-align: left;
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--border-radius);
 }
 
 .editor-styles-wrapper
@@ -269,6 +270,8 @@ label {
 	justify-content: center;
 	align-items: center;
 	padding: 0.5rem 1rem;
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--border-radius);
 }
 
 .editor-styles-wrapper
@@ -276,8 +279,9 @@ label {
 :where(.wp-block-famehelsinki-form-controls)
 .wp-element-button:focus-visible {
 	filter: brightness(0.95);
-	outline: 2px solid var(--primary-color, var(--wp--preset--color--primary, #000));
+	outline: var(--border-width) solid var(--primary-color, var(--wp--preset--color--primary, #000));
 	outline-offset: 2px;
+	color: var(--secondary-color);
 }
 
 .editor-styles-wrapper
@@ -285,4 +289,12 @@ label {
 :where(.wp-block-famehelsinki-donation-form) {
 	padding: 0;
 	border: none;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.donation-amounts__other__placeholder) {
+	border-color: var(--primary-color);
+	border-radius: var(--border-radius);
+	border-width: var(--border-width);
 }
