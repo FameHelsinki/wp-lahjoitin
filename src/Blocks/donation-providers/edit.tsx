@@ -165,7 +165,7 @@ export type Attributes = {
 									placeholder={__('Donation type', 'fame_lahjoitukset')}
 									allowedFormats={[]}
 									value={attributes.legend ?? ''}
-									onChange={legend => setAttributes({ legend })}
+									onChange={le => setAttributes({ legend: le })}
 								/>
 							)}
 
