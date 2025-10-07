@@ -1,9 +1,17 @@
 import { __ } from '@wordpress/i18n'
 import { InspectorControls, useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
-import { PanelBody, TextControl, ToggleControl, CheckboxControl } from '@wordpress/components'
+import {
+	PanelBody,
+	TextControl,
+	ToggleControl,
+	CheckboxControl,
+	ColorPicker,
+	BaseControl,
+} from '@wordpress/components'
 import React, { useEffect } from 'react'
 import { DEFAULT_DONATION_TYPE, getDonationLabel, DONATION_TYPES } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
+import { useInstanceId } from '@wordpress/compose'
 
 const TEMPLATE_LOCK = { lock: { remove: 'true' } }
 const TEMPLATE = [
@@ -54,6 +62,25 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 
 	const allTypes = (DONATION_TYPES?.map(t => t.value) ?? ['single', 'recurring']) as string[]
 	const order = allTypes
+
+	type ThemeVars = Partial<
+		Record<
+			'--primary-color' | '--secondary-color' | '--border-radius' | '--border-width',
+			string
+		>
+	>
+
+	const styleVars: React.CSSProperties & ThemeVars = useModernStyle
+		? {
+				'--primary-color': primaryColor ?? undefined,
+				'--secondary-color': secondaryColor ?? undefined,
+				'--border-radius': borderRadius ?? undefined,
+				'--border-width': borderWidth ?? undefined,
+			}
+		: {}
+
+	const primaryColorId = useInstanceId(BaseControl, 'primary-color')
+	const secondaryColorId = useInstanceId(BaseControl, 'secondary-color')
 
 	return (
 		<>
@@ -112,21 +139,35 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						value={campaign ?? ''}
 						onChange={campaign => setAttributes({ campaign })}
 					/>
-					<TextControl
-						label={__('Primary Color', 'fame_lahjoitukset')}
+					<BaseControl
+						id={primaryColorId}
+						label={__('Primary color', 'fame_lahjoitukset')}
 						help={__(
 							'This is the background color for primary buttons.',
 							'fame_lahjoitukset'
 						)}
-						value={primaryColor ?? ''}
-						onChange={value => setAttributes({ primaryColor: value })}
-					/>
-					<TextControl
+					>
+						<ColorPicker
+							color={primaryColor || '#000000'}
+							onChangeComplete={value =>
+								setAttributes({ primaryColor: value?.hex || '' })
+							}
+							disableAlpha
+						/>
+					</BaseControl>
+					<BaseControl
+						id={secondaryColorId}
 						label={__('Secondary Color', 'fame_lahjoitukset')}
 						help={__('This is the text color for tabs.', 'fame_lahjoitukset')}
-						value={secondaryColor ?? ''}
-						onChange={value => setAttributes({ secondaryColor: value })}
-					/>
+					>
+						<ColorPicker
+							color={secondaryColor || '#FFFFFF'}
+							onChangeComplete={value =>
+								setAttributes({ secondaryColor: value?.hex || '' })
+							}
+							disableAlpha
+						/>
+					</BaseControl>
 					<TextControl
 						label={__('Border Radius', 'fame_lahjoitukset')}
 						help={__('This is the border-radius for tabs.', 'fame_lahjoitukset')}
@@ -163,12 +204,13 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 				{...useInnerBlocksProps(
 					useBlockProps({
 						className: `fame-form__wrapper ${useModernStyle ? 'has-modern-style' : ''}`,
+						style: styleVars,
 					}),
 					{
 						// prevents inserting or removing blocks,
 						// but allows moving existing ones.
 						template: TEMPLATE,
-						allowedBlocks: ALLOWED_BLOCKS, // SALLII VAIN GROUPIN
+						allowedBlocks: ALLOWED_BLOCKS,
 						templateLock: false,
 					}
 				)}
