@@ -29,7 +29,7 @@
 
 .fame-form__help {
 	font-size: 0.8em;
-	color: var(--thirdColor, #333);
+	color: var(--third-color, #333);
 }
 
 .fame-form__row > .fame-form__help {
