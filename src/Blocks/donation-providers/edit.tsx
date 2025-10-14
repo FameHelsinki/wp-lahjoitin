@@ -155,6 +155,7 @@ export type Attributes = {
 						<fieldset
 							key={type}
 							className="payment-method-selector fame-form__fieldset"
+							style={{ width: '100%', boxSizing: 'border-box' }}
 							data-type={type}
 						>
 							{showLegend && (
