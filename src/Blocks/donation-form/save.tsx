@@ -16,8 +16,10 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 		token,
 		primaryColor,
 		secondaryColor,
+		thirdColor,
 		borderRadius,
 		borderWidth,
+		textFieldBorderRadius,
 		useModernStyle,
 	} = attributes
 
@@ -29,8 +31,10 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 		style: {
 			'--primary-color': primaryColor || 'inherit',
 			'--secondary-color': secondaryColor || 'inherit',
+			'--third-color': thirdColor || 'inherit',
 			'--border-radius': borderRadius || 'inherit',
 			'--border-width': borderWidth || 'inherit',
+			'--text-field-border-radius': textFieldBorderRadius || 'inherit',
 		},
 	})
 

@@ -37,17 +37,21 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 		token,
 		primaryColor,
 		secondaryColor,
+		thirdColor,
 		borderRadius,
 		borderWidth,
 		useModernStyle,
+		textFieldBorderRadius,
 	} = attributes as {
 		types?: string[]
 		returnAddress?: string
 		campaign?: string
 		primaryColor?: string
 		secondaryColor?: string
+		thirdColor?: string
 		borderRadius?: string
 		borderWidth?: string
+		textFieldBorderRadius?: string
 		token?: boolean
 		useModernStyle?: boolean
 	}
@@ -65,22 +69,28 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 
 	type ThemeVars = Partial<
 		Record<
-			'--primary-color' | '--secondary-color' | '--border-radius' | '--border-width',
+			| '--primary-color'
+			| '--secondary-color'
+			| '--third-color'
+			| '--border-radius'
+			| '--border-width'
+			| '--text-field-border-radius',
 			string
 		>
 	>
 
-	const styleVars: React.CSSProperties & ThemeVars = useModernStyle
-		? {
-				'--primary-color': primaryColor ?? undefined,
-				'--secondary-color': secondaryColor ?? undefined,
-				'--border-radius': borderRadius ?? undefined,
-				'--border-width': borderWidth ?? undefined,
-			}
-		: {}
+	const styleVars: React.CSSProperties & ThemeVars = {
+		'--primary-color': primaryColor ?? undefined,
+		'--secondary-color': secondaryColor ?? undefined,
+		'--third-color': thirdColor ?? undefined,
+		'--border-radius': borderRadius ?? undefined,
+		'--border-width': borderWidth ?? undefined,
+		'--text-field-border-radius': textFieldBorderRadius ?? undefined,
+	}
 
 	const primaryColorId = useInstanceId(BaseControl, 'primary-color')
 	const secondaryColorId = useInstanceId(BaseControl, 'secondary-color')
+	const thirdColorId = useInstanceId(BaseControl, 'third-color')
 
 	return (
 		<>
@@ -168,6 +178,19 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 							disableAlpha
 						/>
 					</BaseControl>
+					<BaseControl
+						id={thirdColorId}
+						label={__('Third Color', 'fame_lahjoitukset')}
+						help={__('This is the text color for tabs.', 'fame_lahjoitukset')}
+					>
+						<ColorPicker
+							color={thirdColor || '#444'}
+							onChangeComplete={value =>
+								setAttributes({ thirdColor: value?.hex || '' })
+							}
+							disableAlpha
+						/>
+					</BaseControl>
 					<TextControl
 						label={__('Border Radius', 'fame_lahjoitukset')}
 						help={__('This is the border-radius for tabs.', 'fame_lahjoitukset')}
@@ -182,6 +205,15 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						)}
 						value={borderWidth ?? ''}
 						onChange={value => setAttributes({ borderWidth: value })}
+					/>
+					<TextControl
+						label={__('Text field border radius', 'fame_lahjoitukset')}
+						help={__(
+							'This is the border-radius for the text fields.',
+							'fame_lahjoitukset'
+						)}
+						value={textFieldBorderRadius ?? ''}
+						onChange={value => setAttributes({ textFieldBorderRadius: value })}
 					/>
 					<ToggleControl
 						label={__('Use modern style', 'fame_lahjoitukset')}

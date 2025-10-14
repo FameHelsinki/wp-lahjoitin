@@ -42,6 +42,14 @@
 			"type": "string",
 			"default": "#FFFFFF"
 		},
+		"thirdColor": {
+			"type": "string",
+			"default": "#444"
+		},
+		"textFieldBorderRadius": {
+			"type": "string",
+			"default": "0px"
+		},
 		"borderRadius": {
 			"type": "string",
 			"default": "0px"
