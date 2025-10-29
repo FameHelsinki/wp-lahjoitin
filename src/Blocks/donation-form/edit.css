@@ -95,11 +95,6 @@ input[type="radio"],
 	align-items: flex-start;
 }
 
-.editor-styles-wrapper
-.wp-block-famehelsinki-donation-form.has-modern-style
-:where(.donation-amounts__other__placeholder) {
-	width: unset;
-}
 
 .editor-styles-wrapper
 .wp-block-famehelsinki-donation-form.has-modern-style
@@ -320,6 +315,7 @@ label {
 	border-color: var(--primary-color);
 	border-radius: var(--border-radius);
 	border-width: var(--border-width);
+	width: unset;
 }
 
 .editor-styles-wrapper
@@ -337,13 +333,14 @@ label {
 }
 
 .editor-styles-wrapper
-  .wp-block-famehelsinki-donation-form.has-modern-style {
-  container-type: inline-size;
+.wp-block-famehelsinki-donation-form.has-modern-style {
+	container-type: inline-size;
 }
 
 @container (max-width: 700px) {
-  .wp-block-famehelsinki-donation-form.has-modern-style
-  .is-layout-grid {
-    grid-template-columns: 1fr !important;
-  }
+
+	.wp-block-famehelsinki-donation-form.has-modern-style
+	.is-layout-grid {
+		grid-template-columns: 1fr !important;
+	}
 }
