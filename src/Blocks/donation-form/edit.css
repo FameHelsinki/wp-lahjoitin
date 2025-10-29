@@ -90,6 +90,19 @@ input[type="radio"],
 
 .editor-styles-wrapper
 .wp-block-famehelsinki-donation-form.has-modern-style
+:where(.donation-amounts__other-edit) {
+	flex-direction: column-reverse;
+	align-items: flex-start;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.donation-amounts__other__placeholder) {
+	width: unset;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
 :where(
 	.wp-block-famehelsinki-donation-type .fame-form__label,
 	.wp-block-famehelsinki-donation-amounts .fame-form__label
