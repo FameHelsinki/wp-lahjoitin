@@ -335,3 +335,15 @@ label {
 	background-color: var(--primary-color);
 	color: var(--secondary-color);
 }
+
+.editor-styles-wrapper
+  .wp-block-famehelsinki-donation-form.has-modern-style {
+  container-type: inline-size;
+}
+
+@container (max-width: 700px) {
+  .wp-block-famehelsinki-donation-form.has-modern-style
+  .is-layout-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
