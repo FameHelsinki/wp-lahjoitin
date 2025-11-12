@@ -7,7 +7,7 @@
 	"category": "widgets",
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
-	"allowedBlocks": ["core/paragraph"],
+	"allowedBlocks": ["core/paragraph", "core/group"],
 	"providesContext": {
 		"famehelsinki/donation-types": "types"
 	},
@@ -33,10 +33,38 @@
 			"selector": ".fame-form input[name=\"return_address\"]",
 			"attribute": "value",
 			"default": "/"
+		},
+		"primaryColor": {
+			"type": "string",
+			"default": "#000000"
+		},
+		"secondaryColor": {
+			"type": "string",
+			"default": "#FFFFFF"
+		},
+		"thirdColor": {
+			"type": "string",
+			"default": "#444"
+		},
+		"textFieldBorderRadius": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderRadius": {
+			"type": "string",
+			"default": "0px"
+		},
+		"borderWidth": {
+			"type": "string",
+			"default": "1px"
+		},
+		"useModernStyle": {
+			"type": "boolean",
+			"default": true
 		}
 	},
 	"supports": {
-		"align": ["left", "right", "center"],
+		"align": ["left", "right", "center", "full"],
 		"color": {
 			"background": false,
 			"text": true
