@@ -10,6 +10,8 @@ import {
 	DEFAULT_LEGEND,
 	DEFAULT_UNIT,
 	isVisible,
+	MAX_AMOUNT,
+	MIN_AMOUNT,
 	nextAmount,
 	spliceSettings,
 } from '../common/donation-amount.ts'
@@ -105,6 +107,9 @@ export default function Edit({
 				// Update default attribute.
 				?.map(setting => {
 					setting.default = setting.type === currentType
+					if (setting.minAmount == null) setting.minAmount = MIN_AMOUNT
+					if (setting.maxAmount == null) setting.maxAmount = MAX_AMOUNT
+					if (setting.unit == null) setting.unit = DEFAULT_UNIT
 					return setting
 				}) ?? []
 
@@ -117,6 +122,8 @@ export default function Edit({
 				default: type === currentType,
 				defaultAmount: DEFAULT_AMOUNT,
 				unit: DEFAULT_UNIT,
+				minAmount: MIN_AMOUNT,
+				maxAmount: MAX_AMOUNT,
 			})
 		}
 

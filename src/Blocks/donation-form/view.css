@@ -118,8 +118,15 @@
 	margin: auto;
 }
 
-@keyframes fame-form-rotation {
+.fame-form__controls .wp-element-button:disabled,
+.fame-form__controls .wp-element-button[disabled] {
+	background-color: #dcdcde !important;
+	color: #a7aaad !important;
+	cursor: not-allowed;
+	opacity: 1;
+}
 
+@keyframes fame-form-rotation {
 	0% {
 		transform: rotate(0deg);
 	}
@@ -211,6 +218,7 @@
 	.wp-block-famehelsinki-donation-amounts .donation-amounts__other {
 		position: relative;
 		width: 100%;
+		padding-top: 5px;
 	}
 
 	.wp-block-famehelsinki-donation-amounts .donation-amounts__input-wrapper {
@@ -221,14 +229,10 @@
 		padding-right: 2em;
 	}
 
-	.wp-block-famehelsinki-donation-amounts
-	.donation-amounts__input-wrapper
-	.donation-amounts__unit {
-		position: absolute;
-		pointer-events: none;
-		inset-inline-end: 0.6rem;
-		top: 50%;
-		transform: translateY(-50%);
+	/* stylelint-disable-next-line no-descending-specificity */
+	.wp-block-famehelsinki-donation-amounts .donation-amounts__other .label-wrapper {
+		display: inline-flex;
+		font-size: 16px;
 	}
 
 	/* stylelint-disable-next-line no-descending-specificity */
@@ -236,12 +240,12 @@
 		position: relative;
 		display: block;
 		width: 100%;
-		margin-bottom: 0.3em;
 		padding: 0;
 		border: none;
 		cursor: default;
 		text-align: left;
 		padding-left: 10px;
+		margin-right: 0;
 	}
 
 	.wp-block-famehelsinki-donation-amounts .donation-amounts__other input {
@@ -253,6 +257,11 @@
 		font-size: inherit;
 		max-width: none;
 		color: var(--primary-color);
+	}
+
+	.wp-block-famehelsinki-donation-amounts .donation-amounts__other .donation-amounts__minmax {
+		font-size: 16px;
+		padding-left: 10px;
 	}
 
 	/* stylelint-disable-next-line no-descending-specificity */
@@ -287,7 +296,11 @@
 	.wp-block-famehelsinki-donation-amounts .fame-form__label:hover,
 	/* stylelint-disable-next-line no-descending-specificity */
 	.wp-block-famehelsinki-donation-type .fame-form__label:hover {
-		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), transparent calc(100% - var(--hover-lighten)));
+		background: color-mix(
+			in srgb,
+			var(--primary-color) var(--hover-lighten),
+			transparent calc(100% - var(--hover-lighten))
+		);
 	}
 
 	.wp-block-famehelsinki-donation-providers {
@@ -323,11 +336,16 @@
 	}
 
 	.wp-block-famehelsinki-donation-providers .provider-type__label:hover {
-		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), transparent calc(100% - var(--hover-lighten)));
+		background: color-mix(
+			in srgb,
+			var(--primary-color) var(--hover-lighten),
+			transparent calc(100% - var(--hover-lighten))
+		);
 	}
 
 	.wp-block-famehelsinki-donation-providers
-	.fame-form__check-input:checked + .provider-type__label {
+		.fame-form__check-input:checked
+		+ .provider-type__label {
 		background: var(--primary-color);
 		color: var(--secondary-color);
 		border-color: var(--primary-color);
@@ -337,17 +355,28 @@
 	.wp-block-famehelsinki-contact-form label {
 		font-size: 16px;
 	}
+	.wp-block-famehelsinki-donation-amounts .donation-amounts__error {
+		color: #d63638; /* WP:n default error-red */
+		font-size: 16px;
+		margin-top: 0.25rem;
+		padding-left: 10px;
+	}
+
+	.donation-amounts__input-wrapper input[aria-invalid="true"] {
+		border-color: #d63638;
+		outline-color: #d63638;
+		box-shadow: 0 0 0 0.2rem color-mix(in srgb, var(--fame-clr-danger) 35%, transparent);
+	}
 }
 
 @media (max-width: 1000px) {
-
 	/* has-modern-style donation form → mobile style → Group grid */
 	.wp-block-famehelsinki-donation-form.has-modern-style
-	.fame-form--donations
-	.wp-block-group.is-layout-grid:is(
-		[class^="wp-container-core-group-is-layout-"],
-		[class*=" wp-container-core-group-is-layout-"]
-	) {
+		.fame-form--donations
+		.wp-block-group.is-layout-grid:is(
+			[class^="wp-container-core-group-is-layout-"],
+			[class*=" wp-container-core-group-is-layout-"]
+		) {
 		grid-template-columns: repeat(1, minmax(0, 1fr));
 	}
 }

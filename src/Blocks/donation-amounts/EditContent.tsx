@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AmountSetting, DEFAULT_AMOUNT } from '../common/donation-amount.ts'
+import { AmountSetting, DEFAULT_AMOUNT, MIN_AMOUNT, MAX_AMOUNT } from '../common/donation-amount.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 
@@ -19,7 +19,7 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 	}
 
 	return (
-		<div className={`donation-amounts donaton-amounts--${current.type}`}>
+		<div className={`donation-amounts donation-amounts--${current.type ?? ''}`}>
 			{current.amounts
 				?.filter(({ value }) => value)
 				?.map(({ value }) => (
@@ -39,6 +39,13 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 
 			{other && (
 				<div className="donation-amounts__other-edit">
+					<span className="donation-amounts__minmax">
+						{__('Min', 'fame_lahjoitukset')} {current.minAmount ?? MIN_AMOUNT}
+						{current.unit ?? ''}
+						{' – '}
+						{__('Max', 'fame_lahjoitukset')} {current.maxAmount ?? MAX_AMOUNT}
+						{current.unit ?? ''}
+					</span>
 					<RichText
 						multiline={false}
 						tagName="div"

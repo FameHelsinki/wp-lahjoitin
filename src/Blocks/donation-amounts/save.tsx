@@ -1,7 +1,12 @@
 import { RichText, useBlockProps } from '@wordpress/block-editor'
 import React from 'react'
 import { SaveProps } from '../common/types.ts'
-import { DEFAULT_AMOUNT, DEFAULT_LEGEND } from '../common/donation-amount.ts'
+import {
+	DEFAULT_AMOUNT,
+	DEFAULT_LEGEND,
+	MAX_AMOUNT,
+	MIN_AMOUNT,
+} from '../common/donation-amount.ts'
 import { Attributes } from './edit.tsx'
 import { __ } from '@wordpress/i18n'
 
@@ -48,56 +53,72 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 			/>
 
 			{settings?.map(type => (
-				<div
-					key={type.type}
-					className={`donation-amounts donation-amounts--${type.type}`}
-					data-type={type.type}
-					data-default={type.default || undefined}
-					data-default-amount={type.defaultAmount ?? DEFAULT_AMOUNT}
-					style={{ display: type.default ? undefined : 'none' }}
-				>
-					{type.amounts?.map(({ value }, idx) => (
-						<div className="fame-form__group" key={value}>
-							<label
-								htmlFor={`${type.type}-amount-${idx}`}
-								className="fame-form__label"
-							>
-								<input
-									data-type={type.type}
-									className="fame-form__check-input"
-									id={`${type.type}-amount-${idx}`}
-									checked={value?.toString() === type.defaultAmount?.toString()}
-									name={`amount-radio-${type.type}`}
-									value={value}
-									type="radio"
-								/>
-								{value} <span className="donation-amounts__unit">{type.unit}</span>
-							</label>
-						</div>
-					))}
+				<>
+					<div
+						key={type.type}
+						className={`donation-amounts donation-amounts--${type.type}`}
+						data-type={type.type}
+						data-default={type.default || undefined}
+						data-default-amount={type.defaultAmount ?? DEFAULT_AMOUNT}
+						data-min-amount={type.minAmount ?? MIN_AMOUNT}
+						data-max-amount={type.maxAmount ?? MAX_AMOUNT}
+						style={{ display: type.default ? undefined : 'none' }}
+					>
+						{type.amounts?.map(({ value }, idx) => (
+							<div className="fame-form__group" key={value}>
+								<label
+									htmlFor={`${type.type}-amount-${idx}`}
+									className="fame-form__label"
+								>
+									<input
+										data-type={type.type}
+										className="fame-form__check-input"
+										id={`${type.type}-amount-${idx}`}
+										checked={
+											value?.toString() === type.defaultAmount?.toString()
+										}
+										name={`amount-radio-${type.type}`}
+										value={value}
+										type="radio"
+									/>
+									{value}{' '}
+									<span className="donation-amounts__unit">{type.unit}</span>
+								</label>
+							</div>
+						))}
+					</div>
 					{other && (
 						<div className="donation-amounts__other">
-							<div className="donation-amounts__input-wrapper">
+							<div className="label-wrapper">
+								<RichText.Content
+									htmlFor={`${type.type}-other`}
+									className="fame-form__label"
+									tagName="label"
+									value={otherLabel || __('Other amount', 'fame_lahjoitukset')}
+								/>
 								<span className="donation-amounts__unit">{type.unit}</span>
+							</div>
+							<div className="donation-amounts__input-wrapper">
 								<input
 									id={`${type.type}-other`}
 									className="fame-form__input"
 									name={`amount-${type.type}`}
 									type="number"
-									min="1"
+									min={(type.minAmount ?? MIN_AMOUNT).toString()}
+									max={(type.maxAmount ?? MAX_AMOUNT).toString()}
 									value={type.defaultAmount ?? DEFAULT_AMOUNT}
 									aria-describedby={`${type.type}-other-unit`}
 								/>
+								<span className="donation-amounts__minmax" id="minmax">
+									{__('Min', 'fame_lahjoitukset')} {type.minAmount ?? MIN_AMOUNT}
+									{type.unit ?? ''} – {__('Max', 'fame_lahjoitukset')}{' '}
+									{type.maxAmount ?? MAX_AMOUNT}
+									{type.unit ?? ''}
+								</span>
 							</div>
-							<RichText.Content
-								htmlFor={`${type.type}-other`}
-								className="fame-form__label"
-								tagName="label"
-								value={otherLabel || __('Other amount', 'fame_lahjoitukset')}
-							/>
 						</div>
 					)}
-				</div>
+				</>
 			))}
 
 			{/*

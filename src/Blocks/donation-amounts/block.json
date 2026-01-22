@@ -30,6 +30,16 @@
 					"source": "attribute",
 					"attribute": "data-default-amount"
 				},
+				"minAmount": {
+					"type": "integer",
+					"source": "attribute",
+					"attribute": "data-min-amount"
+				},
+				"maxAmount": {
+					"type": "integer",
+					"source": "attribute",
+					"attribute": "data-max-amount"
+				},
 				"unit": {
 					"type": "string",
 					"selector": ".donation-amounts__unit",
