@@ -107,9 +107,9 @@ export default function Edit({
 				// Update default attribute.
 				?.map(setting => {
 					setting.default = setting.type === currentType
-					if (setting.minAmount == null) setting.minAmount = MIN_AMOUNT
-					if (setting.maxAmount == null) setting.maxAmount = MAX_AMOUNT
-					if (setting.unit == null) setting.unit = DEFAULT_UNIT
+					if (setting.minAmount === null) setting.minAmount = MIN_AMOUNT
+					if (setting.maxAmount === null) setting.maxAmount = MAX_AMOUNT
+					if (setting.unit === null) setting.unit = DEFAULT_UNIT
 					return setting
 				}) ?? []
 

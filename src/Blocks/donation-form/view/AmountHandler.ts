@@ -124,7 +124,7 @@ export class AmountWrapper {
 
 		// Validate min/max from HTML attributes.
 		const min = parseInt(target.min || '')
-		const max = parseInt(target.max || '')
+
 		const unit = this.#getUnit(target)
 
 		if (!Number.isNaN(min) && amount < min) {
@@ -133,6 +133,7 @@ export class AmountWrapper {
 			this.#showError(
 				target,
 				sprintf(
+					/* translators: %1$s: amount, %2$s: currency symbol */
 					__('Pienin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
 					min,
 					unit
@@ -141,12 +142,15 @@ export class AmountWrapper {
 			return
 		}
 
+		const max = parseInt(target.max || '')
+
 		if (!Number.isNaN(max) && amount > max) {
 			this.#invalidOther = true
 			this.#setSubmitDisabled(true)
 			this.#showError(
 				target,
 				sprintf(
+					/* translators: %1$s: amount, %2$s: currency symbol */
 					__('Suurin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
 					max,
 					unit
