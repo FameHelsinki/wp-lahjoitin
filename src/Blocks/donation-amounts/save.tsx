@@ -88,7 +88,11 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 						))}
 					</div>
 					{other && (
-						<div className="donation-amounts__other">
+						<div
+							className="donation-amounts__other"
+							data-type={type.type}
+							style={{ display: type.default ? undefined : 'none' }}
+						>
 							<div className="label-wrapper">
 								<RichText.Content
 									htmlFor={`${type.type}-other`}

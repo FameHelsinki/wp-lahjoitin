@@ -5,6 +5,7 @@ export class AmountWrapper {
 	readonly #wrapper: HTMLElement
 	readonly #buttons: NodeListOf<HTMLInputElement>
 	readonly #other: HTMLInputElement | null
+	readonly #otherWrapper: HTMLElement | null
 
 	#invalidOther = false
 	#disabled = false
@@ -16,6 +17,10 @@ export class AmountWrapper {
 	set disabled(value: boolean) {
 		this.#disabled = value
 		this.#wrapper.style.display = value ? 'none' : ''
+
+		if (this.#otherWrapper) {
+			this.#otherWrapper.style.display = value ? 'none' : ''
+		}
 	}
 
 	get disabled() {
@@ -45,6 +50,21 @@ export class AmountWrapper {
 		this.#buttons.forEach(radio => radio.addEventListener('change', onChangeButton))
 		this.#other = this.#findOtherInput(wrapper)
 		this.#other?.addEventListener('input', this.#onChangeOther.bind(this))
+		this.#otherWrapper = this.#findOtherWrapper(wrapper)
+	}
+
+	#findOtherWrapper(wrapper: HTMLElement): HTMLElement | null {
+		const parent = wrapper.parentElement
+		if (!parent) return null
+
+		const type = wrapper.dataset.type
+		if (type) {
+			const el = parent.querySelector(`.donation-amounts__other[data-type="${type}"]`)
+			return el instanceof HTMLElement ? el : null
+		}
+
+		const el = parent.querySelector('.donation-amounts__other')
+		return el instanceof HTMLElement ? el : null
 	}
 
 	#findOtherInput(wrapper: HTMLElement): HTMLInputElement | null {
@@ -71,15 +91,6 @@ export class AmountWrapper {
 			if (disabled) btn.setAttribute('aria-disabled', 'true')
 			else btn.removeAttribute('aria-disabled')
 		}
-
-		// Also cover generic submit buttons, just in case
-		// form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(b => {
-		// 	if (b instanceof HTMLButtonElement || b instanceof HTMLInputElement) {
-		// 		b.disabled = disabled
-		// 		if (disabled) b.setAttribute('aria-disabled', 'true')
-		// 		else b.removeAttribute('aria-disabled')
-		// 	}
-		// })
 	}
 
 	#getUnit(input: HTMLInputElement) {
