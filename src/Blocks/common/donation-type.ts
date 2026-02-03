@@ -31,29 +31,42 @@ export function getDonationLabel(type: string): string | undefined {
  * Extracts current donation type with gutenberg magic.
  */
 export function useCurrentDonationType(clientId: string): string | null {
-	// Get the parent block and its inner blocks
-	const typeBlock = useSelect(
+	return useSelect(
 		select => {
-			const { getBlockRootClientId, getBlocks } = select('core/block-editor') as any
-			const parentClientId = getBlockRootClientId(clientId)
+			const be = select('core/block-editor') as any
+			const { getBlock, getBlockRootClientId, getClientIdsOfDescendants } = be
 
-			if (!parentClientId) {
-				return null
+			// Find the nearest "famehelsinki/donation-form" container (or the parent).
+			let containerId: string | null = clientId
+			let lastId: string | null = clientId
+
+			while (containerId) {
+				const parentId = getBlockRootClientId(containerId)
+				if (!parentId) break
+
+				const parentBlock = getBlock(parentId)
+				lastId = parentId
+				containerId = parentId
+
+				if (parentBlock?.name === 'famehelsinki/donation-form') {
+					break
+				}
 			}
 
-			// Find the first sibling block that is a core/paragraph
-			return (
-				getBlocks(parentClientId).find(
-					(block: any) => block.name === 'famehelsinki/donation-type'
-				) || null
-			)
+			const rootId = containerId || lastId
+			if (!rootId) return null
+
+			// Find all descendants (also within groups) and search for donation-type.
+			const descendantIds: string[] = getClientIdsOfDescendants([rootId]) || []
+			const allIds = [rootId, ...descendantIds]
+
+			const typeBlock =
+				allIds
+					.map(id => getBlock(id))
+					.find((b: any) => b?.name === 'famehelsinki/donation-type') || null
+
+			return typeBlock?.attributes?.value ?? null
 		},
 		[clientId]
 	)
-
-	if (typeBlock) {
-		return typeBlock.attributes.value
-	}
-
-	return null
 }

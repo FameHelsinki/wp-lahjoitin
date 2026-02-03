@@ -10,13 +10,14 @@ import { SaveProps } from '../common/types.ts'
  * editor into `post_content`.
  */
 export default function save({ attributes }: SaveProps): React.JSX.Element {
-	const { contact, showAddress, showPhone } = attributes
+	const { contact, showAddress, showPhone, showLegend, legend } = attributes
 
 	return (
-		<div
-			{...useBlockProps.save({ className: 'fame-form__wrapper' })}
+		<fieldset
+			{...useBlockProps.save({ className: 'fame-form__fieldset' })}
 			data-contact={contact || undefined}
 		>
+			{showLegend && <legend className="fame-form__legend">{legend}</legend>}
 			<ContactGroupContent
 				name="name"
 				controls={[
@@ -53,6 +54,6 @@ export default function save({ attributes }: SaveProps): React.JSX.Element {
 				</>
 			)}
 			{showPhone && <ContactInputContent name="phone" type="tel" attributes={attributes} />}
-		</div>
+		</fieldset>
 	)
 }

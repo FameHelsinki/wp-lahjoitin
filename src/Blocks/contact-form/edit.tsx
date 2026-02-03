@@ -1,7 +1,7 @@
 import React from 'react'
 import { __ } from '@wordpress/i18n'
-import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
-import { PanelBody, ToggleControl } from '@wordpress/components'
+import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
+import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
 import ContactInputControl from './ContactInputControl.tsx'
 import ContactInputGroup from './ContactInputGroup.tsx'
 import { EditProps } from '../common/types.ts'
@@ -13,7 +13,7 @@ import { EditProps } from '../common/types.ts'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
-	const { contact, showAddress, showPhone } = attributes
+	const { contact, showAddress, showPhone, showLegend, legend } = attributes
 
 	return (
 		<>
@@ -37,9 +37,31 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						checked={showPhone}
 						onChange={showPhone => setAttributes({ showPhone })}
 					/>
+					<ToggleControl
+						label={__('Show legend', 'fame_lahjoitukset')}
+						checked={showLegend}
+						onChange={checked => setAttributes({ showLegend: checked })}
+					/>
+					<TextControl
+						label={__('Legend', 'fame_lahjoitukset')}
+						value={legend}
+						onChange={value => setAttributes({ legend: value })}
+					/>
 				</PanelBody>
 			</InspectorControls>
+
 			<div {...useBlockProps({ className: 'contact-form' })}>
+				{showLegend && (
+					<RichText
+						multiline={false}
+						className="fame-form__legend"
+						aria-label={__('Legend', 'fame_lahjoitukset')}
+						placeholder={__('Amount', 'fame_lahjoitukset')}
+						allowedFormats={[]}
+						value={legend}
+						onChange={value => setAttributes({ legend: value })}
+					/>
+				)}
 				<ContactInputGroup
 					name="name"
 					controls={[

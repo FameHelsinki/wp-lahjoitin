@@ -10,11 +10,32 @@ import { SaveProps } from '../common/types.ts'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
 export default function save({ attributes }: SaveProps): React.JSX.Element {
-	const { returnAddress, campaign, token } = attributes
+	const {
+		returnAddress,
+		campaign,
+		token,
+		primaryColor,
+		secondaryColor,
+		thirdColor,
+		borderRadius,
+		borderWidth,
+		textFieldBorderRadius,
+		useModernStyle,
+	} = attributes
 
-	const blockProps = useBlockProps.save({ className: 'fame-form-container' })
+	const blockProps = useBlockProps.save({
+		className: `fame-form-container ${useModernStyle ? 'has-modern-style' : ''}`,
+	})
 	const innerBlockProps = useInnerBlocksProps.save({
 		className: 'fame-form__wrapper',
+		style: {
+			'--primary-color': primaryColor || 'inherit',
+			'--secondary-color': secondaryColor || 'inherit',
+			'--third-color': thirdColor || 'inherit',
+			'--border-radius': borderRadius || 'inherit',
+			'--border-width': borderWidth || 'inherit',
+			'--text-field-border-radius': textFieldBorderRadius || 'inherit',
+		},
 	})
 
 	return (
