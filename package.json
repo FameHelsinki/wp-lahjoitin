@@ -27,7 +27,7 @@
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^5.1.0",
-		"prettier": "^3.5.0"
+		"prettier": "^3.6.2"
 	},
 	"dependencies": {
 		"react": "^18.3.1",
