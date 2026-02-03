@@ -127,6 +127,7 @@
 }
 
 @keyframes fame-form-rotation {
+
 	0% {
 		transform: rotate(0deg);
 	}
@@ -296,11 +297,7 @@
 	.wp-block-famehelsinki-donation-amounts .fame-form__label:hover,
 	/* stylelint-disable-next-line no-descending-specificity */
 	.wp-block-famehelsinki-donation-type .fame-form__label:hover {
-		background: color-mix(
-			in srgb,
-			var(--primary-color) var(--hover-lighten),
-			transparent calc(100% - var(--hover-lighten))
-		);
+		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), transparent calc(100% - var(--hover-lighten)));
 	}
 
 	.wp-block-famehelsinki-donation-providers {
@@ -336,16 +333,11 @@
 	}
 
 	.wp-block-famehelsinki-donation-providers .provider-type__label:hover {
-		background: color-mix(
-			in srgb,
-			var(--primary-color) var(--hover-lighten),
-			transparent calc(100% - var(--hover-lighten))
-		);
+		background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), transparent calc(100% - var(--hover-lighten)));
 	}
 
 	.wp-block-famehelsinki-donation-providers
-		.fame-form__check-input:checked
-		+ .provider-type__label {
+	.fame-form__check-input:checked + .provider-type__label {
 		background: var(--primary-color);
 		color: var(--secondary-color);
 		border-color: var(--primary-color);
@@ -355,6 +347,7 @@
 	.wp-block-famehelsinki-contact-form label {
 		font-size: 16px;
 	}
+
 	.wp-block-famehelsinki-donation-amounts .donation-amounts__error {
 		color: #d63638; /* WP:n default error-red */
 		font-size: 16px;
@@ -370,13 +363,14 @@
 }
 
 @media (max-width: 1000px) {
+
 	/* has-modern-style donation form → mobile style → Group grid */
 	.wp-block-famehelsinki-donation-form.has-modern-style
-		.fame-form--donations
-		.wp-block-group.is-layout-grid:is(
-			[class^="wp-container-core-group-is-layout-"],
-			[class*=" wp-container-core-group-is-layout-"]
-		) {
+	.fame-form--donations
+	.wp-block-group.is-layout-grid:is(
+		[class^="wp-container-core-group-is-layout-"],
+		[class*=" wp-container-core-group-is-layout-"]
+	) {
 		grid-template-columns: repeat(1, minmax(0, 1fr));
 	}
 }
