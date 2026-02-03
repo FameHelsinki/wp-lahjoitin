@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { AmountSetting, DEFAULT_AMOUNT, MIN_AMOUNT, MAX_AMOUNT } from '../common/donation-amount.ts'
-import { PlainText, RichText } from '@wordpress/block-editor'
+import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 
 type Props = {
