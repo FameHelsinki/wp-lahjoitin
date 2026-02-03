@@ -111,9 +111,12 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 									min={(type.minAmount ?? MIN_AMOUNT).toString()}
 									max={(type.maxAmount ?? MAX_AMOUNT).toString()}
 									value={type.defaultAmount ?? DEFAULT_AMOUNT}
-									aria-describedby={`${type.type}-other-unit`}
+									aria-describedby={`${type.type}-minmax`}
 								/>
-								<span className="donation-amounts__minmax" id="minmax">
+								<span
+									className="donation-amounts__minmax"
+									id={`${type.type}-minmax`}
+								>
 									{__('Min', 'fame_lahjoitukset')} {type.minAmount ?? MIN_AMOUNT}
 									{type.unit ?? ''} – {__('Max', 'fame_lahjoitukset')}{' '}
 									{type.maxAmount ?? MAX_AMOUNT}

@@ -68,15 +68,19 @@ export class AmountWrapper {
 	}
 
 	#findOtherInput(wrapper: HTMLElement): HTMLInputElement | null {
-		// If markup changes later and input becomes inside wrapper:
 		const inside = wrapper.querySelector('input[type="number"]')
 		if (inside instanceof HTMLInputElement) return inside
 
-		// Current markup: sibling `.donation-amounts__other`
 		const parent = wrapper.parentElement
 		if (!parent) return null
 
-		const other = parent.querySelector('.donation-amounts__other input[type="number"]')
+		const type = wrapper.dataset.type
+		if (!type) return null
+
+		const other = parent.querySelector(
+			`.donation-amounts__other[data-type="${type}"] input[type="number"]`
+		)
+
 		return other instanceof HTMLInputElement ? other : null
 	}
 
