@@ -350,7 +350,6 @@
 		color: #d63638; /* WP:n default error-red */
 		font-size: 16px;
 		margin-top: 0.25rem;
-		padding-left: 10px;
 	}
 
 	.donation-amounts__input-wrapper input[aria-invalid="true"] {
