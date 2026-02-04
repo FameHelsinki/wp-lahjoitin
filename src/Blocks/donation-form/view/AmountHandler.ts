@@ -1,15 +1,34 @@
+import { __, sprintf } from '@wordpress/i18n'
+
 export class AmountWrapper {
 	readonly #onChange: (amount: number) => void
 	readonly #wrapper: HTMLElement
 	readonly #buttons: NodeListOf<HTMLInputElement>
 	readonly #other: HTMLInputElement | null
+	readonly #otherWrapper: HTMLElement | null
+
+	#invalidOther = false
+	#disabled = false
 
 	get type() {
 		return this.#wrapper.dataset.type
 	}
 
 	set disabled(value: boolean) {
+		this.#disabled = value
 		this.#wrapper.style.display = value ? 'none' : ''
+
+		if (this.#otherWrapper) {
+			this.#otherWrapper.style.display = value ? 'none' : ''
+		}
+	}
+
+	get disabled() {
+		return this.#disabled
+	}
+
+	get invalid() {
+		return this.#invalidOther
 	}
 
 	get value() {
@@ -29,39 +48,159 @@ export class AmountWrapper {
 		this.#wrapper = wrapper
 		this.#buttons = wrapper.querySelectorAll('input[type="radio"]')
 		this.#buttons.forEach(radio => radio.addEventListener('change', onChangeButton))
-		this.#other = wrapper.querySelector('input[type="number"]')
+		this.#other = this.#findOtherInput(wrapper)
 		this.#other?.addEventListener('input', this.#onChangeOther.bind(this))
+		this.#otherWrapper = this.#findOtherWrapper(wrapper)
+	}
+
+	#findOtherWrapper(wrapper: HTMLElement): HTMLElement | null {
+		const parent = wrapper.parentElement
+		if (!parent) return null
+
+		const type = wrapper.dataset.type
+		if (type) {
+			const el = parent.querySelector(`.donation-amounts__other[data-type="${type}"]`)
+			return el instanceof HTMLElement ? el : null
+		}
+
+		const el = parent.querySelector('.donation-amounts__other')
+		return el instanceof HTMLElement ? el : null
+	}
+
+	#findOtherInput(wrapper: HTMLElement): HTMLInputElement | null {
+		const inside = wrapper.querySelector('input[type="number"]')
+		if (inside instanceof HTMLInputElement) return inside
+
+		const parent = wrapper.parentElement
+		if (!parent) return null
+
+		const type = wrapper.dataset.type
+		if (!type) return null
+
+		const other = parent.querySelector(
+			`.donation-amounts__other[data-type="${type}"] input[type="number"]`
+		)
+
+		return other instanceof HTMLInputElement ? other : null
+	}
+
+	#setSubmitDisabled(disabled: boolean) {
+		const form = this.#wrapper.closest('form')
+		if (!form) return
+
+		// Primary: your control block button
+		const btn = form.querySelector('.fame-form__controls .wp-element-button')
+		if (btn instanceof HTMLButtonElement) {
+			btn.disabled = disabled
+			if (disabled) btn.setAttribute('aria-disabled', 'true')
+			else btn.removeAttribute('aria-disabled')
+		}
+	}
+
+	#getUnit(input: HTMLInputElement) {
+		const other = input.closest('.donation-amounts__other')
+		return other?.querySelector('.donation-amounts__unit')?.textContent?.trim() ?? ''
+	}
+
+	#getErrorEl(input: HTMLInputElement) {
+		const wrapper = input.closest('.donation-amounts__input-wrapper')
+		if (!wrapper) return null
+
+		let el = wrapper.querySelector('.donation-amounts__error') as HTMLElement | null
+		if (!el) {
+			el = document.createElement('div')
+			el.className = 'donation-amounts__error'
+			el.setAttribute('role', 'alert')
+			wrapper.appendChild(el)
+		}
+		return el
+	}
+
+	#showError(input: HTMLInputElement, message: string) {
+		const el = this.#getErrorEl(input)
+		if (el) el.textContent = message
+		input.setAttribute('aria-invalid', 'true')
+	}
+
+	#clearError(input: HTMLInputElement) {
+		const el = this.#getErrorEl(input)
+		if (el) el.textContent = ''
+		input.removeAttribute('aria-invalid')
 	}
 
 	#onChangeOther(event: Event) {
 		const target = event.target
-		if (target instanceof HTMLInputElement) {
-			const amount = parseInt(target.value) || 0
+		if (!(target instanceof HTMLInputElement)) return
 
-			// Only allow numbers.
-			target.value = amount.toString()
+		const amount = parseInt(target.value) || 0
 
-			// Select radiobuttons that have the selected amount.
-			this.#buttons.forEach(button => {
-				button.checked = button.value === target.value
-			})
+		// Only allow numbers.
+		target.value = amount.toString()
 
-			this.#onChange(amount)
+		// Validate min/max from HTML attributes.
+		const min = parseInt(target.min || '')
+
+		const unit = this.#getUnit(target)
+
+		if (!Number.isNaN(min) && amount < min) {
+			this.#invalidOther = true
+			this.#setSubmitDisabled(true)
+			this.#showError(
+				target,
+				sprintf(
+					/* translators: %1$s: amount, %2$s: currency symbol */
+					__('Pienin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					min,
+					unit
+				)
+			)
+			return
 		}
+
+		const max = parseInt(target.max || '')
+
+		if (!Number.isNaN(max) && amount > max) {
+			this.#invalidOther = true
+			this.#setSubmitDisabled(true)
+			this.#showError(
+				target,
+				sprintf(
+					/* translators: %1$s: amount, %2$s: currency symbol */
+					__('Suurin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					max,
+					unit
+				)
+			)
+			return
+		}
+
+		this.#invalidOther = false
+		this.#clearError(target)
+		this.#setSubmitDisabled(false)
+
+		// Select radiobuttons that have the selected amount.
+		this.#buttons.forEach(button => {
+			button.checked = button.value === target.value
+		})
+
+		this.#onChange(amount)
 	}
 
 	#onChangeButton(event: Event) {
 		const target = event.target
-		if (target instanceof HTMLInputElement) {
-			const amount = target.value
+		if (!(target instanceof HTMLInputElement)) return
 
-			// Keep other amount in sync.
-			if (this.#other) {
-				this.#other.value = amount
-			}
+		const amount = target.value
 
-			this.#onChange(parseInt(amount))
+		// Keep other amount in sync.
+		if (this.#other) {
+			this.#invalidOther = false
+			this.#clearError(this.#other)
+			this.#other.value = amount
+			this.#setSubmitDisabled(false)
 		}
+
+		this.#onChange(parseInt(amount))
 	}
 }
 
@@ -111,6 +250,22 @@ export default class AmountHandler {
 				this.#updateType(selected.value)
 			}
 		}
+
+		// Extra safety: if submit is attempted while invalid, block it.
+		form.addEventListener(
+			'submit',
+			event => {
+				if (this.#isInvalid()) {
+					event.preventDefault()
+					event.stopPropagation()
+				}
+			},
+			true
+		)
+	}
+
+	#isInvalid() {
+		return this.#wrappers.some(w => !w.disabled && w.invalid)
 	}
 
 	#onChangeType(event: Event) {

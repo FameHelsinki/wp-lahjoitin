@@ -4,6 +4,8 @@ import { RadioControl, TextControl } from '@wordpress/components'
 import {
 	DEFAULT_AMOUNT,
 	DEFAULT_UNIT,
+	MIN_AMOUNT,
+	MAX_AMOUNT,
 	AmountSetting,
 	formatAmount,
 } from '../common/donation-amount.ts'
@@ -30,12 +32,28 @@ const AmountSettingsControl: FC<Props> = ({ settings, other, visible, onChange }
 			/>
 		)}
 		{other || !settings.amounts?.length ? (
-			<TextControl
-				label={__('Default amount', 'fame_lahjoitukset')}
-				help={__('Amount that is preselected.', 'fame_lahjoitukset')}
-				value={settings.defaultAmount ?? DEFAULT_AMOUNT}
-				onChange={value => onChange({ ...settings, defaultAmount: formatAmount(value, 0) })}
-			/>
+			<>
+				<TextControl
+					label={__('Default amount', 'fame_lahjoitukset')}
+					help={__('Amount that is preselected.', 'fame_lahjoitukset')}
+					value={settings.defaultAmount ?? DEFAULT_AMOUNT}
+					onChange={value =>
+						onChange({ ...settings, defaultAmount: formatAmount(value, 0) })
+					}
+				/>
+				<TextControl
+					label={__('Min Amount', 'fame_lahjoitukset')}
+					help={__('Minimum amount for other amount field.', 'fame_lahjoitukset')}
+					value={(settings.minAmount ?? MIN_AMOUNT).toString()}
+					onChange={value => onChange({ ...settings, minAmount: formatAmount(value, 0) })}
+				/>
+				<TextControl
+					label={__('Max Amount', 'fame_lahjoitukset')}
+					help={__('Maximum amount for other amount field.', 'fame_lahjoitukset')}
+					value={(settings.maxAmount ?? MAX_AMOUNT).toString()}
+					onChange={value => onChange({ ...settings, maxAmount: formatAmount(value, 0) })}
+				/>
+			</>
 		) : (
 			<RadioControl
 				label={__('Default amount', 'fame_lahjoitukset')}

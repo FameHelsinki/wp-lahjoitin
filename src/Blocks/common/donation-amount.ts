@@ -3,6 +3,8 @@ import { __ } from '@wordpress/i18n'
 export const DEFAULT_AMOUNT = 10
 export const DEFAULT_UNIT = '€'
 export const DEFAULT_LEGEND = __('Amount', 'fame_lahjoitukset')
+export const MIN_AMOUNT = 10
+export const MAX_AMOUNT = 10000
 
 export type Amount = {
 	value?: number | string
@@ -14,6 +16,8 @@ export type AmountSetting = {
 	default?: boolean
 	defaultAmount?: number | string
 	amounts?: Amount[]
+	minAmount?: number | string
+	maxAmount?: number | string
 }
 
 export const formatAmount = (amount?: string | number, def = DEFAULT_AMOUNT) =>
