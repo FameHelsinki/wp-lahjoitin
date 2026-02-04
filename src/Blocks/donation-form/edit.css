@@ -1,8 +1,6 @@
+/* Editor-only base styles for the block */
 .wp-block-famehelsinki-donation-form {
-	padding: 16px;
-	border: 5px dotted #000;
-
-	--form-element-border: 2px solid #000;
+	--form-element-border: var(--border-width, 2px) solid var(--primary-color, #000);
 	--form-element-padding: 4px 16px;
 }
 
@@ -10,12 +8,13 @@
 	margin-top: 16px;
 }
 
-/**
- * Gutenberg editor draws button as a div,
- * since it should not be a real button.
- */
+/* Gutenberg editor draws button as a div, not a real button */
 .fame-form__controls .wp-element-button {
 	display: inline;
+}
+
+.fame-form__controls .donation-type__input {
+	color: var(--primary-color, #000);
 }
 
 .fame-form__row {
@@ -30,7 +29,7 @@
 
 .fame-form__help {
 	font-size: 0.8em;
-	color: #444;
+	color: var(--third-color, #333);
 }
 
 .fame-form__row > .fame-form__help {
@@ -40,4 +39,308 @@
 .fame-form__group--required .fame-form__label::after {
 	content: "*";
 	color: #f00;
+}
+
+/* =========================================================
+   EDITOR: MODERN STYLES (apply only when class is set)
+   ========================================================= */
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(
+	.wp-block-famehelsinki-donation-type,
+	.wp-block-famehelsinki-donation-amounts,
+	.wp-block-famehelsinki-donation-providers
+)
+input[type="radio"],
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(
+	.wp-block-famehelsinki-donation-type,
+	.wp-block-famehelsinki-donation-amounts,
+	.wp-block-famehelsinki-donation-providers
+)
+.fame-form__check-input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.fame-form__legend) {
+	line-height: 1.3;
+	margin: 0 0 0.5rem 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-type) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.donation-amounts__other-edit) {
+	flex-direction: column-reverse;
+	align-items: flex-start;
+}
+
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(
+	.wp-block-famehelsinki-donation-type .fame-form__label,
+	.wp-block-famehelsinki-donation-amounts .fame-form__label
+) {
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	align-items: center;
+	padding: 0.5rem;
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--border-radius);
+	cursor: pointer;
+	user-select: none;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-contact-form)
+.fame-form__label {
+	display: block;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	cursor: default;
+	user-select: text;
+	text-align: left;
+	font-weight: 400;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-contact-form)
+.fame-form__fake-input {
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--text-field-border-radius);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts)
+.donation-amounts {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts)
+.donation-amounts__other
+.fame-form__label {
+	position: relative;
+	display: block;
+	width: 100%;
+	margin-bottom: 0.3em;
+	padding: 0;
+	cursor: default;
+	font-weight: 400;
+	text-align: left;
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--border-radius);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts)
+.donation-amounts__input-wrapper {
+	position: relative;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts)
+.donation-amounts__input-wrapper
+input {
+	padding-right: 2em;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts)
+.donation-amounts__input-wrapper
+.donation-amounts__unit {
+	position: absolute;
+	right: 40px;
+	top: 22%;
+	pointer-events: none;
+	color: #333;
+	font-size: 0.9em;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts .fame-form__fieldset) {
+	border: 0;
+	padding: 0.01px 0 0;
+	margin: 0 0 16px 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts .donation-amounts > .fame-form__group) {
+	margin: 0;
+	padding: 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(
+	.wp-block-famehelsinki-donation-amounts
+	.donation-amounts
+	> .fame-form__group
+	> .fame-form__label
+) {
+	width: 100%;
+	margin: 0;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-amounts .donation-amounts > *) {
+	min-width: 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.payment-method-selector.fame-form__fieldset) {
+	border: 0;
+	padding: 0.01px 0 0.01px;
+	margin: 0 0 16px 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-form-controls) {
+	display: block;
+	padding-top: 16px;
+	margin-top: 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(
+	.payment-method-selector.fame-form__fieldset > legend,
+	.payment-method-selector.fame-form__fieldset > .fame-form__legend
+) {
+	padding: 0;
+	margin: 0 0 0.5rem 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.payment-method-selector.fame-form__fieldset > .fame-form__group) {
+	margin: 0;
+	padding: 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-providers) {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-providers)
+.fame-form__group
+label {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	margin: 0 0 16px 0;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-providers)
+.provider-type__label {
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0.5rem 1rem;
+	border: var(--border-width) solid var(--primary-color);
+	border-radius: var(--border-radius);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-form-controls)
+.wp-element-button:focus-visible {
+	filter: brightness(0.95);
+	outline: var(--border-width) solid var(--primary-color, var(--wp--preset--color--primary, #000));
+	outline-offset: 2px;
+	color: var(--secondary-color);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.wp-block-famehelsinki-donation-form) {
+	padding: 0;
+	border: none;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.donation-amounts__other__placeholder) {
+	border-color: var(--primary-color);
+	border-radius: var(--border-radius);
+	border-width: var(--border-width);
+	width: unset;
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.contact-form .fame-form__fake-input) {
+	border-color: var(--primary-color);
+	border-width: var(--border-width);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style
+:where(.fame-form__label.fame-form__label--default) {
+	background-color: var(--primary-color);
+	color: var(--secondary-color);
+}
+
+.editor-styles-wrapper
+.wp-block-famehelsinki-donation-form.has-modern-style {
+	container-type: inline-size;
+}
+
+@container (max-width: 700px) {
+
+	.wp-block-famehelsinki-donation-form.has-modern-style
+	.is-layout-grid {
+		grid-template-columns: 1fr !important;
+	}
 }

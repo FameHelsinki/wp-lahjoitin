@@ -12,7 +12,6 @@ import Edit from './edit'
 import save from './save'
 import metadata from './block.json'
 import './edit.css'
-import './view'
 
 /**
  * Every block starts by registering a new block type definition.

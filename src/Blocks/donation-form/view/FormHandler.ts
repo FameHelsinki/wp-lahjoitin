@@ -27,6 +27,7 @@ export default class FormHandler {
 	#providerField?: HTMLInputElement
 	#providerRadios: NodeListOf<HTMLInputElement>
 	#providerHiddens: NodeListOf<HTMLInputElement>
+	#providerSections: NodeListOf<HTMLElement>
 	#typeRadios: NodeListOf<HTMLInputElement>
 
 	get form() {
@@ -54,6 +55,9 @@ export default class FormHandler {
 		)
 		this.#providerHiddens = this.#form.querySelectorAll<HTMLInputElement>(
 			'input[type="hidden"][name="provider"][data-type]'
+		)
+		this.#providerSections = this.#form.querySelectorAll<HTMLElement>(
+			'fieldset.payment-method-selector[data-type]'
 		)
 		this.#typeRadios = this.#form.querySelectorAll<HTMLInputElement>('input[name="type"]')
 
@@ -86,41 +90,87 @@ export default class FormHandler {
 	 * This method binds events to provider radios and type
 	 */
 	#bindProviderEvents() {
+		this.#filterProvidersByType()
 		this.#updateProvider()
+
 		this.#providerRadios.forEach(r =>
-			r.addEventListener('change', this.#updateProvider.bind(this))
+			r.addEventListener('change', () => {
+				this.#updateProvider()
+			})
 		)
-		this.#typeRadios.forEach(r => r.addEventListener('change', this.#updateProvider.bind(this)))
+
+		this.#typeRadios.forEach(r =>
+			r.addEventListener('change', () => {
+				this.#filterProvidersByType()
+				this.#updateProvider()
+			})
+		)
+	}
+
+	/**
+	 * Show only the provider-fieldset of the selected type.
+	 * If there is one option, it is automatically selected.
+	 */
+	#filterProvidersByType() {
+		let selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+		if (!selectedType && this.#typeRadios.length === 1) {
+			selectedType = this.#typeRadios[0].value
+			this.#typeRadios[0].checked = true
+		}
+		if (!selectedType) return
+
+		this.#providerHiddens.forEach(h => {
+			h.disabled = h.dataset.type !== selectedType
+		})
+
+		this.#providerSections.forEach(section => {
+			const active = section.dataset.type === selectedType
+			section.hidden = !active
+			section.setAttribute('aria-hidden', String(!active))
+
+			if (active) {
+				const radios = section.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+				if (radios.length === 1 && !radios[0].checked) {
+					radios[0].checked = true
+				}
+			}
+		})
 	}
 
 	/**
 	 * Update providerField value.
 	 */
 	#updateProvider() {
-		const selectedRadio = Array.from(this.#providerRadios).find(r => r.checked)
-		const selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+		if (!this.#providerField) return
 
-		if (this.#providerField) {
-			if (selectedRadio) {
-				this.#providerField.value = selectedRadio.value
-			} else if (selectedType) {
-				const activeHidden = Array.from(this.#providerHiddens).find(
-					h => h.dataset.type === selectedType && !h.disabled
-				)
-				if (activeHidden) {
-					this.#providerField.value = activeHidden.value
-				} else {
-					this.#providerField.value = ''
-				}
-			} else {
-				this.#providerField.value = ''
-			}
+		const selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+		if (!selectedType) {
+			this.#providerField.value = ''
+			return
 		}
+
+		const activeSection = Array.from(this.#providerSections).find(
+			fs => fs.dataset.type === selectedType && !fs.hidden
+		)
+
+		const checkedRadio =
+			activeSection?.querySelector<HTMLInputElement>('input[type="radio"]:checked') || null
+
+		if (checkedRadio) {
+			this.#providerField.value = checkedRadio.value
+			return
+		}
+
+		const singleHidden = activeSection?.querySelector<HTMLInputElement>(
+			'input[type="hidden"][name="provider"]'
+		)
+		this.#providerField.value = singleHidden?.value ?? ''
 	}
 
 	async #onSubmit(event: SubmitEvent) {
 		event.preventDefault()
 
+		this.#filterProvidersByType()
 		this.#updateProvider()
 
 		// Checks provider field value.

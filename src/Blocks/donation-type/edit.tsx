@@ -105,7 +105,7 @@ export default function Edit({
 						{attributes.showLegend && (
 							<RichText
 								multiline={false}
-								className="donation-type__legend"
+								className="fame-form__legend"
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Donation type', 'fame_lahjoitukset')}
 								allowedFormats={[]}
