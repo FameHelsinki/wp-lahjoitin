@@ -12,6 +12,7 @@ import Edit from './edit'
 import save from './save'
 import metadata from './block.json'
 import './edit.css'
+import SaveV1 from './deprecated/save-v1'
 
 /**
  * Every block starts by registering a new block type definition.
@@ -19,12 +20,19 @@ import './edit.css'
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
 registerBlockType(metadata.name, {
-	/**
-	 * @see ./edit.js
-	 */
 	edit: Edit,
-	/**
-	 * @see ./save.js
-	 */
 	save,
+
+	deprecated: [
+		{
+			attributes: {
+				settings: { type: 'array' },
+				other: { type: 'boolean' },
+				otherLabel: { type: 'string' },
+				showLegend: { type: 'boolean' },
+				legend: { type: 'string' },
+			},
+			save: SaveV1,
+		},
+	],
 } as any)

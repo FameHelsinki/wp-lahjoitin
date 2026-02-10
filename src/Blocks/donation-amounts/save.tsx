@@ -54,39 +54,40 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 
 			{settings?.map(type => (
 				<>
-					<div
-						key={type.type}
-						className={`donation-amounts donation-amounts--${type.type}`}
-						data-type={type.type}
-						data-default={type.default || undefined}
-						data-default-amount={type.defaultAmount ?? DEFAULT_AMOUNT}
-						data-min-amount={type.minAmount ?? MIN_AMOUNT}
-						data-max-amount={type.maxAmount ?? MAX_AMOUNT}
-						style={{ display: type.default ? undefined : 'none' }}
-					>
-						{type.amounts?.map(({ value }, idx) => (
-							<div className="fame-form__group" key={value}>
-								<label
-									htmlFor={`${type.type}-amount-${idx}`}
-									className="fame-form__label"
-								>
-									<input
-										data-type={type.type}
-										className="fame-form__check-input"
-										id={`${type.type}-amount-${idx}`}
-										checked={
-											value?.toString() === type.defaultAmount?.toString()
-										}
-										name={`amount-radio-${type.type}`}
-										value={value}
-										type="radio"
-									/>
-									{value}{' '}
-									<span className="donation-amounts__unit">{type.unit}</span>
-								</label>
-							</div>
-						))}
-					</div>
+					<React.Fragment key={type.type}>
+						<div
+							className={`donation-amounts donation-amounts--${type.type}`}
+							data-type={type.type}
+							data-default={type.default || undefined}
+							data-default-amount={type.defaultAmount ?? DEFAULT_AMOUNT}
+							data-min-amount={type.minAmount ?? MIN_AMOUNT}
+							data-max-amount={type.maxAmount ?? MAX_AMOUNT}
+							style={{ display: type.default ? undefined : 'none' }}
+						>
+							{type.amounts?.map(({ value }, idx) => (
+								<div className="fame-form__group" key={value}>
+									<label
+										htmlFor={`${type.type}-amount-${idx}`}
+										className="fame-form__label"
+									>
+										<input
+											data-type={type.type}
+											className="fame-form__check-input"
+											id={`${type.type}-amount-${idx}`}
+											checked={
+												value?.toString() === type.defaultAmount?.toString()
+											}
+											name={`amount-radio-${type.type}`}
+											value={value}
+											type="radio"
+										/>
+										{value}{' '}
+										<span className="donation-amounts__unit">{type.unit}</span>
+									</label>
+								</div>
+							))}
+						</div>
+					</React.Fragment>
 					{other && (
 						<div
 							className="donation-amounts__other"
