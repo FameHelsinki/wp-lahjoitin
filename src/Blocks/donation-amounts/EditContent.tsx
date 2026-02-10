@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AmountSetting, DEFAULT_AMOUNT } from '../common/donation-amount.ts'
+import { AmountSetting, DEFAULT_AMOUNT, MIN_AMOUNT, MAX_AMOUNT } from '../common/donation-amount.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 
@@ -19,24 +19,26 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 	}
 
 	return (
-		<div className={`donation-amounts donaton-amounts--${current.type}`}>
-			{current.amounts
-				?.filter(({ value }) => value)
-				?.map(({ value }) => (
-					<div className="fame-form__group" key={`${current.type}-${value}`}>
-						<div
-							className={
-								'fame-form__label' +
-								(+(current.defaultAmount ?? DEFAULT_AMOUNT) === +value!
-									? ' fame-form__label--default'
-									: '')
-							}
-						>
-							{value} <span className="donation-amounts__unit">{current.unit}</span>
+		<>
+			<div className={`donation-amounts donation-amounts--${current.type ?? ''}`}>
+				{current.amounts
+					?.filter(({ value }) => value)
+					?.map(({ value }) => (
+						<div className="fame-form__group" key={`${current.type}-${value}`}>
+							<div
+								className={
+									'fame-form__label' +
+									(+(current.defaultAmount ?? DEFAULT_AMOUNT) === +value!
+										? ' fame-form__label--default'
+										: '')
+								}
+							>
+								{value}{' '}
+								<span className="donation-amounts__unit">{current.unit}</span>
+							</div>
 						</div>
-					</div>
-				))}
-
+					))}
+			</div>
 			{other && (
 				<div className="donation-amounts__other-edit">
 					<RichText
@@ -47,14 +49,22 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 						onChange={value => setAttributes({ otherLabel: value })}
 						placeholder={__('Other amount', 'fame_lahjoitukset')}
 						value={otherLabel ?? __('Other amount', 'fame_lahjoitukset')}
+						className="donation-amounts__other-label"
 					/>
 					{/* Placeholder mimics input field in Gutenberg UI. */}
 					<div className="donation-amounts__other__placeholder">
 						{current.defaultAmount} {current.unit}
 					</div>
+					<span className="donation-amounts__minmax">
+						{__('Min', 'fame_lahjoitukset')} {current.minAmount ?? MIN_AMOUNT}
+						{current.unit ?? ''}
+						{' – '}
+						{__('Max', 'fame_lahjoitukset')} {current.maxAmount ?? MAX_AMOUNT}
+						{current.unit ?? ''}
+					</span>
 				</div>
 			)}
-		</div>
+		</>
 	)
 }
 
