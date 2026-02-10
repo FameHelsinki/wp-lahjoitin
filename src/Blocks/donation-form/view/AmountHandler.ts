@@ -41,6 +41,65 @@ export class AmountWrapper {
 		return parseInt(Array.prototype.find.call(this.#buttons, button => button.checked)?.value)
 	}
 
+	/**
+	 * Ensure that default amount is selected when save() doesn't output `checked`.
+	 * Priority:
+	 * 1) Keep existing selection (legacy checked or user interaction)
+	 * 2) Select amount from data-default-amount (and set other input to it if present)
+	 * 3) Fallback: first radio
+	 */
+	ensureSelection(): number {
+		// 1) Keep current selection if any (legacy markup might have `checked`).
+		const selected = Array.prototype.find.call(this.#buttons, button => button.checked) as
+			| HTMLInputElement
+			| undefined
+		if (selected) {
+			const amount = parseInt(selected.value) || 0
+			if (this.#other) this.#other.value = amount.toString()
+			return amount
+		}
+
+		// 2) Try default from wrapper dataset (data-default-amount).
+		const defaultAmountRaw = this.#wrapper.dataset.defaultAmount
+		const defaultAmount = defaultAmountRaw ? parseInt(defaultAmountRaw) : NaN
+
+		if (!Number.isNaN(defaultAmount) && defaultAmount > 0) {
+			// Prefer matching radio if exists.
+			const match = Array.prototype.find.call(
+				this.#buttons,
+				(button: HTMLInputElement) => button.value === defaultAmount.toString()
+			) as HTMLInputElement | undefined
+
+			if (match) {
+				match.checked = true
+				if (this.#other) this.#other.value = defaultAmount.toString()
+				return defaultAmount
+			}
+
+			// If no matching radio exists but "other" input exists, set it.
+			if (this.#other) {
+				this.#other.value = defaultAmount.toString()
+				return defaultAmount
+			}
+		}
+
+		// 3) Fallback: first radio.
+		const first = this.#buttons[0]
+		if (first) {
+			first.checked = true
+			const amount = parseInt(first.value) || 0
+			if (this.#other) this.#other.value = amount.toString()
+			return amount
+		}
+
+		// Last fallback: if only other exists, keep its value (or 0).
+		if (this.#other) {
+			return parseInt(this.#other.value) || 0
+		}
+
+		return 0
+	}
+
 	constructor(wrapper: HTMLElement, onChange: (amount: number) => void) {
 		const onChangeButton = this.#onChangeButton.bind(this)
 
@@ -283,7 +342,8 @@ export default class AmountHandler {
 		this.#wrappers.forEach(wrapper => {
 			const disabled = (wrapper.disabled = wrapper.type !== type)
 			if (!disabled) {
-				this.#onChangeAmount(wrapper.value || 0)
+				const amount = wrapper.ensureSelection()
+				this.#onChangeAmount(amount)
 			}
 		})
 	}
