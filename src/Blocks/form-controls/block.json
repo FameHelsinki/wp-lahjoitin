@@ -13,7 +13,9 @@
 			"source": "text",
 			"selector": ".fame-form__controls [type=\"submit\"]",
 			"default": "Donate"
-		}
+		},
+		"submitLabelSingle": { "type": "string", "default": "Donate" },
+		"submitLabelRecurring": { "type": "string", "default": "Donate" }
 	},
 	"supports": {
 		"multiple": false,

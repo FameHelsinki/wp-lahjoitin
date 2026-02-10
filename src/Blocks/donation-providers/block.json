@@ -13,6 +13,14 @@
 			"type": "boolean",
 			"default": true
 		},
+		"showLegendSingle": {
+			"type": "boolean",
+			"default": true
+		},
+		"showLegendRecurring": {
+			"type": "boolean",
+			"default": true
+		},
 		"legend": {
 			"type": "string",
 			"source": "text",

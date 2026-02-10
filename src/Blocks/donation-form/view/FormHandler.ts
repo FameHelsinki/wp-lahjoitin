@@ -92,6 +92,7 @@ export default class FormHandler {
 	#bindProviderEvents() {
 		this.#filterProvidersByType()
 		this.#updateProvider()
+		this.#updateSubmitLabel()
 
 		this.#providerRadios.forEach(r =>
 			r.addEventListener('change', () => {
@@ -103,6 +104,7 @@ export default class FormHandler {
 			r.addEventListener('change', () => {
 				this.#filterProvidersByType()
 				this.#updateProvider()
+				this.#updateSubmitLabel()
 			})
 		)
 	}
@@ -127,14 +129,16 @@ export default class FormHandler {
 			const active = section.dataset.type === selectedType
 			section.hidden = !active
 			section.setAttribute('aria-hidden', String(!active))
-
+			section.classList.remove('payment-method-selector--single')
 			if (active) {
 				const radios = section.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+				section.classList.toggle('payment-method-selector--single', radios.length === 1)
 				if (radios.length === 1 && !radios[0].checked) {
 					radios[0].checked = true
 				}
 			}
 		})
+		this.#updateSubmitLabel()
 	}
 
 	/**
@@ -165,6 +169,48 @@ export default class FormHandler {
 			'input[type="hidden"][name="provider"]'
 		)
 		this.#providerField.value = singleHidden?.value ?? ''
+	}
+
+	/**
+	 * Update submit button text based on selected donation type.
+	 */
+	#updateSubmitLabel() {
+		const selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+		if (!selectedType) return
+
+		this.#submit.forEach(btn => {
+			const el = btn as HTMLButtonElement | HTMLInputElement
+
+			// Button
+			if (el instanceof HTMLButtonElement) {
+				const singleLabel = el.dataset.labelSingle
+				const recurringLabel = el.dataset.labelRecurring
+
+				// fallback to old pages: current button text
+				const fallback = el.textContent?.trim() || ''
+
+				el.textContent =
+					selectedType === 'recurring'
+						? (recurringLabel ?? fallback)
+						: (singleLabel ?? fallback)
+
+				return
+			}
+
+			// <input type="submit">
+			if (el instanceof HTMLInputElement) {
+				const singleLabel = el.dataset.labelSingle
+				const recurringLabel = el.dataset.labelRecurring
+
+				// fallback to old pages: current value
+				const fallback = el.value
+
+				el.value =
+					selectedType === 'recurring'
+						? (recurringLabel ?? fallback)
+						: (singleLabel ?? fallback)
+			}
+		})
 	}
 
 	async #onSubmit(event: SubmitEvent) {

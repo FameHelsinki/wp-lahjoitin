@@ -333,6 +333,17 @@
 		border-color: var(--primary-color);
 	}
 
+	.wp-block-famehelsinki-donation-providers
+	.payment-method-selector--single
+	.fame-form__check-input:checked + .provider-type__label {
+		background: none;
+		color: inherit;
+		border-color: transparent !important;
+		box-shadow: none;
+		justify-content: left;
+		padding: 8px 0;
+	}
+
 	/* stylelint-disable-next-line no-descending-specificity */
 	.wp-block-famehelsinki-contact-form label {
 		font-size: 16px;
