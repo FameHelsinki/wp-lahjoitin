@@ -1,0 +1,69 @@
+{
+	"attributes": {
+		"settings": {
+			"type": "array",
+			"source": "query",
+			"selector": ".donation-amounts",
+			"query": {
+				"type": {
+					"type": "string",
+					"source": "attribute",
+					"attribute": "data-type"
+				},
+				"default": {
+					"type": "boolean",
+					"source": "attribute",
+					"attribute": "data-default"
+				},
+				"defaultAmount": {
+					"type": "integer",
+					"source": "attribute",
+					"attribute": "data-default-amount"
+				},
+				"unit": {
+					"type": "string",
+					"selector": ".donation-amounts__unit",
+					"source": "text"
+				},
+				"amounts": {
+					"type": "array",
+					"source": "query",
+					"selector": "input[type=\"radio\"]",
+					"query": {
+						"value": {
+							"type": "string",
+							"source": "attribute",
+							"attribute": "value"
+						}
+					}
+				}
+			}
+		},
+		"showLegend": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".fame-form__legend:not(.screen-reader-text)",
+			"attribute": "class",
+			"default": true
+		},
+		"legend": {
+			"type": "string",
+			"source": "text",
+			"selector": ".fame-form__legend",
+			"default": "Donation amount"
+		},
+		"other": {
+			"type": "boolean",
+			"source": "attribute",
+			"selector": ".donation-amounts__other",
+			"attribute": "class",
+			"default": false
+		},
+		"otherLabel": {
+			"type": "string",
+			"source": "text",
+			"selector": ".donation-amounts__other label",
+			"default": "Other amount"
+		}
+	}
+}

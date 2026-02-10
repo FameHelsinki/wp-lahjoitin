@@ -74,9 +74,6 @@ export default function save({ attributes }: SaveProps<SaveAttributes>): React.J
 										data-type={type.type}
 										className="fame-form__check-input"
 										id={`${type.type}-amount-${idx}`}
-										checked={
-											value?.toString() === type.defaultAmount?.toString()
-										}
 										name={`amount-radio-${type.type}`}
 										value={value}
 										type="radio"

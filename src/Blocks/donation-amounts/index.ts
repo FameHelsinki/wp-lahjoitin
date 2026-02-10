@@ -13,6 +13,8 @@ import save from './save'
 import metadata from './block.json'
 import './edit.css'
 import SaveV1 from './deprecated/save-v1'
+import BlockV1 from './deprecated/block-v1.json'
+import { MAX_AMOUNT, MIN_AMOUNT } from '../common/donation-amount'
 
 /**
  * Every block starts by registering a new block type definition.
@@ -25,14 +27,22 @@ registerBlockType(metadata.name, {
 
 	deprecated: [
 		{
-			attributes: {
-				settings: { type: 'array' },
-				other: { type: 'boolean' },
-				otherLabel: { type: 'string' },
-				showLegend: { type: 'boolean' },
-				legend: { type: 'string' },
-			},
+			attributes: BlockV1.attributes,
 			save: SaveV1,
+			migrate: (attrs: any) => {
+				const settings = Array.isArray(attrs?.settings)
+					? attrs.settings.map((t: any) => ({
+							...t,
+							minAmount: t?.minAmount ?? MIN_AMOUNT,
+							maxAmount: t?.maxAmount ?? MAX_AMOUNT,
+						}))
+					: attrs?.settings
+
+				return {
+					...attrs,
+					settings,
+				}
+			},
 		},
 	],
 } as any)
