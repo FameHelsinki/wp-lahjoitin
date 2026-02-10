@@ -185,19 +185,30 @@ export default class FormHandler {
 			if (el instanceof HTMLButtonElement) {
 				const singleLabel = el.dataset.labelSingle
 				const recurringLabel = el.dataset.labelRecurring
-				if (!singleLabel || !recurringLabel) return
 
-				el.textContent = selectedType === 'recurring' ? recurringLabel : singleLabel
+				// fallback to old pages: current button text
+				const fallback = el.textContent?.trim() || ''
+
+				el.textContent =
+					selectedType === 'recurring'
+						? (recurringLabel ?? fallback)
+						: (singleLabel ?? fallback)
+
 				return
 			}
 
-			// Input type="submit" fallback
+			// <input type="submit">
 			if (el instanceof HTMLInputElement) {
 				const singleLabel = el.dataset.labelSingle
 				const recurringLabel = el.dataset.labelRecurring
-				if (!singleLabel || !recurringLabel) return
 
-				el.value = selectedType === 'recurring' ? recurringLabel : singleLabel
+				// fallback to old pages: current value
+				const fallback = el.value
+
+				el.value =
+					selectedType === 'recurring'
+						? (recurringLabel ?? fallback)
+						: (singleLabel ?? fallback)
 			}
 		})
 	}
