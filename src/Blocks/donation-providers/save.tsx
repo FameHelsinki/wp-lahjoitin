@@ -7,7 +7,10 @@ type Provider = { value: string; label: string; type: string }
 type Attrs = {
 	providers?: Provider[]
 	legend?: string
+	// old (fallback)
 	showLegend?: boolean
+	showLegendSingle?: boolean
+	showLegendRecurring?: boolean
 }
 
 /**
@@ -18,7 +21,14 @@ type Attrs = {
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
  */
 export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Element {
-	const { providers = [], legend = 'Payment provider', showLegend = true } = attributes
+	const {
+		providers = [],
+		legend = 'Payment provider',
+		showLegend = true,
+		showLegendSingle,
+		showLegendRecurring,
+	} = attributes
+
 	const blockProps = useBlockProps.save()
 
 	const grouped = providers.reduce<Record<string, Provider[]>>((acc, p) => {
@@ -26,10 +36,17 @@ export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Elemen
 		return acc
 	}, {})
 
+	const isLegendShownForType = (type: string) => {
+		if (type === 'single') return showLegendSingle ?? showLegend ?? true
+		if (type === 'recurring') return showLegendRecurring ?? showLegend ?? true
+		return showLegend ?? true
+	}
+
 	return (
 		<div {...blockProps}>
 			{Object.entries(grouped).map(([type, list]) => {
 				const single = list.length === 1
+				const showForType = isLegendShownForType(type)
 
 				return (
 					<fieldset
@@ -37,15 +54,13 @@ export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Elemen
 						data-type={type}
 						key={type}
 					>
-						{showLegend && (
-							<RichText.Content
-								tagName="legend"
-								className={
-									'fame-form__legend' + (showLegend ? '' : ' screen-reader-text')
-								}
-								value={legend ?? ''}
-							/>
-						)}
+						<RichText.Content
+							tagName="legend"
+							className={
+								'fame-form__legend' + (showForType ? '' : ' screen-reader-text')
+							}
+							value={legend ?? ''}
+						/>
 
 						{single && (
 							<input
@@ -56,32 +71,39 @@ export default function Save({ attributes }: SaveProps<Attrs>): React.JSX.Elemen
 							/>
 						)}
 
-						{list.map(provider => (
-							<div
-								className="fame-form__group"
-								key={`${provider.type}-${provider.value}`}
-								data-type={provider.type}
-							>
-								<label
-									htmlFor={`payment_method_${provider.type}_${provider.value}`}
+						{list.map(provider => {
+							const hideSingleLabel = single && !showForType
+
+							return (
+								<div
+									className={
+										'fame-form__group' +
+										(hideSingleLabel ? ' screen-reader-text' : '')
+									}
+									key={`${provider.type}-${provider.value}`}
+									data-type={provider.type}
 								>
-									<input
-										className="fame-form__check-input"
-										type="radio"
-										id={`payment_method_${provider.type}_${provider.value}`}
-										name="provider"
-										value={provider.value}
-										data-type={provider.type}
-										required={true}
-									/>
-									<RichText.Content
-										tagName="span"
-										className="provider-type__label"
-										value={provider.label}
-									/>
-								</label>
-							</div>
-						))}
+									<label
+										htmlFor={`payment_method_${provider.type}_${provider.value}`}
+									>
+										<input
+											className="fame-form__check-input"
+											type="radio"
+											id={`payment_method_${provider.type}_${provider.value}`}
+											name="provider"
+											value={provider.value}
+											data-type={provider.type}
+											required={true}
+										/>
+										<RichText.Content
+											tagName="span"
+											className="provider-type__label"
+											value={provider.label}
+										/>
+									</label>
+								</div>
+							)
+						})}
 					</fieldset>
 				)
 			})}

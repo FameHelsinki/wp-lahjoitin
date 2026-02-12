@@ -11,7 +11,11 @@ export type FlatProvider = Provider & { type: string }
 export type Attributes = {
 	legend?: string
 	providers?: FlatProvider[]
+
+	// old (fallback)
 	showLegend?: boolean
+	showLegendSingle?: boolean
+	showLegendRecurring?: boolean
 }
 
 /**
@@ -19,7 +23,8 @@ export type Attributes = {
  * editor. This represents what the editor will render when the block is used.
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- */ export default function Edit({
+ */
+export default function Edit({
 	attributes,
 	setAttributes,
 	context,
@@ -29,6 +34,8 @@ export type Attributes = {
 		providers = [],
 		legend = __('Provider type', 'fame_lahjoitukset'),
 		showLegend = true,
+		showLegendSingle,
+		showLegendRecurring,
 	} = attributes
 
 	const donationTypes: string[] = useMemo(
@@ -37,8 +44,25 @@ export type Attributes = {
 	)
 
 	const currentType = useCurrentDonationType(clientId)
-
 	const blockProps = useBlockProps()
+
+	const isLegendShownForType = (type: string) => {
+		if (type === 'single') return showLegendSingle ?? showLegend ?? true
+		if (type === 'recurring') return showLegendRecurring ?? showLegend ?? true
+		return showLegend ?? true
+	}
+
+	const setLegendShownForType = (type: string, checked: boolean) => {
+		if (type === 'single') {
+			setAttributes({ showLegendSingle: checked })
+			return
+		}
+		if (type === 'recurring') {
+			setAttributes({ showLegendRecurring: checked })
+			return
+		}
+		setAttributes({ showLegend: checked })
+	}
 
 	useEffect(() => {
 		const missing = donationTypes.filter(type => !providers.some(p => p.type === type))
@@ -107,9 +131,17 @@ export type Attributes = {
 			<InspectorControls>
 				{donationTypes.map(type => {
 					const selected = new Set((grouped[type] ?? []).map(p => p.value))
+					const showForType = isLegendShownForType(type)
+
 					return (
 						<PanelBody title={getDonationLabel(type)} key={type}>
 							<Flex direction="column" gap={2}>
+								<ToggleControl
+									label={__('Show legend', 'fame_lahjoitukset')}
+									checked={showForType}
+									onChange={checked => setLegendShownForType(type, checked)}
+								/>
+
 								{PROVIDERS.filter(p => p.types.includes(type)).map(p => (
 									<CheckboxControl
 										key={p.value}
@@ -118,6 +150,7 @@ export type Attributes = {
 										onChange={checked => updateProvider(type, p.value, checked)}
 									/>
 								))}
+
 								{(grouped[type] ?? []).map(p => (
 									<TextControl
 										key={p.value}
@@ -132,11 +165,6 @@ export type Attributes = {
 				})}
 
 				<PanelBody title={__('General settings', 'fame_lahjoitukset')}>
-					<ToggleControl
-						label={__('Show legend', 'fame_lahjoitukset')}
-						checked={showLegend}
-						onChange={checked => setAttributes({ showLegend: checked })}
-					/>
 					<TextControl
 						label={__('Legend', 'fame_lahjoitukset')}
 						value={legend}
@@ -150,6 +178,7 @@ export type Attributes = {
 					if (currentType && type !== currentType) return null
 
 					const isSingle = list.length === 1
+					const showForType = isLegendShownForType(type)
 
 					return (
 						<fieldset
@@ -158,7 +187,7 @@ export type Attributes = {
 							style={{ width: '100%', boxSizing: 'border-box' }}
 							data-type={type}
 						>
-							{showLegend && (
+							{showForType && (
 								<RichText
 									multiline={false}
 									className="fame-form__legend"
@@ -170,44 +199,48 @@ export type Attributes = {
 								/>
 							)}
 
-							{isSingle ? (
-								<div className="fame-form__group" data-type={type}>
-									<RichText
-										tagName="span"
-										className="provider-type__label"
-										value={list[0].label}
-										onChange={val => updateLabel(type, list[0].value, val)}
-										allowedFormats={[]}
-										placeholder={__('Label', 'fame_lahjoitukset')}
-									/>
-								</div>
-							) : (
-								list.map(p => (
-									<div
-										className="fame-form__group"
-										key={`${type}-${p.value}`}
-										data-type={type}
-									>
-										<label htmlFor={`payment_method_${type}_${p.value}`}>
-											<input
-												type="radio"
-												id={`payment_method_${type}_${p.value}`}
-												name={`payment_method_${type}`}
-												value={p.value}
-												disabled
-											/>
+							{isSingle
+								? showForType && (
+										<div className="fame-form__group" data-type={type}>
 											<RichText
 												tagName="span"
 												className="provider-type__label"
-												value={p.label}
-												onChange={val => updateLabel(type, p.value, val)}
+												value={list[0].label}
+												onChange={val =>
+													updateLabel(type, list[0].value, val)
+												}
 												allowedFormats={[]}
 												placeholder={__('Label', 'fame_lahjoitukset')}
 											/>
-										</label>
-									</div>
-								))
-							)}
+										</div>
+									)
+								: list.map(p => (
+										<div
+											className="fame-form__group"
+											key={`${type}-${p.value}`}
+											data-type={type}
+										>
+											<label htmlFor={`payment_method_${type}_${p.value}`}>
+												<input
+													type="radio"
+													id={`payment_method_${type}_${p.value}`}
+													name={`payment_method_${type}`}
+													value={p.value}
+													disabled
+												/>
+												<RichText
+													tagName="span"
+													className="provider-type__label"
+													value={p.label}
+													onChange={val =>
+														updateLabel(type, p.value, val)
+													}
+													allowedFormats={[]}
+													placeholder={__('Label', 'fame_lahjoitukset')}
+												/>
+											</label>
+										</div>
+									))}
 						</fieldset>
 					)
 				})}
