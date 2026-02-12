@@ -21,6 +21,11 @@ export class AmountWrapper {
 		if (this.#otherWrapper) {
 			this.#otherWrapper.style.display = value ? 'none' : ''
 		}
+
+		// When hiding this wrapper (type switch), clear its invalid state & re-enable submit.
+		if (value) {
+			this.#resetInvalid()
+		}
 	}
 
 	get disabled() {
@@ -41,6 +46,16 @@ export class AmountWrapper {
 		return parseInt(Array.prototype.find.call(this.#buttons, button => button.checked)?.value)
 	}
 
+	#resetInvalid() {
+		this.#invalidOther = false
+
+		if (this.#other) {
+			this.#clearError(this.#other)
+		}
+
+		this.#setSubmitDisabled(false)
+	}
+
 	/**
 	 * Ensure that default amount is selected when save() doesn't output `checked`.
 	 * Priority:
@@ -55,7 +70,10 @@ export class AmountWrapper {
 			| undefined
 		if (selected) {
 			const amount = parseInt(selected.value) || 0
-			if (this.#other) this.#other.value = amount.toString()
+			if (this.#other) {
+				this.#other.value = amount.toString()
+				this.#resetInvalid()
+			}
 			return amount
 		}
 
@@ -72,13 +90,17 @@ export class AmountWrapper {
 
 			if (match) {
 				match.checked = true
-				if (this.#other) this.#other.value = defaultAmount.toString()
+				if (this.#other) {
+					this.#other.value = defaultAmount.toString()
+					this.#resetInvalid()
+				}
 				return defaultAmount
 			}
 
 			// If no matching radio exists but "other" input exists, set it.
 			if (this.#other) {
 				this.#other.value = defaultAmount.toString()
+				this.#resetInvalid()
 				return defaultAmount
 			}
 		}
@@ -88,7 +110,10 @@ export class AmountWrapper {
 		if (first) {
 			first.checked = true
 			const amount = parseInt(first.value) || 0
-			if (this.#other) this.#other.value = amount.toString()
+			if (this.#other) {
+				this.#other.value = amount.toString()
+				this.#resetInvalid()
+			}
 			return amount
 		}
 
