@@ -34,3 +34,18 @@ if (!file_exists(LAHJOITUKSET_PLUGIN_PATH . 'vendor/autoload.php')) {
 require_once LAHJOITUKSET_PLUGIN_PATH . 'vendor/autoload.php';
 
 new Plugin();
+
+add_filter(
+    'plugin_action_links_' . plugin_basename(__FILE__),
+    static function (array $links): array {
+        $settings_link = sprintf(
+            '<a href="%s">%s</a>',
+            esc_url(admin_url('options-general.php?page=lahjoitukset')),
+            esc_html(__('Settings', 'fame_lahjoitukset'))
+        );
+
+        array_unshift($links, $settings_link);
+
+        return $links;
+    }
+);
