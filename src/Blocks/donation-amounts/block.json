@@ -12,94 +12,42 @@
 	"attributes": {
 		"settings": {
 			"type": "array",
-			"source": "query",
-			"selector": ".donation-amounts",
-			"query": {
-				"type": {
-					"type": "string",
-					"source": "attribute",
-					"attribute": "data-type"
+			"default": [
+				{
+					"type": "single",
+					"default": true,
+					"defaultAmount": 10,
+					"minAmount": 10,
+					"maxAmount": 10000,
+					"unit": "€",
+					"amounts": [{ "value": 10 }, { "value": 20 }, { "value": 30 }]
 				},
-				"default": {
-					"type": "boolean",
-					"source": "attribute",
-					"attribute": "data-default"
-				},
-				"defaultAmount": {
-					"type": "integer",
-					"source": "attribute",
-					"attribute": "data-default-amount"
-				},
-				"minAmount": {
-					"type": "integer",
-					"source": "attribute",
-					"attribute": "data-min-amount"
-				},
-				"maxAmount": {
-					"type": "integer",
-					"source": "attribute",
-					"attribute": "data-max-amount"
-				},
-				"unit": {
-					"type": "string",
-					"selector": ".donation-amounts__unit",
-					"source": "text"
-				},
-				"amounts": {
-					"type": "array",
-					"source": "query",
-					"selector": "input[type=\"radio\"]",
-					"query": {
-						"value": {
-							"type": "string",
-							"source": "attribute",
-							"attribute": "value"
-						}
-					}
+				{
+					"type": "recurring",
+					"default": false,
+					"defaultAmount": 10,
+					"minAmount": 10,
+					"maxAmount": 10000,
+					"unit": "€",
+					"amounts": [{ "value": 10 }, { "value": 20 }, { "value": 30 }]
 				}
-			}
+			]
 		},
-		"showLegend": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": ".fame-form__legend:not(.screen-reader-text)",
-			"attribute": "class",
-			"default": true
-		},
-		"legend": {
-			"type": "string",
-			"source": "text",
-			"selector": ".fame-form__legend",
-			"default": "Donation amount"
-		},
-		"other": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": ".donation-amounts__other",
-			"attribute": "class",
-			"default": false
-		},
-		"otherLabel": {
-			"type": "string",
-			"source": "text",
-			"selector": ".donation-amounts__other label",
-			"default": "Other amount"
-		}
+		"showLegend": { "type": "boolean", "default": true },
+		"legend": { "type": "string", "default": "Donation amount" },
+		"other": { "type": "boolean", "default": false },
+		"otherLabel": { "type": "string", "default": "Other amount" }
 	},
 	"supports": {
 		"multiple": false,
-		"color": {
-			"background": false,
-			"text": true
-		},
+		"color": { "background": false, "text": true },
 		"html": false,
-		"typography": {
-			"fontSize": true
-		}
+		"typography": { "fontSize": true }
 	},
 	"icon": "database",
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
 }

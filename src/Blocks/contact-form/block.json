@@ -9,130 +9,42 @@
 	"parent": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
-		"showLegend": {
-			"type": "boolean",
-			"default": true
-		},
-		"legend": {
-			"type": "string",
-			"source": "text",
-			"selector": "legend.fame-form__legend",
-			"default": "Contacts"
-		},
-		"contact": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": ".fame-form__group--required:has(input[name=\"email\"])",
-			"attribute": "class",
-			"default": false
-		},
-		"showAddress": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": "input[name=\"address\"]",
-			"attribute": "name",
-			"default": true
-		},
-		"showPhone": {
-			"type": "boolean",
-			"source": "attribute",
-			"selector": "input[name=\"phone\"]",
-			"attribute": "name",
-			"default": true
-		},
-		"first_name_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-first_name\"]",
-			"default": "First name"
-		},
-		"last_name_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-last_name\"]",
-			"default": "Last name"
-		},
-		"name_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-name-help",
-			"default": ""
-		},
-		"email_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-email\"]",
-			"default": "Email"
-		},
-		"email_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-email-help",
-			"default": ""
-		},
-		"address_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-address\"]",
-			"default": "Address"
-		},
-		"address_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-address-help",
-			"default": ""
-		},
-		"city_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-city\"]",
-			"default": "City"
-		},
-		"city_postal_code_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-city_postal_code-help",
-			"default": "City"
-		},
-		"postal_code_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-postal_code\"]",
-			"default": "Postal code"
-		},
-		"postal_code_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-postal_code-help",
-			"default": "Postal code"
-		},
-		"phone_label": {
-			"type": "string",
-			"source": "html",
-			"selector": ".fame-form__label[for=\"contact-phone\"]",
-			"default": "Phone"
-		},
-		"phone_help": {
-			"type": "string",
-			"source": "html",
-			"selector": "#contact-phone-help",
-			"default": ""
-		}
+		"showLegend": { "type": "boolean", "default": true },
+		"legend": { "type": "string", "default": "Contacts" },
+
+		"contact": { "type": "boolean", "default": false },
+		"showAddress": { "type": "boolean", "default": true },
+		"showPhone": { "type": "boolean", "default": true },
+
+		"first_name_label": { "type": "string", "default": "First name" },
+		"last_name_label": { "type": "string", "default": "Last name" },
+		"name_help": { "type": "string", "default": "" },
+
+		"email_label": { "type": "string", "default": "Email" },
+		"email_help": { "type": "string", "default": "" },
+
+		"address_label": { "type": "string", "default": "Address" },
+		"address_help": { "type": "string", "default": "" },
+
+		"city_label": { "type": "string", "default": "City" },
+		"city_postal_code_help": { "type": "string", "default": "City" },
+
+		"postal_code_label": { "type": "string", "default": "Postal code" },
+		"postal_code_help": { "type": "string", "default": "Postal code" },
+
+		"phone_label": { "type": "string", "default": "Phone" },
+		"phone_help": { "type": "string", "default": "" }
 	},
 	"supports": {
 		"multiple": false,
-		"color": {
-			"background": false,
-			"text": true
-		},
+		"color": { "background": false, "text": true },
 		"html": false,
-		"typography": {
-			"fontSize": true
-		}
+		"typography": { "fontSize": true }
 	},
 	"icon": "id",
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css"
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
 }
