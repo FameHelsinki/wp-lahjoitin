@@ -56,7 +56,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						multiline={false}
 						className="fame-form__legend"
 						aria-label={__('Legend', 'fame_lahjoitukset')}
-						placeholder={__('Amount', 'fame_lahjoitukset')}
+						placeholder={__('Contacts', 'fame_lahjoitukset')}
 						allowedFormats={[]}
 						value={legend}
 						onChange={value => setAttributes({ legend: value })}
