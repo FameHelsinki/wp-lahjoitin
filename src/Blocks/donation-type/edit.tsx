@@ -28,19 +28,26 @@ export default function Edit({
 	const { types, value } = attributes
 
 	useEffect(() => {
+		const enabled =
+			Array.isArray(enabledTypes) && enabledTypes.length > 0
+				? enabledTypes
+				: DONATION_TYPES.map(t => t.value)
+
 		// Calculate updated types.
 		//  - enabled types might have changed.
 		//  - enabled types might have been removed.
 		const update = DONATION_TYPES
 			// Filter all enabled types.
-			.filter(({ value }) => enabledTypes?.includes(value))
+			.filter(({ value }) => enabled.includes(value))
 			// Use existing type from if it exists, otherwise add
 			// new with default label from DONATION_TYPES array.
 			.map(t => types?.find(({ value }) => t.value === value) ?? t)
 
-		// Check if update includes current default value.
-		// If not, set first element as the new default value.
-		const defaultValue = update?.find(type => type.value === value)?.value || update?.[0]?.value
+		// Calculate default value. Use existing if it exists in updated list, otherwise use first from updated list or fallback to default.
+		const defaultValue =
+			update?.find(type => type.value === value)?.value ??
+			update?.[0]?.value ??
+			DEFAULT_DONATION_TYPE.value
 
 		// Update if the list has changed. Calling setAttributes
 		// without this check leads to infinite recursion.
