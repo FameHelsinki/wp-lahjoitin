@@ -192,7 +192,7 @@ export default function Edit({
 									multiline={false}
 									className="fame-form__legend"
 									aria-label={__('Legend', 'fame_lahjoitukset')}
-									placeholder={__('Donation type', 'fame_lahjoitukset')}
+									placeholder={__('Donation provider', 'fame_lahjoitukset')}
 									allowedFormats={[]}
 									value={attributes.legend ?? ''}
 									onChange={le => setAttributes({ legend: le })}
