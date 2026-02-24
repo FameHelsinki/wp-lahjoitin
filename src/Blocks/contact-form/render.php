@@ -15,6 +15,11 @@ defined('ABSPATH') || exit;
 /** @var array<string, mixed>|null $attributes */
 $attributes = $attributes ?? [];
 
+$show = array_key_exists('show', $attributes) ? (bool) $attributes['show'] : true;
+if (!$show) {
+  return;
+}
+
 $showLegend  = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
 $legend      = isset($attributes['legend']) && trim((string) $attributes['legend']) !== ''
   ? (string) $attributes['legend']

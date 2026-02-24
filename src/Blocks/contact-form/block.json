@@ -33,7 +33,9 @@
 		"postal_code_help": { "type": "string", "default": "Postal code" },
 
 		"phone_label": { "type": "string", "default": "Phone" },
-		"phone_help": { "type": "string", "default": "" }
+		"phone_help": { "type": "string", "default": "" },
+
+		"show": { "type": "boolean", "default": true }
 	},
 	"supports": {
 		"multiple": false,
@@ -45,6 +47,5 @@
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
-	"style": "file:./style-index.css",
 	"render": "file:./render.php"
 }
