@@ -7,31 +7,28 @@
 	"category": "widgets",
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
-	"allowedBlocks": ["core/paragraph", "core/group"],
 	"providesContext": {
 		"famehelsinki/donation-types": "types"
 	},
 	"attributes": {
 		"types": {
-			"type": "array"
+			"type": "array",
+			"default": []
+		},
+		"colsDesktop": {
+			"type": "number",
+			"default": 3
 		},
 		"token": {
 			"type": "boolean",
-			"source": "attribute",
-			"selector": ".fame-form",
-			"attribute": "data-token"
+			"default": false
 		},
 		"campaign": {
 			"type": "string",
-			"source": "attribute",
-			"selector": ".fame-form input[name=\"campaign\"]",
-			"attribute": "value"
+			"default": ""
 		},
 		"returnAddress": {
 			"type": "string",
-			"source": "attribute",
-			"selector": ".fame-form input[name=\"return_address\"]",
-			"attribute": "value",
 			"default": "/"
 		},
 		"primaryColor": {
@@ -57,10 +54,6 @@
 		"borderWidth": {
 			"type": "string",
 			"default": "1px"
-		},
-		"useModernStyle": {
-			"type": "boolean",
-			"default": true
 		}
 	},
 	"supports": {
@@ -77,10 +70,12 @@
 			"fontSize": true
 		}
 	},
+	"allowedBlocks": ["core/columns"],
 	"icon": "money",
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"viewScript": "file:./view.js",
-	"style": "file:./view.css"
+	"style": "file:./view.css",
+	"render": "file:./render.php"
 }
