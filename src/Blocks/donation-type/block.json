@@ -11,7 +11,8 @@
 		"showLegend": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "Donation type" },
 		"value": { "type": "string", "default": "" },
-		"types": { "type": "array", "default": [] }
+		"types": { "type": "array", "default": [] },
+		"legendAlign": { "type": "string", "default": "left" }
 	},
 	"usesContext": ["famehelsinki/donation-types"],
 	"supports": {

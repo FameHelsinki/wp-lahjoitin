@@ -20,6 +20,21 @@ $legend = (isset($attributes['legend']) && trim((string) $attributes['legend']) 
   ? (string) $attributes['legend']
   : __('Donation type', 'fame_lahjoitukset');
 
+$legend_align = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+
+$legend_classes = ['fame-form__legend'];
+
+if (!$show_legend) {
+  $legend_classes[] = 'screen-reader-text';
+}
+
+if ($legend_align) {
+  $legend_classes[] = 'has-text-align-' . $legend_align;
+}
+
+// Ensures alignment works even when legend is rendered as a <div> in the hidden branch.
+$legend_style = $legend_align !== '' ? 'text-align:' . esc_attr($legend_align) . ';' : '';
+
 $saved_types = (isset($attributes['types']) && is_array($attributes['types'])) ? $attributes['types'] : [];
 $saved_value = isset($attributes['value']) ? (string) $attributes['value'] : '';
 
@@ -81,11 +96,20 @@ $wrapper_attrs = get_block_wrapper_attributes(['class' => $classes]);
   $val = (string) ($types[0]['value'] ?? $default_value);
 ?>
   <div <?php echo $wrapper_attrs; ?>>
+    <div
+      class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>"
+      style="<?php echo esc_attr($legend_style); ?>">
+      <?php echo esc_html($legend); ?>
+    </div>
+
     <input type="hidden" name="type" value="<?php echo esc_attr($val); ?>" />
   </div>
 <?php else : ?>
   <fieldset <?php echo $wrapper_attrs; ?>>
-    <legend class="fame-form__legend<?php echo $show_legend ? '' : ' screen-reader-text'; ?>">
+
+    <legend
+      class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>"
+      style="<?php echo esc_attr($legend_style); ?>">
       <?php echo esc_html($legend); ?>
     </legend>
 
