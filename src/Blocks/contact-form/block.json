@@ -35,7 +35,8 @@
 		"phone_label": { "type": "string", "default": "Phone" },
 		"phone_help": { "type": "string", "default": "" },
 
-		"show": { "type": "boolean", "default": true }
+		"show": { "type": "boolean", "default": true },
+		"legendAlign": { "type": "string", "default": "left" }
 	},
 	"supports": {
 		"multiple": false,

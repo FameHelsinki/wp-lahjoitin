@@ -1,6 +1,12 @@
 import React from 'react'
 import { __ } from '@wordpress/i18n'
-import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
+import {
+	InspectorControls,
+	RichText,
+	useBlockProps,
+	AlignmentToolbar,
+	BlockControls,
+} from '@wordpress/block-editor'
 import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
 import ContactInputControl from './ContactInputControl.tsx'
 import ContactInputGroup from './ContactInputGroup.tsx'
@@ -13,11 +19,17 @@ import { EditProps } from '../common/types.ts'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
-	const { contact, showAddress, showPhone, showLegend, legend } = attributes
+	const { contact, showAddress, showPhone, showLegend, legend, legendAlign = 'left' } = attributes
 	const { show = true } = attributes as { show?: boolean }
 
 	return (
 		<>
+			<BlockControls group="block">
+				<AlignmentToolbar
+					value={legendAlign}
+					onChange={next => setAttributes({ legendAlign: next || 'left' })}
+				/>
+			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
@@ -53,9 +65,17 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 								label={__('Show legend', 'fame_lahjoitukset')}
 								checked={showLegend}
 								onChange={checked => setAttributes({ showLegend: checked })}
+								help={__(
+									'If disabled, the legend is marked visually hidden.',
+									'fame_lahjoitukset'
+								)}
 							/>
 							<TextControl
 								label={__('Legend', 'fame_lahjoitukset')}
+								help={__(
+									'Description for screen readers (for accessibility).',
+									'fame_lahjoitukset'
+								)}
 								value={legend}
 								onChange={value => setAttributes({ legend: value })}
 							/>
@@ -70,12 +90,22 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						{showLegend && (
 							<RichText
 								multiline={false}
-								className="fame-form__legend"
+								tagName="legend"
+								className={[
+									'fame-form__legend',
+									!showLegend ? 'screen-reader-text' : '',
+									legendAlign ? `has-text-align-${legendAlign}` : '',
+								]
+									.filter(Boolean)
+									.join(' ')}
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Contacts', 'fame_lahjoitukset')}
 								allowedFormats={[]}
 								value={legend}
 								onChange={value => setAttributes({ legend: value })}
+								style={{
+									textAlign: legendAlign as React.CSSProperties['textAlign'],
+								}}
 							/>
 						)}
 						<ContactInputGroup

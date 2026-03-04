@@ -97,9 +97,22 @@ $render_group = static function (array $attrs, string $groupName, array $control
 
 ?>
 <fieldset <?php echo $wrapper_attrs; ?><?php echo $contact ? ' data-contact="1"' : ''; ?>>
-  <?php if ($showLegend) : ?>
-    <legend class="fame-form__legend"><?php echo wp_kses_post($legend); ?></legend>
-  <?php endif; ?>
+  <?php
+  $legend_align = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+
+  $legend_classes = ['fame-form__legend'];
+
+  if (!$showLegend) {
+    $legend_classes[] = 'screen-reader-text';
+  }
+
+  if ($legend_align) {
+    $legend_classes[] = 'has-text-align-' . $legend_align;
+  }
+  ?>
+  <legend class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>">
+    <?php echo wp_kses_post($legend); ?>
+  </legend>
 
   <?php
   $render_group($attributes, 'name', [
