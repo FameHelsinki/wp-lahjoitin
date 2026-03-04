@@ -36,7 +36,12 @@
 		"showLegend": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "Donation amount" },
 		"other": { "type": "boolean", "default": false },
-		"otherLabel": { "type": "string", "default": "Other amount" }
+		"otherLabel": { "type": "string", "default": "Other amount" },
+		"legendAlign": { "type": "string", "default": "left" },
+		"colsAmounts": {
+			"type": "number",
+			"default": 3
+		}
 	},
 	"supports": {
 		"multiple": false,

@@ -15,21 +15,52 @@ defined('ABSPATH') || exit;
 /** @var array<string, mixed>|null $attributes */
 $attributes = $attributes ?? [];
 
-$settings   = isset($attributes['settings']) && is_array($attributes['settings']) ? $attributes['settings'] : [];
-$other      = array_key_exists('other', $attributes) ? (bool) $attributes['other'] : false;
-$otherLabel = isset($attributes['otherLabel']) ? (string) $attributes['otherLabel'] : __('Other amount', 'fame_lahjoitukset');
-$showLegend = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
-$legend     = isset($attributes['legend']) && trim((string)$attributes['legend']) !== ''
-  ? (string) $attributes['legend']
-  : __('Donation amount', 'fame_lahjoitukset');
+/**
+ * Attribute helpers.
+ */
+$attr_bool = static function (string $key, bool $fallback = false) use ($attributes): bool {
+  return array_key_exists($key, $attributes) ? (bool) $attributes[$key] : $fallback;
+};
+
+$attr_string = static function (string $key, string $fallback = '') use ($attributes): string {
+  if (!isset($attributes[$key])) {
+    return $fallback;
+  }
+
+  $value = (string) $attributes[$key];
+  return trim($value) !== '' ? $value : $fallback;
+};
+
+$settings     = isset($attributes['settings']) && is_array($attributes['settings']) ? $attributes['settings'] : [];
+$other        = $attr_bool('other', false);
+$other_label  = $attr_string('otherLabel', __('Other amount', 'fame_lahjoitukset'));
+$show_legend  = $attr_bool('showLegend', true);
+$legend       = $attr_string('legend', __('Donation amount', 'fame_lahjoitukset'));
+$legend_align = $attr_string('legendAlign', 'left');
+
+$legend_classes = ['fame-form__legend'];
+
+if (!$show_legend) {
+  $legend_classes[] = 'screen-reader-text';
+}
+
+if ($legend_align !== '') {
+  $legend_classes[] = 'has-text-align-' . $legend_align;
+}
 
 /**
  * Safe int helper.
  */
 $int = static function ($value, int $fallback): int {
-  if (is_int($value)) return $value;
-  if (is_string($value) && $value !== '' && is_numeric($value)) return (int) $value;
-  if (is_float($value)) return (int) $value;
+  if (is_int($value)) {
+    return $value;
+  }
+  if (is_string($value) && $value !== '' && is_numeric($value)) {
+    return (int) $value;
+  }
+  if (is_float($value)) {
+    return (int) $value;
+  }
   return $fallback;
 };
 
@@ -41,50 +72,66 @@ $str = static function ($value, string $fallback = ''): string {
 };
 
 /**
+ * Safe int attribute helper.
+ */
+$attr_int = static function (string $key, int $fallback) use ($attributes, $int): int {
+  if (!array_key_exists($key, $attributes)) {
+    return $fallback;
+  }
+  return $int($attributes[$key], $fallback);
+};
+
+$cols_amounts = $attr_int('colsAmounts', 3);
+$cols_amounts = max(1, min(3, $cols_amounts));
+
+/**
  * Find default type setting.
  */
-$defaultSetting = null;
+$default_setting = null;
 foreach ($settings as $s) {
   if (is_array($s) && !empty($s['default'])) {
-    $defaultSetting = $s;
+    $default_setting = $s;
     break;
   }
 }
-if (!$defaultSetting && !empty($settings) && is_array($settings[0])) {
-  $defaultSetting = $settings[0];
+if (!$default_setting && !empty($settings) && is_array($settings[0])) {
+  $default_setting = $settings[0];
 }
 
 $DEFAULT_AMOUNT = 10;
-$MIN_AMOUNT = 10;
-$MAX_AMOUNT = 10000;
-$DEFAULT_UNIT = '€';
+$MIN_AMOUNT     = 10;
+$MAX_AMOUNT     = 10000;
+$DEFAULT_UNIT   = '€';
 
-$defaultAmountEuros = $defaultSetting ? $int($defaultSetting['defaultAmount'] ?? null, $DEFAULT_AMOUNT) : $DEFAULT_AMOUNT;
-$defaultAmountCents = $defaultAmountEuros * 100;
+$default_amount_euros = $default_setting ? $int($default_setting['defaultAmount'] ?? null, $DEFAULT_AMOUNT) : $DEFAULT_AMOUNT;
+$default_amount_cents = $default_amount_euros * 100;
 
 // Visible if "other" or any type has amount buttons
-$hasButtons = false;
+$has_buttons = false;
 foreach ($settings as $s) {
   if (is_array($s) && !empty($s['amounts']) && is_array($s['amounts'])) {
     foreach ($s['amounts'] as $a) {
       if (is_array($a) && !empty($a['value'])) {
-        $hasButtons = true;
+        $has_buttons = true;
         break 2;
       }
     }
   }
 }
-$visible = $other || $hasButtons;
+$visible = $other || $has_buttons;
 
 $wrapper_class = $visible
   ? 'fame-form__fieldset fame-form__fieldset--amounts'
   : 'fame-form__hidden';
 
-$wrapper_attrs = get_block_wrapper_attributes(['class' => $wrapper_class]);
+$wrapper_attrs = get_block_wrapper_attributes([
+  'class' => $wrapper_class,
+  'style' => '--amount-cols:' . esc_attr((string) $cols_amounts) . ';',
+]);
 
 if (!$visible) : ?>
   <div <?php echo $wrapper_attrs; ?>>
-    <input name="amount" type="hidden" value="<?php echo esc_attr((string)$defaultAmountCents); ?>" />
+    <input name="amount" type="hidden" value="<?php echo esc_attr((string) $default_amount_cents); ?>" />
   </div>
 <?php
   return;
@@ -92,42 +139,51 @@ endif;
 ?>
 
 <fieldset <?php echo $wrapper_attrs; ?>>
-  <legend class="fame-form__legend<?php echo $showLegend ? '' : ' screen-reader-text'; ?>">
+
+  <legend class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>">
     <?php echo esc_html($legend); ?>
   </legend>
 
-  <?php foreach ($settings as $typeSetting) :
-    if (!is_array($typeSetting)) continue;
+  <?php foreach ($settings as $type_setting) :
+    if (!is_array($type_setting)) {
+      continue;
+    }
 
-    $type         = $str($typeSetting['type'] ?? null, '');
-    if ($type === '') continue;
+    $type = $str($type_setting['type'] ?? null, '');
+    if ($type === '') {
+      continue;
+    }
 
-    $isDefault    = !empty($typeSetting['default']);
-    $unit         = $str($typeSetting['unit'] ?? null, $DEFAULT_UNIT);
-    $minAmount    = $int($typeSetting['minAmount'] ?? null, $MIN_AMOUNT);
-    $maxAmount    = $int($typeSetting['maxAmount'] ?? null, $MAX_AMOUNT);
-    $defaultEuros = $int($typeSetting['defaultAmount'] ?? null, $DEFAULT_AMOUNT);
+    $is_default    = !empty($type_setting['default']);
+    $unit          = $str($type_setting['unit'] ?? null, $DEFAULT_UNIT);
+    $min_amount    = $int($type_setting['minAmount'] ?? null, $MIN_AMOUNT);
+    $max_amount    = $int($type_setting['maxAmount'] ?? null, $MAX_AMOUNT);
+    $default_euros = $int($type_setting['defaultAmount'] ?? null, $DEFAULT_AMOUNT);
 
-    $amounts = isset($typeSetting['amounts']) && is_array($typeSetting['amounts']) ? $typeSetting['amounts'] : [];
+    $amounts = isset($type_setting['amounts']) && is_array($type_setting['amounts']) ? $type_setting['amounts'] : [];
   ?>
 
     <div
       class="<?php echo esc_attr("donation-amounts donation-amounts--{$type}"); ?>"
       data-type="<?php echo esc_attr($type); ?>"
-      <?php echo $isDefault ? ' data-default="1"' : ''; ?>
-      data-default-amount="<?php echo esc_attr((string) $defaultEuros); ?>"
-      data-min-amount="<?php echo esc_attr((string) $minAmount); ?>"
-      data-max-amount="<?php echo esc_attr((string) $maxAmount); ?>"
-      style="<?php echo $isDefault ? '' : 'display:none'; ?>">
+      <?php echo $is_default ? ' data-default="1"' : ''; ?>
+      data-default-amount="<?php echo esc_attr((string) $default_euros); ?>"
+      data-min-amount="<?php echo esc_attr((string) $min_amount); ?>"
+      data-max-amount="<?php echo esc_attr((string) $max_amount); ?>"
+      style="<?php echo $is_default ? '' : 'display:none'; ?>">
       <?php
       $idx = 0;
       foreach ($amounts as $a) :
-        if (!is_array($a)) continue;
+        if (!is_array($a)) {
+          continue;
+        }
         $value = $a['value'] ?? null;
-        if ($value === null || $value === '' || !is_numeric($value)) continue;
+        if ($value === null || $value === '' || !is_numeric($value)) {
+          continue;
+        }
 
-        $valueStr = (string) (int) $value;
-        $id = "{$type}-amount-{$idx}";
+        $value_str = (string) (int) $value;
+        $id        = "{$type}-amount-{$idx}";
         $idx++;
       ?>
         <div class="fame-form__group">
@@ -137,9 +193,9 @@ endif;
               class="fame-form__check-input"
               id="<?php echo esc_attr($id); ?>"
               name="<?php echo esc_attr("amount-radio-{$type}"); ?>"
-              value="<?php echo esc_attr($valueStr); ?>"
+              value="<?php echo esc_attr($value_str); ?>"
               type="radio" />
-            <?php echo esc_html($valueStr); ?>
+            <?php echo esc_html($value_str); ?>
             <span class="donation-amounts__unit"><?php echo esc_html($unit); ?></span>
           </label>
         </div>
@@ -147,35 +203,35 @@ endif;
     </div>
 
     <?php if ($other) :
-      $otherId = "{$type}-other";
-      $minmaxId = "{$type}-minmax";
+      $other_id  = "{$type}-other";
+      $minmax_id = "{$type}-minmax";
     ?>
       <div
         class="donation-amounts__other"
         data-type="<?php echo esc_attr($type); ?>"
-        style="<?php echo $isDefault ? '' : 'display:none'; ?>">
+        style="<?php echo $is_default ? '' : 'display:none'; ?>">
         <div class="label-wrapper">
-          <label for="<?php echo esc_attr($otherId); ?>" class="fame-form__label">
-            <?php echo esc_html($otherLabel); ?>
+          <label for="<?php echo esc_attr($other_id); ?>" class="fame-form__label">
+            <?php echo esc_html($other_label); ?>
           </label>
           <span class="donation-amounts__unit"><?php echo esc_html($unit); ?></span>
         </div>
 
         <div class="donation-amounts__input-wrapper">
           <input
-            id="<?php echo esc_attr($otherId); ?>"
+            id="<?php echo esc_attr($other_id); ?>"
             class="fame-form__input"
             name="<?php echo esc_attr("amount-{$type}"); ?>"
             type="number"
-            min="<?php echo esc_attr((string)$minAmount); ?>"
-            max="<?php echo esc_attr((string)$maxAmount); ?>"
-            value="<?php echo esc_attr((string)$defaultEuros); ?>"
-            aria-describedby="<?php echo esc_attr($minmaxId); ?>" />
-          <span class="donation-amounts__minmax" id="<?php echo esc_attr($minmaxId); ?>">
+            min="<?php echo esc_attr((string) $min_amount); ?>"
+            max="<?php echo esc_attr((string) $max_amount); ?>"
+            value="<?php echo esc_attr((string) $default_euros); ?>"
+            aria-describedby="<?php echo esc_attr($minmax_id); ?>" />
+          <span class="donation-amounts__minmax" id="<?php echo esc_attr($minmax_id); ?>">
             <?php
-            echo esc_html__('Min', 'fame_lahjoitukset') . ' ' . esc_html((string)$minAmount) . esc_html($unit)
+            echo esc_html__('Min', 'fame_lahjoitukset') . ' ' . esc_html((string) $min_amount) . esc_html($unit)
               . ' – ' .
-              esc_html__('Max', 'fame_lahjoitukset') . ' ' . esc_html((string)$maxAmount) . esc_html($unit);
+              esc_html__('Max', 'fame_lahjoitukset') . ' ' . esc_html((string) $max_amount) . esc_html($unit);
             ?>
           </span>
         </div>
@@ -185,5 +241,5 @@ endif;
   <?php endforeach; ?>
 
   <!-- Server expects name="amount" (in cents). JS keeps this updated. -->
-  <input name="amount" type="hidden" value="<?php echo esc_attr((string)$defaultAmountCents); ?>" />
+  <input name="amount" type="hidden" value="<?php echo esc_attr((string) $default_amount_cents); ?>" />
 </fieldset>
