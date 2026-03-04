@@ -1,6 +1,13 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, CSSProperties } from 'react'
 import { __ } from '@wordpress/i18n'
-import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor'
+import {
+	useBlockProps,
+	InspectorControls,
+	RichText,
+	AlignmentToolbar,
+	BlockControls,
+	InnerBlocks,
+} from '@wordpress/block-editor'
 import { PanelBody, Flex, CheckboxControl, TextControl, ToggleControl } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
 import { PROVIDERS, Provider } from '../common/Providers.ts'
@@ -16,6 +23,7 @@ export type Attributes = {
 	showLegend?: boolean
 	showLegendSingle?: boolean
 	showLegendRecurring?: boolean
+	legendAlign?: string
 }
 
 /**
@@ -36,6 +44,7 @@ export default function Edit({
 		showLegend = true,
 		showLegendSingle,
 		showLegendRecurring,
+		legendAlign = 'left',
 	} = attributes
 
 	const donationTypes: string[] = useMemo(
@@ -128,7 +137,24 @@ export default function Edit({
 
 	return (
 		<>
+			<BlockControls group="block">
+				<AlignmentToolbar
+					value={legendAlign}
+					onChange={next => setAttributes({ legendAlign: next || 'left' })}
+				/>
+			</BlockControls>
 			<InspectorControls>
+				<PanelBody title={__('General settings', 'fame_lahjoitukset')}>
+					<TextControl
+						label={__('Legend', 'fame_lahjoitukset')}
+						value={legend}
+						onChange={value => setAttributes({ legend: value })}
+						help={__(
+							'Description for screen readers (for accessibility).',
+							'fame_lahjoitukset'
+						)}
+					/>
+				</PanelBody>
 				{donationTypes.map(type => {
 					const selected = new Set((grouped[type] ?? []).map(p => p.value))
 					const showForType = isLegendShownForType(type)
@@ -163,14 +189,6 @@ export default function Edit({
 						</PanelBody>
 					)
 				})}
-
-				<PanelBody title={__('General settings', 'fame_lahjoitukset')}>
-					<TextControl
-						label={__('Legend', 'fame_lahjoitukset')}
-						value={legend}
-						onChange={value => setAttributes({ legend: value })}
-					/>
-				</PanelBody>
 			</InspectorControls>
 
 			<div {...blockProps}>
@@ -189,6 +207,7 @@ export default function Edit({
 						>
 							{showForType && (
 								<RichText
+									tagName="legend"
 									multiline={false}
 									className="fame-form__legend"
 									aria-label={__('Legend', 'fame_lahjoitukset')}
@@ -196,6 +215,10 @@ export default function Edit({
 									allowedFormats={[]}
 									value={attributes.legend ?? ''}
 									onChange={le => setAttributes({ legend: le })}
+									style={{
+										textAlign: legendAlign as CSSProperties['textAlign'],
+										fontFamily: 'inherit',
+									}}
 								/>
 							)}
 
@@ -244,6 +267,19 @@ export default function Edit({
 						</fieldset>
 					)
 				})}
+				<InnerBlocks
+					allowedBlocks={['core/paragraph']}
+					template={[
+						[
+							'core/paragraph',
+							{
+								className: 'fame-form__terms',
+								placeholder: __('Terms text…', 'fame_lahjoitukset'),
+							},
+						],
+					]}
+					templateLock="all"
+				/>
 			</div>
 		</>
 	)

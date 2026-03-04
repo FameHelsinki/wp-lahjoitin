@@ -68,11 +68,13 @@ $wrapper_attrs = get_block_wrapper_attributes();
     $showForType = $isLegendShownForType((string) $type);
 
     $legend_class = 'fame-form__legend' . ($showForType ? '' : ' screen-reader-text');
+    $legendAlign = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+    $legend_style = 'text-align:' . esc_attr($legendAlign) . ';';
   ?>
     <fieldset
       class="payment-method-selector fame-form__fieldset"
       data-type="<?php echo esc_attr((string) $type); ?>">
-      <legend class="<?php echo esc_attr($legend_class); ?>">
+      <legend class="<?php echo esc_attr($legend_class); ?>" style="<?php echo esc_attr($legend_style); ?>">
         <?php echo esc_html($legend); ?>
       </legend>
 
@@ -111,7 +113,15 @@ $wrapper_attrs = get_block_wrapper_attributes();
             </span>
           </label>
         </div>
+
       <?php endforeach; ?>
     </fieldset>
   <?php endforeach; ?>
+
+  <?php
+  // Render InnerBlocks content (e.g. terms paragraph).
+  if (!empty($content)) {
+    echo do_blocks($content);
+  }
+  ?>
 </div>

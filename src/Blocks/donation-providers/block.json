@@ -13,7 +13,8 @@
 		"showLegendSingle": { "type": "boolean", "default": true },
 		"showLegendRecurring": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "Payment provider" },
-		"providers": { "type": "array", "default": [] }
+		"providers": { "type": "array", "default": [] },
+		"legendAlign": { "type": "string", "default": "left" }
 	},
 	"supports": {
 		"multiple": false,
@@ -21,6 +22,7 @@
 		"html": false,
 		"typography": { "fontSize": true }
 	},
+	"allowedBlocks": ["core/paragraph"],
 	"icon": "bank",
 	"textdomain": "fame_lahjoitukset",
 	"editorScript": "file:./index.js",
