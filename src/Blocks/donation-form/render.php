@@ -67,22 +67,23 @@ $attrs = wp_parse_args($attributes, [
   'borderRadius'          => '0px',
   'borderWidth'           => '1px',
   'textFieldBorderRadius' => '0px',
+  'dangerColor'           => '#dc3545',
 ]);
 
-$container_classes = 'fame-form-container';
-
 $wrapper_style = sprintf(
-  '--primary-color:%s;--secondary-color:%s;--third-color:%s;--fame-border-radius:%s;--fame-border-width:%s;--fame-text-field-border-radius:%s;',
+  '--primary-color:%s;--secondary-color:%s;--third-color:%s;--border-radius:%s;--border-width:%s;--text-field-border-radius:%s;--fame-clr-danger:%s;',
   esc_attr($attrs['primaryColor'] ?: 'inherit'),
   esc_attr($attrs['secondaryColor'] ?: 'inherit'),
   esc_attr($attrs['thirdColor'] ?: 'inherit'),
   esc_attr($attrs['borderRadius'] ?: 'inherit'),
   esc_attr($attrs['borderWidth'] ?: 'inherit'),
-  esc_attr($attrs['textFieldBorderRadius'] ?: 'inherit')
+  esc_attr($attrs['textFieldBorderRadius'] ?: 'inherit'),
+  esc_attr($attrs['dangerColor'] ?: '#dc3545')
 );
 
 $block_wrapper_attrs = get_block_wrapper_attributes([
-  'class' => $container_classes,
+  'class' => 'fame-form-container fame-form__wrapper',
+  'style' => $wrapper_style,
 ]);
 
 $token_attr = !empty($attrs['token']) ? ' data-token="1"' : '';
@@ -106,7 +107,7 @@ $return_address = famehelsinki_sanitize_return_url((string) ($attrs['returnAddre
 ?>
 <div <?php echo $block_wrapper_attrs; ?>>
   <form class="fame-form fame-form--donations" <?php echo $token_attr; ?> novalidate>
-    <div class="fame-form__wrapper" style="<?php echo esc_attr($wrapper_style); ?>">
+    <div class="fame-form__inner">
       <?php echo $inner; ?>
     </div>
 

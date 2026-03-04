@@ -17,7 +17,7 @@
 		},
 		"colsDesktop": {
 			"type": "number",
-			"default": 3
+			"default": 1
 		},
 		"token": {
 			"type": "boolean",
@@ -54,6 +54,10 @@
 		"borderWidth": {
 			"type": "string",
 			"default": "1px"
+		},
+		"dangerColor": {
+			"type": "string",
+			"default": "#dc3545"
 		}
 	},
 	"supports": {
@@ -68,7 +72,8 @@
 		"html": false,
 		"typography": {
 			"fontSize": true
-		}
+		},
+		"border": { "radius": true, "width": true }
 	},
 	"allowedBlocks": ["core/columns"],
 	"icon": "money",
