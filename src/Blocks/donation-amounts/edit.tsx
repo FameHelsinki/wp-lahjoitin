@@ -1,7 +1,20 @@
-import React, { useEffect } from 'react'
+import React, { CSSProperties, useEffect } from 'react'
 import { __ } from '@wordpress/i18n'
-import { Button, Flex, PanelBody, TextControl, ToggleControl } from '@wordpress/components'
-import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
+import {
+	Button,
+	Flex,
+	PanelBody,
+	RangeControl,
+	TextControl,
+	ToggleControl,
+} from '@wordpress/components'
+import {
+	InspectorControls,
+	RichText,
+	useBlockProps,
+	AlignmentToolbar,
+	BlockControls,
+} from '@wordpress/block-editor'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import {
@@ -25,6 +38,8 @@ export type Attributes = {
 	legend?: string
 	other?: boolean
 	otherLabel?: string
+	legendAlign?: string
+	colsAmounts?: number
 }
 
 /**
@@ -80,7 +95,15 @@ export default function Edit({
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': types } = context
-	const { settings, other, legend, showLegend, otherLabel } = attributes
+	const {
+		settings,
+		other,
+		legend,
+		showLegend,
+		otherLabel,
+		legendAlign = 'left',
+		colsAmounts: colsAmountsAttr,
+	} = attributes
 	const currentType = useCurrentDonationType(clientId)
 	const current = settings?.find(({ type }) => type === currentType)
 
@@ -132,7 +155,12 @@ export default function Edit({
 		})
 	}, [types, currentType, settings, setAttributes])
 
-	const blockProps = useBlockProps({ className: 'fame-form__fieldset--amounts' })
+	const colsAmounts = Math.max(1, Math.min(3, colsAmountsAttr ?? 3))
+
+	const blockProps = useBlockProps({
+		className: 'fame-form__fieldset--amounts',
+		style: { ['--amount-cols' as any]: String(colsAmounts) },
+	})
 
 	// Use effect hook should ensure that settings will be set to an array.
 	if (!settings) return <div {...blockProps}>Loading...</div>
@@ -142,6 +170,12 @@ export default function Edit({
 
 	return (
 		<>
+			<BlockControls group="block">
+				<AlignmentToolbar
+					value={legendAlign}
+					onChange={next => setAttributes({ legendAlign: next || 'left' })}
+				/>
+			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
@@ -160,14 +194,23 @@ export default function Edit({
 						checked={visible && showLegend}
 						onChange={value => setAttributes({ showLegend: value })}
 					/>
-					{visible && !showLegend && (
-						<TextControl
-							label={__('Legend', 'fame_lahjoitukset')}
-							help={__('Description for screen readers.', 'fame_lahjoitukset')}
-							value={legend ?? DEFAULT_LEGEND}
-							onChange={value => setAttributes({ legend: value })}
-						/>
-					)}
+					<TextControl
+						label={__('Legend', 'fame_lahjoitukset')}
+						help={__(
+							'Description for screen readers (for accessibility).',
+							'fame_lahjoitukset'
+						)}
+						value={legend ?? DEFAULT_LEGEND}
+						onChange={value => setAttributes({ legend: value })}
+					/>
+					<RangeControl
+						label={__('Amount columns', 'fame_lahjoitukset')}
+						help={__('Choose 1–3 columns for the form layout.', 'fame_lahjoitukset')}
+						min={1}
+						max={3}
+						value={colsAmounts}
+						onChange={(v?: number) => setAttributes({ colsAmounts: v ?? 3 })}
+					/>
 					<Flex justify="initial">
 						<Button
 							variant="primary"
@@ -216,12 +259,14 @@ export default function Edit({
 				{visible && showLegend && (
 					<RichText
 						multiline={false}
+						tagName="legend"
 						className="fame-form__legend"
 						aria-label={__('Legend', 'fame_lahjoitukset')}
 						placeholder={__('Amount', 'fame_lahjoitukset')}
 						allowedFormats={[]}
 						value={legend ?? DEFAULT_LEGEND}
 						onChange={value => setAttributes({ legend: value })}
+						style={{ textAlign: legendAlign as CSSProperties['textAlign'] }}
 					/>
 				)}
 				<EditContent
