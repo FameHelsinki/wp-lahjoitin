@@ -100,7 +100,7 @@ if ($block instanceof WP_Block && count($block->inner_blocks) > 0) {
     $inner .= $inner_block->render();
   }
 } else {
-  $inner = $content !== '' ? do_blocks($content) : '';
+  $inner = $content;
 }
 
 $return_address = famehelsinki_sanitize_return_url((string) ($attrs['returnAddress'] ?? '/'));

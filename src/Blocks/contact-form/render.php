@@ -51,7 +51,7 @@ $render_input = static function (
 ?>
   <div class="<?php echo esc_attr('fame-form__group' . ($required ? ' fame-form__group--required' : '')); ?>">
     <label for="<?php echo esc_attr("contact-{$name}"); ?>" class="fame-form__label">
-      <?php echo wp_kses_post($label); ?>
+      <?php echo esc_html($label); ?>
     </label>
 
     <input
@@ -65,7 +65,7 @@ $render_input = static function (
 
     <?php if (!$ariaDescribedBy && $help !== '') : ?>
       <small id="<?php echo esc_attr("contact-{$name}-help"); ?>" class="fame-form__help">
-        <?php echo wp_kses_post($help); ?>
+        <?php echo esc_html($help); ?>
       </small>
     <?php endif; ?>
   </div>
@@ -88,7 +88,7 @@ $render_group = static function (array $attrs, string $groupName, array $control
 
     <?php if ($help !== '') : ?>
       <small id="<?php echo esc_attr($help_id); ?>" class="fame-form__help">
-        <?php echo wp_kses_post($help); ?>
+        <?php echo esc_html($help); ?>
       </small>
     <?php endif; ?>
   </div>
@@ -98,7 +98,10 @@ $render_group = static function (array $attrs, string $groupName, array $control
 ?>
 <fieldset <?php echo $wrapper_attrs; ?><?php echo $contact ? ' data-contact="1"' : ''; ?>>
   <?php
-  $legend_align = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+  $legend_align_raw = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+  $legend_align     = in_array($legend_align_raw, ['left', 'center', 'right', 'justify'], true)
+    ? $legend_align_raw
+    : 'left';
 
   $legend_classes = ['fame-form__legend'];
 
@@ -106,12 +109,10 @@ $render_group = static function (array $attrs, string $groupName, array $control
     $legend_classes[] = 'screen-reader-text';
   }
 
-  if ($legend_align) {
-    $legend_classes[] = 'has-text-align-' . $legend_align;
-  }
+  $legend_classes[] = 'has-text-align-' . $legend_align;
   ?>
   <legend class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>">
-    <?php echo wp_kses_post($legend); ?>
+    <?php echo esc_html($legend); ?>
   </legend>
 
   <?php

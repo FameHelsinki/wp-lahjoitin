@@ -412,6 +412,7 @@ label {
 /* Allow editing block spacing from editor (front reads block-gap variable) */
 .wp-block-famehelsinki-donation-form .wp-block-columns {
 	gap: var(--wp--style--block-gap, var(--wp--preset--spacing--20, 2rem)) !important;
+	margin-bottom: 0 !important;
 }
 
 /* Hide radio/check inputs inside our "button-like" controls (front) */

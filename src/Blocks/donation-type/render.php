@@ -20,7 +20,10 @@ $legend = (isset($attributes['legend']) && trim((string) $attributes['legend']) 
   ? (string) $attributes['legend']
   : __('Donation type', 'fame_lahjoitukset');
 
-$legend_align = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+$legend_align_raw = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
+$legend_align     = in_array($legend_align_raw, ['left', 'center', 'right', 'justify'], true)
+  ? $legend_align_raw
+  : 'left';
 
 $legend_classes = ['fame-form__legend'];
 
@@ -28,12 +31,10 @@ if (!$show_legend) {
   $legend_classes[] = 'screen-reader-text';
 }
 
-if ($legend_align) {
-  $legend_classes[] = 'has-text-align-' . $legend_align;
-}
+$legend_classes[] = 'has-text-align-' . $legend_align;
 
 // Ensures alignment works even when legend is rendered as a <div> in the hidden branch.
-$legend_style = $legend_align !== '' ? 'text-align:' . esc_attr($legend_align) . ';' : '';
+$legend_style = 'text-align:' . $legend_align . ';';
 
 $saved_types = (isset($attributes['types']) && is_array($attributes['types'])) ? $attributes['types'] : [];
 $saved_value = isset($attributes['value']) ? (string) $attributes['value'] : '';

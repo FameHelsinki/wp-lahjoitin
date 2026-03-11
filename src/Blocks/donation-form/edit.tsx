@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { __ } from '@wordpress/i18n'
 import {
 	InspectorControls,
@@ -170,29 +170,38 @@ export default function Edit({
 	)
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore)
 
+	// Keep a ref so the effect always reads the latest inner blocks without
+	// needing them in the dependency array (which would fire on every keystroke).
+	const innerBlocksRef = useRef<BlockInstance[]>(innerBlocks)
+	innerBlocksRef.current = innerBlocks
+
 	/**
 	 * Single effect that:
 	 * - initializes if empty/broken
 	 * - repacks columns when colsDesktop changes (without losing content)
-	 * - ensures terms paragraph exists & is correctly placed
+	 *
+	 * Intentionally omits `innerBlocks` and `replaceInnerBlocks` from deps:
+	 * - `innerBlocks` is read via ref to avoid running on every child block change.
+	 * - `replaceInnerBlocks` is a stable dispatch reference that never changes.
 	 */
 	useEffect(() => {
+		const currentInnerBlocks = innerBlocksRef.current
 		const nextInit = buildInitialLayout(cols)
 
 		// Init: empty
-		if (!innerBlocks || innerBlocks.length === 0) {
+		if (!currentInnerBlocks || currentInnerBlocks.length === 0) {
 			replaceInnerBlocks(clientId, nextInit, false)
 			return
 		}
 
-		const top = innerBlocks[0]
-		const hasColumnsTop = innerBlocks.length === 1 && top?.name === 'core/columns'
+		const top = currentInnerBlocks[0]
+		const hasColumnsTop = currentInnerBlocks.length === 1 && top?.name === 'core/columns'
 		if (!hasColumnsTop) {
 			replaceInnerBlocks(clientId, nextInit, false)
 			return
 		}
 
-		const groups = readTopGroups(innerBlocks)
+		const groups = readTopGroups(currentInnerBlocks)
 		if (!groups) {
 			replaceInnerBlocks(clientId, nextInit, false)
 			return
@@ -204,7 +213,9 @@ export default function Edit({
 			const nextTop = repackColumns(cols, top as BlockInstance, groups)
 			replaceInnerBlocks(clientId, [nextTop], false)
 		}
-	}, [cols, clientId, innerBlocks, replaceInnerBlocks])
+		// We intentionally read innerBlocks through a ref to avoid rerunning on every block edit.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cols, clientId])
 
 	return (
 		<>

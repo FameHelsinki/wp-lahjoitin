@@ -36,7 +36,10 @@ $other        = $attr_bool('other', false);
 $other_label  = $attr_string('otherLabel', __('Other amount', 'fame_lahjoitukset'));
 $show_legend  = $attr_bool('showLegend', true);
 $legend       = $attr_string('legend', __('Donation amount', 'fame_lahjoitukset'));
-$legend_align = $attr_string('legendAlign', 'left');
+$legend_align_raw = $attr_string('legendAlign', 'left');
+$legend_align     = in_array($legend_align_raw, ['left', 'center', 'right', 'justify'], true)
+  ? $legend_align_raw
+  : 'left';
 
 $legend_classes = ['fame-form__legend'];
 
@@ -44,9 +47,7 @@ if (!$show_legend) {
   $legend_classes[] = 'screen-reader-text';
 }
 
-if ($legend_align !== '') {
-  $legend_classes[] = 'has-text-align-' . $legend_align;
-}
+$legend_classes[] = 'has-text-align-' . $legend_align;
 
 /**
  * Safe int helper.
