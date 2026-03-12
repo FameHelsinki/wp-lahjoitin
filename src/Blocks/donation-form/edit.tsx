@@ -29,12 +29,13 @@ function buildInitialLayout(colsDesktop: 1 | 2 | 3): BlockInstance[] {
 		createBlock('core/group', attrs, inner)
 
 	const donationType = createBlock('famehelsinki/donation-type')
+	const donationCampaigns = createBlock('famehelsinki/donation-campaigns')
 	const donationAmounts = createBlock('famehelsinki/donation-amounts')
 	const contactForm = createBlock('famehelsinki/contact-form')
 	const donationProviders = createBlock('famehelsinki/donation-providers')
 	const formControls = createBlock('famehelsinki/form-controls')
 
-	const g1 = group([donationType, donationAmounts])
+	const g1 = group([donationType, donationCampaigns, donationAmounts])
 
 	const g2 = group([contactForm])
 
@@ -100,7 +101,6 @@ export default function Edit({
 	const {
 		types,
 		returnAddress,
-		campaign,
 		token,
 		primaryColor,
 		secondaryColor,
@@ -113,7 +113,6 @@ export default function Edit({
 	} = attributes as {
 		types?: string[]
 		returnAddress?: string
-		campaign?: string
 		primaryColor?: string
 		secondaryColor?: string
 		thirdColor?: string
@@ -207,6 +206,25 @@ export default function Edit({
 			return
 		}
 
+		// Migration: insert donation-campaigns into g1 if it is missing.
+		const g1 = groups[0]
+		const hasCampaigns = g1.innerBlocks?.some(b => b.name === 'famehelsinki/donation-campaigns')
+		if (!hasCampaigns) {
+			const campaigns = createBlock('famehelsinki/donation-campaigns')
+			const donationTypeIdx =
+				g1.innerBlocks?.findIndex(b => b.name === 'famehelsinki/donation-type') ?? -1
+			const insertAt = donationTypeIdx >= 0 ? donationTypeIdx + 1 : 0
+			const newG1Inner = [
+				...(g1.innerBlocks?.slice(0, insertAt) ?? []),
+				campaigns,
+				...(g1.innerBlocks?.slice(insertAt) ?? []),
+			]
+			const newG1 = createBlock('core/group', g1.attributes, newG1Inner)
+			const nextTop = repackColumns(cols, top as BlockInstance, [newG1, groups[1], groups[2]])
+			replaceInnerBlocks(clientId, [nextTop], false)
+			return
+		}
+
 		// Repack columns only if count differs
 		const currentColCount = top.innerBlocks?.length ?? 0
 		if (currentColCount !== cols) {
@@ -276,16 +294,6 @@ export default function Edit({
 						onChange={newReturnAddress =>
 							setAttributes({ returnAddress: newReturnAddress })
 						}
-					/>
-
-					<TextControl
-						label={__('Campaign', 'fame_lahjoitukset')}
-						help={__(
-							'Label that can be used to segment donations coming from this form.',
-							'fame_lahjoitukset'
-						)}
-						value={campaign ?? ''}
-						onChange={newCampaign => setAttributes({ campaign: newCampaign })}
 					/>
 
 					<BaseControl

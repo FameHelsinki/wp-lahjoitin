@@ -59,7 +59,6 @@ if (!function_exists('famehelsinki_sanitize_return_url')) {
 
 $attrs = wp_parse_args($attributes, [
   'returnAddress'         => '/',
-  'campaign'              => '',
   'token'                 => false,
   'primaryColor'          => '#000000',
   'secondaryColor'        => '#FFFFFF',
@@ -114,9 +113,6 @@ $return_address = famehelsinki_sanitize_return_url((string) ($attrs['returnAddre
     <input type="hidden" name="return_address" value="<?php echo esc_attr($return_address); ?>" />
     <input type="hidden" name="provider" data-selected-provider />
 
-    <?php if (!empty($attrs['campaign'])) : ?>
-      <input type="hidden" name="campaign" value="<?php echo esc_attr((string) $attrs['campaign']); ?>" />
-    <?php endif; ?>
   </form>
 
   <div class="fame-form-overlay">

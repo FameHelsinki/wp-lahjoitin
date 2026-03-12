@@ -1,0 +1,25 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/donation-campaigns",
+	"version": "0.1.0",
+	"title": "Campaigns",
+	"category": "widgets",
+	"description": "Campaign selector for the donation form.",
+	"parent": ["famehelsinki/donation-form"],
+	"example": {},
+	"attributes": {
+		"show": { "type": "boolean", "default": false },
+		"campaigns": { "type": "array", "default": [] },
+		"label": { "type": "string", "default": "Campaign" },
+		"showLabel": { "type": "boolean", "default": true }
+	},
+	"supports": {
+		"multiple": false,
+		"html": false
+	},
+	"icon": "tag",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

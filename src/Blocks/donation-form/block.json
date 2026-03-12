@@ -23,10 +23,6 @@
 			"type": "boolean",
 			"default": false
 		},
-		"campaign": {
-			"type": "string",
-			"default": ""
-		},
 		"returnAddress": {
 			"type": "string",
 			"default": "/"
