@@ -1,17 +1,19 @@
-import { describe, it, expect } from '@jest/globals'
+import { describe, it, expect, jest } from '@jest/globals'
 import { render } from '@testing-library/react'
 import save from './save'
 
-// Mock attributes for testing
-const mockAttributes = {
-	returnAddress: 'https://example.com/return',
-	campaign: 'test-campaign',
-	token: true,
-}
+jest.mock('@wordpress/block-editor', () => {
+	const React = require('react')
+	return {
+		InnerBlocks: {
+			Content: () => React.createElement('div', { 'data-testid': 'innerblocks-content' }),
+		},
+	}
+})
 
-describe('Gutenberg Block Save Function', () => {
-	it('renders correctly and matches snapshot', () => {
-		const { container } = render(save({ attributes: mockAttributes }))
-		expect(container).toMatchSnapshot()
+describe('donation-form save()', () => {
+	it('renders InnerBlocks.Content so child blocks are serialized', () => {
+		const { getByTestId } = render(save() as any)
+		expect(getByTestId('innerblocks-content')).toBeTruthy()
 	})
 })

@@ -75,7 +75,7 @@ export default function Edit({
 			<div {...useBlockProps({ className: 'fame-form__controls' })}>
 				<RichText
 					multiline={false}
-					tagName="div"
+					tagName="button"
 					className="wp-element-button is-primary"
 					allowedFormats={[]}
 					onChange={value => setLabelForType(currentType, value)}
