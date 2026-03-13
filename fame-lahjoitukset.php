@@ -7,13 +7,14 @@ use Fame\WordPress\Lahjoitukset\Plugin;
 /**
  * Plugin Name:       Lahjoitin
  * Description:       Wordpress plugin for Fame lahjoitukset system.
- * Version:           1.1.1
+ * Version:           1.1.3
  * Requires at least: 6.7
  * Requires PHP:      8.3
  * Author:            Fame Helsinki
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       fame_lahjoitukset
+ * Domain Path:       /languages
  *
  * @package CreateBlock
  */
