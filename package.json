@@ -23,7 +23,7 @@
 	},
 	"devDependencies": {
 		"@jest/globals": "^29.7.0",
-		"@testing-library/dom": "^10.4.0",
+		"@testing-library/dom": "^10.4.1",
 		"@testing-library/react": "^16.3.0",
 		"@types/wordpress__block-editor": "^11.5.16",
 		"@wordpress/scripts": "^30.25.0",
@@ -31,8 +31,8 @@
 		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^10.1.5",
 		"eslint-plugin-react": "^7.37.5",
-		"eslint-plugin-react-hooks": "^5.1.0",
-		"prettier": "^3.6.2"
+		"eslint-plugin-react-hooks": "^7.0.1",
+		"prettier": "^3.8.1"
 	},
 	"dependencies": {
 		"react": "^18.3.1",
