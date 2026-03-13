@@ -7,6 +7,11 @@
 	"main": "build/index.js",
 	"scripts": {
 		"build": "wp-scripts build",
+		"i18n:pot": "npm run build && wp i18n make-pot . languages/fame_lahjoitukset.pot --domain=fame_lahjoitukset --exclude=node_modules,vendor,tests,.git",
+		"i18n:derive": "sed 's/Language: fi_FI/Language: fi/' languages/fame_lahjoitukset-fi_FI.po > languages/fame_lahjoitukset-fi.po && sed 's/Language: sv_SE/Language: sv/' languages/fame_lahjoitukset-sv_SE.po > languages/fame_lahjoitukset-sv.po",
+		"i18n:mo": "wp i18n make-mo languages/fame_lahjoitukset-fi_FI.po && wp i18n make-mo languages/fame_lahjoitukset-fi.po && wp i18n make-mo languages/fame_lahjoitukset-sv_SE.po && wp i18n make-mo languages/fame_lahjoitukset-sv.po",
+		"i18n:json": "wp i18n make-json languages/fame_lahjoitukset-fi_FI.po languages/ --no-purge && wp i18n make-json languages/fame_lahjoitukset-fi.po languages/ --no-purge && wp i18n make-json languages/fame_lahjoitukset-sv_SE.po languages/ --no-purge && wp i18n make-json languages/fame_lahjoitukset-sv.po languages/ --no-purge",
+		"i18n": "npm run i18n:pot && npm run i18n:derive && npm run i18n:mo && npm run i18n:json",
 		"format": "wp-scripts format src",
 		"lint:css": "wp-scripts lint-style",
 		"lint:js": "wp-scripts lint-js",
