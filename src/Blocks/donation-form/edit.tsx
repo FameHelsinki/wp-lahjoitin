@@ -298,8 +298,11 @@ export default function Edit({
 
 					<BaseControl
 						id={primaryColorId}
-						label={__('Tab background color', 'fame_lahjoitukset')}
-						help={__('This is the background color for tabs.', 'fame_lahjoitukset')}
+						label={__('Selected button background color', 'fame_lahjoitukset')}
+						help={__(
+							'This is the background color for selected buttons.',
+							'fame_lahjoitukset'
+						)}
 					>
 						<ColorPicker
 							color={primaryColor || '#000000'}
@@ -312,8 +315,11 @@ export default function Edit({
 
 					<BaseControl
 						id={secondaryColorId}
-						label={__('Tab text', 'fame_lahjoitukset')}
-						help={__('This is the text color for selected tabs.', 'fame_lahjoitukset')}
+						label={__('Selected button text color', 'fame_lahjoitukset')}
+						help={__(
+							'This is the text color for selected buttons.',
+							'fame_lahjoitukset'
+						)}
 					>
 						<ColorPicker
 							color={secondaryColor || '#FFFFFF'}
@@ -363,7 +369,10 @@ export default function Edit({
 
 					<TextControl
 						label={__('Border Radius', 'fame_lahjoitukset')}
-						help={__('This is the border-radius for tabs.', 'fame_lahjoitukset')}
+						help={__(
+							'This is the border-radius for selection buttons.',
+							'fame_lahjoitukset'
+						)}
 						value={borderRadius ?? ''}
 						onChange={value => setAttributes({ borderRadius: value })}
 					/>
@@ -371,7 +380,7 @@ export default function Edit({
 					<TextControl
 						label={__('Border Width', 'fame_lahjoitukset')}
 						help={__(
-							'This is the border-width for tabs and input fields.',
+							'This is the border-width for selection buttons and input fields.',
 							'fame_lahjoitukset'
 						)}
 						value={borderWidth ?? ''}
