@@ -232,8 +232,8 @@ export class AmountWrapper {
 			this.#showError(
 				target,
 				sprintf(
-					/* translators: %1$s: amount, %2$s: currency symbol */
-					__('Pienin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					/* translators: %1$s: minimum amount, %2$s: currency symbol */
+					__('The minimum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
 					min,
 					unit
 				)
@@ -249,8 +249,8 @@ export class AmountWrapper {
 			this.#showError(
 				target,
 				sprintf(
-					/* translators: %1$s: amount, %2$s: currency symbol */
-					__('Suurin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					/* translators: %1$s: maximum amount, %2$s: currency symbol */
+					__('The maximum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
 					max,
 					unit
 				)
