@@ -14,6 +14,7 @@ use Fame\WordPress\Lahjoitukset\Plugin;
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       fame_lahjoitukset
+ * Domain Path:       /languages
  *
  * @package CreateBlock
  */
