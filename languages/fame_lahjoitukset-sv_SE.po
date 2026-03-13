@@ -339,20 +339,20 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sida som visas efter att donationen skickats."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab background color"
-msgstr "Flikens bakgrundsfärg"
+msgid "Selected button background color"
+msgstr "Markerad knappens bakgrundsfärg"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the background color for tabs."
-msgstr "Detta är bakgrundsfärgen för flikar."
+msgid "This is the background color for selected buttons."
+msgstr "Bakgrundsfärgen för markerade knappar."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab text"
-msgstr "Fliktext"
+msgid "Selected button text color"
+msgstr "Textfärgen för markerade knappar"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the text color for selected tabs."
-msgstr "Detta är textfärgen för valda flikar."
+msgid "This is the text color for selected buttons."
+msgstr "Detta är textfärgen för markerade knappar."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Input border color"

@@ -339,20 +339,20 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sivu, joka näytetään lahjoituksen lähettämisen jälkeen."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab background color"
-msgstr "Valintanapin taustaväri"
+msgid "Selected button background color"
+msgstr "Valitun napin taustaväri"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the background color for tabs."
-msgstr "Tämä on valintanappien taustaväri."
+msgid "This is the background color for selected buttons."
+msgstr "Tämä on taustaväri valitulle napille."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab text"
-msgstr "Valintanapin teksti"
+msgid "Selected button text color"
+msgstr "Valitun napin tekstin väri"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the text color for selected tabs."
-msgstr "Tämä on valittujen valintanappien tekstiväri."
+msgid "This is the text color for selected buttons."
+msgstr "Tämä on valitun napin tekstin väri."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Input border color"

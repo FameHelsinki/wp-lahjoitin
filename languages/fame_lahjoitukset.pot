@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-03-12T10:31:31+00:00\n"
+"POT-Creation-Date: 2026-03-13T13:32:32+02:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.12.0\n"
+"X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: fame_lahjoitukset\n"
 
 #. Plugin Name of the plugin
@@ -117,7 +117,7 @@ msgstr ""
 msgid "Please enable JavaScript to use this form."
 msgstr ""
 
-#: fame-lahjoitukset.php:44
+#: fame-lahjoitukset.php:45
 #: build/Blocks/contact-form/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
@@ -336,19 +336,19 @@ msgid "Page that is displayed after donation is submitted."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab background color"
+msgid "Selected button background color"
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the background color for tabs."
+msgid "This is the background color for selected buttons."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Tab text"
+msgid "Selected button text color"
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the text color for selected tabs."
+msgid "This is the text color for selected buttons."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -372,7 +372,7 @@ msgid "Border Radius"
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-radius for tabs."
+msgid "This is the border-radius for selection buttons."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -380,7 +380,7 @@ msgid "Border Width"
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-width for tabs and input fields."
+msgid "This is the border-width for selection buttons and input fields."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -401,13 +401,11 @@ msgstr ""
 
 #. translators: %1$s: minimum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:2
-#, js-format
 msgid "The minimum donation amount is %1$s%2$s."
 msgstr ""
 
 #. translators: %1$s: maximum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:3
-#, js-format
 msgid "The maximum donation amount is %1$s%2$s."
 msgstr ""
 
