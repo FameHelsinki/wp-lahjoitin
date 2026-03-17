@@ -3,8 +3,20 @@
 
 .editor-styles-wrapper .wp-block-famehelsinki-donation-form {
 
-	/* allow container queries used by inner layouts */
-	container-type: inline-size;
+	.editor-styles-wrapper .wp-block-famehelsinki-donation-form {
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		inline-size: 100%;
+		box-sizing: border-box;
+	}
+}
+
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__wrapper {
+	width: 100% !important;
+	max-width: 100% !important;
+	min-width: 0 !important;
+	inline-size: 100% !important;
 }
 
 /* Spacing between inner blocks inside our wrapper (editor markup) */
@@ -331,7 +343,13 @@ label {
 
 @container (max-width: 1000px) {
 
-	.editor-styles-wrapper .wp-block-famehelsinki-donation-form .is-layout-grid {
-		grid-template-columns: 1fr !important;
+	/* core/columns uses is-layout-flex (not is-layout-grid) */
+	.editor-styles-wrapper .wp-block-famehelsinki-donation-form .is-layout-flex.wp-block-columns {
+		flex-wrap: wrap !important;
+	}
+
+	.editor-styles-wrapper .wp-block-famehelsinki-donation-form .wp-block-column {
+		flex: 0 0 100% !important;
+		max-width: 100% !important;
 	}
 }
