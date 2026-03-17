@@ -20,7 +20,7 @@ $campaigns = isset($attributes['campaigns']) && is_array($attributes['campaigns'
   ? $attributes['campaigns']
   : [];
 
-if (!$show || empty($campaigns)) {
+if (!$show || count($campaigns) <= 1) {
   return;
 }
 
