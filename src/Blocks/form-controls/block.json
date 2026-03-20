@@ -10,12 +10,16 @@
 	"attributes": {
 		"submitLabel": {
 			"type": "string",
-			"source": "text",
-			"selector": ".fame-form__controls [type=\"submit\"]",
 			"default": "Donate"
 		},
-		"submitLabelSingle": { "type": "string", "default": "Donate" },
-		"submitLabelRecurring": { "type": "string", "default": "Donate" }
+		"submitLabelSingle": {
+			"type": "string",
+			"default": "Donate"
+		},
+		"submitLabelRecurring": {
+			"type": "string",
+			"default": "Donate"
+		}
 	},
 	"supports": {
 		"multiple": false,
@@ -30,5 +34,6 @@
 	},
 	"icon": "button",
 	"textdomain": "fame_lahjoitukset",
-	"editorScript": "file:./index.js"
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
 }
