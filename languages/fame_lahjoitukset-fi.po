@@ -97,7 +97,7 @@ msgstr "Lahjoitustapa"
 #: build/Blocks/donation-type/index.js:1
 #: build/Blocks/form-controls/index.js:1
 msgid "Single"
-msgstr "Kertalahjitus"
+msgstr "Kertalahjoitus"
 
 #: build/Blocks/donation-type/render.php:56
 #: src/Blocks/donation-type/render.php:56
@@ -488,7 +488,7 @@ msgstr "Painikkeiden tekstit"
 
 #: build/Blocks/form-controls/index.js:1
 msgid "Single button text"
-msgstr "Kertalahjitus-painikkeen teksti"
+msgstr "Kertalahjoitus-painikkeen teksti"
 
 #: build/Blocks/form-controls/index.js:1
 msgid "Recurring button text"
