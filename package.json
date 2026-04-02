@@ -20,7 +20,7 @@
 		"@jest/globals": "^29.7.0",
 		"@testing-library/dom": "^10.4.1",
 		"@testing-library/react": "^16.3.0",
-		"@types/wordpress__block-editor": "^11.5.16",
+		"@types/wordpress__block-editor": "^15.0.5",
 		"@wordpress/scripts": "^30.25.0",
 		"@wordpress/dom-ready": "^4.32.0",
 		"eslint": "^8.57.1",
