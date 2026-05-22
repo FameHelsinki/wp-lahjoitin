@@ -82,12 +82,37 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ github.TOKEN }}
 
-    # Publish auto-update metadata to GitHub Pages on every release. The
-    # Lahjoitin plugin's Updater component fetches this JSON to discover new
-    # versions, so this job is the public side of the auto-update mechanism.
+    # Decide whether this release should drive the public update channel.
+    # We only publish for the release GitHub considers "latest" and skip
+    # pre-releases, so that editing an older release cannot downgrade
+    # existing installs.
+    check-release:
+        if: github.event_name == 'release' && github.event.release.prerelease == false
+        runs-on: ubuntu-latest
+        outputs:
+            is_latest: ${{ steps.check.outputs.is_latest }}
+        steps:
+            - name: Compare tag against latest release
+              id: check
+              env:
+                  TAG: ${{ github.event.release.tag_name }}
+                  REPO: ${{ github.repository }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  LATEST_TAG=$(gh api "/repos/${REPO}/releases/latest" --jq .tag_name)
+                  if [ "$LATEST_TAG" = "$TAG" ]; then
+                      echo "is_latest=true" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "is_latest=false" >> "$GITHUB_OUTPUT"
+                      echo "Skipping manifest publish: $TAG is not the latest release ($LATEST_TAG)."
+                  fi
+
+    # Publish auto-update metadata to GitHub Pages. The Lahjoitin plugin's
+    # Updater component fetches this JSON to discover new versions, so this
+    # job is the public side of the auto-update mechanism.
     publish-metadata:
-        if: github.event_name == 'release'
-        needs: build
+        needs: [build, check-release]
+        if: needs.check-release.outputs.is_latest == 'true'
         runs-on: ubuntu-latest
         permissions:
             contents: read
