@@ -15,7 +15,7 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
-            - uses: actions/checkout@v4
+            - uses: actions/checkout@v6
 
             - name: Use Node.js
               uses: actions/setup-node@v4
@@ -55,14 +55,20 @@ jobs:
                   echo "VERSION=$VERSION" >> $GITHUB_OUTPUT;
                   echo "PACKAGE=$PACKAGE" >> $GITHUB_OUTPUT;
 
-                  # Replace the version in the plugin file.
+                  # Replace the version in the plugin header and the PHP constant.
                   sed -i "s/\(Version:[[:space:]]\+\).*/\1$VERSION/" fame-lahjoitukset.php
+                  sed -i "s/define('LAHJOITUKSET_PLUGIN_VERSION', '[^']*')/define('LAHJOITUKSET_PLUGIN_VERSION', '$VERSION')/" fame-lahjoitukset.php
 
-                  # Create package. Note: vendor fondler is included on purpose.
-                  zip -r "$PACKAGE" . -x ".git*" -x "node_modules*"
+                  # Stage the plugin into a subfolder named after the plugin slug.
+                  # WordPress' Plugin_Upgrader expects a single enclosing folder
+                  # in the zip.Note: vendor folder must be included too.
+                  STAGE=/tmp/build
+                  mkdir -p "$STAGE/fame-lahjoitukset"
+                  rsync -a --exclude='.git*' --exclude='node_modules*' ./ "$STAGE/fame-lahjoitukset/"
+                  (cd "$STAGE" && zip -r "$PACKAGE" fame-lahjoitukset)
 
             # Create workflow artifact.
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               if: github.event_name != 'release'
               with:
                   name: fame-lahjoitukset.zip
@@ -75,3 +81,95 @@ jobs:
                   gh release upload ${{ github.event.release.tag_name }} ${{ steps.release-setup.outputs.PACKAGE }}
               env:
                   GITHUB_TOKEN: ${{ github.TOKEN }}
+
+    # Publish auto-update metadata to GitHub Pages on every release. The
+    # Lahjoitin plugin's Updater component fetches this JSON to discover new
+    # versions, so this job is the public side of the auto-update mechanism.
+    publish-metadata:
+        if: github.event_name == 'release'
+        needs: build
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pages: write
+            id-token: write
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Generate update.json
+              env:
+                  TAG: ${{ github.event.release.tag_name }}
+                  RELEASE_BODY: ${{ github.event.release.body }}
+                  PUBLISHED_AT: ${{ github.event.release.published_at }}
+                  REPO: ${{ github.repository }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  VERSION="${TAG#v}"
+                  DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${TAG}/fame-lahjoitukset-${VERSION}.zip"
+
+                  # Read metadata from the plugin docblock and readme
+                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" fame-lahjoitukset.php)
+                  AUTHOR=$(grep -Po "Author:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" fame-lahjoitukset.php)
+                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" readme.txt)
+
+                  # Render the release notes (Markdown) as HTML for the
+                  # "View details" modal. Fall back to a <pre> wrapper if the
+                  # API call fails for any reason.
+                  if ! CHANGELOG_HTML=$(gh api -X POST /markdown \
+                          --raw-field "mode=gfm" \
+                          --raw-field "context=${REPO}" \
+                          --raw-field "text=${RELEASE_BODY}"); then
+                      CHANGELOG_HTML="<pre>${RELEASE_BODY}</pre>"
+                  fi
+
+                  mkdir -p _site
+                  jq -n \
+                      --arg name "$NAME" \
+                      --arg author "$AUTHOR" \
+                      --arg version "$VERSION" \
+                      --arg download_url "$DOWNLOAD_URL" \
+                      --arg requires "$REQUIRES" \
+                      --arg requires_php "$REQUIRES_PHP" \
+                      --arg tested "$TESTED" \
+                      --arg last_updated "$PUBLISHED_AT" \
+                      --arg changelog "$CHANGELOG_HTML" \
+                      --arg homepage "https://github.com/${REPO}" \
+                      '{
+                          name: $name,
+                          slug: "fame-lahjoitukset",
+                          plugin: "fame-lahjoitukset/fame-lahjoitukset.php",
+                          version: $version,
+                          author: $author,
+                          homepage: $homepage,
+                          download_url: $download_url,
+                          requires: $requires,
+                          tested: $tested,
+                          requires_php: $requires_php,
+                          last_updated: $last_updated,
+                          sections: {
+                              changelog: $changelog
+                          }
+                      }' > _site/update.json
+
+                  # Ship optional icon/banner assets alongside update.json if
+                  # the repo provides them under assets/.
+                  if [ -d assets ]; then
+                      cp -r assets _site/assets
+                  fi
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Upload Pages artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: _site
+
+            - name: Deploy to Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
