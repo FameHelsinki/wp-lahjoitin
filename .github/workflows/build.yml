@@ -68,7 +68,7 @@ jobs:
                   (cd "$STAGE" && zip -r "$PACKAGE" fame-lahjoitukset)
 
             # Create workflow artifact.
-            - uses: actions/upload-artifact@v4
+            - uses: actions/upload-artifact@v7
               if: github.event_name != 'release'
               with:
                   name: fame-lahjoitukset.zip
@@ -110,6 +110,13 @@ jobs:
                   VERSION="${TAG#v}"
                   DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${TAG}/fame-lahjoitukset-${VERSION}.zip"
 
+                  # Read metadata from the plugin docblock and readme
+                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" fame-lahjoitukset.php)
+                  AUTHOR=$(grep -Po "Author:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" fame-lahjoitukset.php)
+                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" readme.txt)
+
                   # Render the release notes (Markdown) as HTML for the
                   # "View details" modal. Fall back to a <pre> wrapper if the
                   # API call fails for any reason.
@@ -122,25 +129,29 @@ jobs:
 
                   mkdir -p _site
                   jq -n \
+                      --arg name "$NAME" \
+                      --arg author "$AUTHOR" \
                       --arg version "$VERSION" \
                       --arg download_url "$DOWNLOAD_URL" \
+                      --arg requires "$REQUIRES" \
+                      --arg requires_php "$REQUIRES_PHP" \
+                      --arg tested "$TESTED" \
                       --arg last_updated "$PUBLISHED_AT" \
                       --arg changelog "$CHANGELOG_HTML" \
                       --arg homepage "https://github.com/${REPO}" \
                       '{
-                          name: "Lahjoitin",
+                          name: $name,
                           slug: "fame-lahjoitukset",
                           plugin: "fame-lahjoitukset/fame-lahjoitukset.php",
                           version: $version,
-                          author: "Fame Helsinki",
+                          author: $author,
                           homepage: $homepage,
                           download_url: $download_url,
-                          requires: "6.7",
-                          tested: "6.7",
-                          requires_php: "8.3",
+                          requires: $requires,
+                          tested: $tested,
+                          requires_php: $requires_php,
                           last_updated: $last_updated,
                           sections: {
-                              description: "Lahjoitin is a WordPress plugin for the Fame lahjoitukset donation system.",
                               changelog: $changelog
                           }
                       }' > _site/update.json
