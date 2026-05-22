@@ -230,9 +230,13 @@ endif;
             aria-describedby="<?php echo esc_attr($minmax_id); ?>" />
           <span class="donation-amounts__minmax" id="<?php echo esc_attr($minmax_id); ?>">
             <?php
-            echo esc_html__('Min', 'fame_lahjoitukset') . ' ' . esc_html((string) $min_amount) . esc_html($unit)
-              . ' – ' .
-              esc_html__('Max', 'fame_lahjoitukset') . ' ' . esc_html((string) $max_amount) . esc_html($unit);
+            echo esc_html__('Min', 'fame_lahjoitukset') . ' '
+              . esc_html(number_format((float) $min_amount, 0, ',', ' '))
+              . esc_html($unit)
+              . ' – '
+              . esc_html__('Max', 'fame_lahjoitukset') . ' '
+              . esc_html(number_format((float) $max_amount, 0, ',', ' '))
+              . esc_html($unit);
             ?>
           </span>
         </div>
