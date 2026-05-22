@@ -1,9 +1,6 @@
 .contact-form .fame-form__fake-input {
 	border: var(--form-element-border);
 	padding: var(--form-element-padding);
-
-	/* This is pretty ugly, should set line height
-	 * somewhere, so this should be 1em * line-height */
 	height: 1.7em;
 }
 
@@ -14,4 +11,3 @@
 .fame-form__help {
 	font-size: 14px !important;
 }
-

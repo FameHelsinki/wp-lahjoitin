@@ -232,8 +232,8 @@ export class AmountWrapper {
 			this.#showError(
 				target,
 				sprintf(
-					/* translators: %1$s: amount, %2$s: currency symbol */
-					__('Pienin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					/* translators: %1$s: minimum amount, %2$s: currency symbol */
+					__('The minimum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
 					min,
 					unit
 				)
@@ -249,8 +249,8 @@ export class AmountWrapper {
 			this.#showError(
 				target,
 				sprintf(
-					/* translators: %1$s: amount, %2$s: currency symbol */
-					__('Suurin mahdollinen lahjoitussumma on %1$s%2$s.', 'fame_lahjoitukset'),
+					/* translators: %1$s: maximum amount, %2$s: currency symbol */
+					__('The maximum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
 					max,
 					unit
 				)
@@ -325,14 +325,34 @@ export default class AmountHandler {
 		})
 
 		const types = form.elements.namedItem('type')
+
+		// RadioNodeList (normal case)
 		if (types instanceof RadioNodeList) {
 			types.forEach(radio => radio.addEventListener('change', onChangeType))
 
 			// Ensure that state is up to date.
-			const selected = Array.prototype.find.call(types, type => type.checked)
-			if (selected) {
+			const selected = Array.prototype.find.call(types, (t: any) => t?.checked) as
+				| HTMLInputElement
+				| undefined
+
+			if (selected?.value) {
 				this.#updateType(selected.value)
+			} else {
+				// Fallback: if nothing checked, still try first value if exists
+				const first = types[0] as any as HTMLInputElement | undefined
+				if (first?.value) this.#updateType(first.value)
 			}
+		}
+
+		// Hidden input for single-type forms.
+		else if (types instanceof HTMLInputElement && types.value) {
+			this.#updateType(types.value)
+		}
+
+		// No type field at all: if there is exactly one wrapper, initialize it
+		else if (this.#wrappers.length === 1) {
+			const selectedAmount = this.#wrappers[0].ensureSelection()
+			this.#onChangeAmount(selectedAmount)
 		}
 
 		// Extra safety: if submit is attempted while invalid, block it.

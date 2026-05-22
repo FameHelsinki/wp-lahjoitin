@@ -7,3 +7,8 @@
 .donation-type__input {
 	width: 1.5em;
 }
+
+.fame-form__legend {
+	display: block;
+	width: 100%;
+}

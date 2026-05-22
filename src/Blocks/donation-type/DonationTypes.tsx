@@ -26,10 +26,10 @@ const Component: FC<Props> = ({ types, value: defaultValue, onChange }) => (
 					className="donation-type__label"
 					aria-label={__('Donation type', 'fame_lahjoitukset')}
 					allowedFormats={[]}
-					onChange={label =>
+					onChange={newLabel =>
 						onChange({
 							types: types.map(type =>
-								type.value !== value ? type : { value, label }
+								type.value !== value ? type : { value, label: newLabel }
 							),
 						})
 					}

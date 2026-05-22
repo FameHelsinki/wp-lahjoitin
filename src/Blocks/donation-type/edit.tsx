@@ -1,7 +1,13 @@
-import React, { useEffect } from 'react'
+import React, { CSSProperties, useEffect } from 'react'
 import { __ } from '@wordpress/i18n'
 import { RadioControl, PanelBody, TextControl, ToggleControl } from '@wordpress/components'
-import { InspectorControls, RichText, useBlockProps } from '@wordpress/block-editor'
+import {
+	InspectorControls,
+	RichText,
+	useBlockProps,
+	AlignmentToolbar,
+	BlockControls,
+} from '@wordpress/block-editor'
 import { DEFAULT_DONATION_TYPE, DONATION_TYPES, DonationType } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import DonationTypes from './DonationTypes.tsx'
@@ -11,6 +17,7 @@ export type Attributes = {
 	types?: DonationType[]
 	value?: string
 	showLegend?: boolean
+	legendAlign?: string
 }
 
 /**
@@ -25,22 +32,29 @@ export default function Edit({
 	setAttributes,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': enabledTypes } = context
-	const { types, value } = attributes
+	const { types, value, legendAlign = 'left' } = attributes
 
 	useEffect(() => {
+		const enabled =
+			Array.isArray(enabledTypes) && enabledTypes.length > 0
+				? enabledTypes
+				: DONATION_TYPES.map(t => t.value)
+
 		// Calculate updated types.
 		//  - enabled types might have changed.
 		//  - enabled types might have been removed.
 		const update = DONATION_TYPES
 			// Filter all enabled types.
-			.filter(({ value }) => enabledTypes?.includes(value))
+			.filter(({ value: typeValue }) => enabled.includes(typeValue))
 			// Use existing type from if it exists, otherwise add
 			// new with default label from DONATION_TYPES array.
-			.map(t => types?.find(({ value }) => t.value === value) ?? t)
+			.map(t => types?.find(({ value: typeValue }) => t.value === typeValue) ?? t)
 
-		// Check if update includes current default value.
-		// If not, set first element as the new default value.
-		const defaultValue = update?.find(type => type.value === value)?.value || update?.[0]?.value
+		// Calculate default value. Use existing if it exists in updated list, otherwise use first from updated list or fallback to default.
+		const defaultValue =
+			update?.find(type => type.value === value)?.value ??
+			update?.[0]?.value ??
+			DEFAULT_DONATION_TYPE.value
 
 		// Update if the list has changed. Calling setAttributes
 		// without this check leads to infinite recursion.
@@ -65,6 +79,12 @@ export default function Edit({
 
 	return (
 		<>
+			<BlockControls group="block">
+				<AlignmentToolbar
+					value={legendAlign}
+					onChange={next => setAttributes({ legendAlign: next || 'left' })}
+				/>
+			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					{types?.length && types?.length > 1 && (
@@ -76,7 +96,7 @@ export default function Edit({
 							)}
 							selected={value ?? types?.[0]?.value}
 							options={types}
-							onChange={value => setAttributes({ value })}
+							onChange={nextValue => setAttributes({ value: nextValue })}
 						/>
 					)}
 					<ToggleControl
@@ -85,18 +105,19 @@ export default function Edit({
 							'If disabled, the legend is marked visually hidden.',
 							'fame_lahjoitukset'
 						)}
-						disabled={!visible}
-						checked={visible && attributes.showLegend}
+						checked={attributes.showLegend}
 						onChange={showLegend => setAttributes({ showLegend })}
 					/>
-					{visible && !attributes.showLegend && (
-						<TextControl
-							label={__('Legend', 'fame_lahjoitukset')}
-							help={__('Description for screen readers.', 'fame_lahjoitukset')}
-							value={attributes.legend ?? __('Donation type')}
-							onChange={legend => setAttributes({ legend })}
-						/>
-					)}
+
+					<TextControl
+						label={__('Legend', 'fame_lahjoitukset')}
+						help={__(
+							'Description for screen readers (for accessibility).',
+							'fame_lahjoitukset'
+						)}
+						value={attributes.legend ?? __('Donation type')}
+						onChange={legend => setAttributes({ legend })}
+					/>
 				</PanelBody>
 			</InspectorControls>
 			<div {...useBlockProps({ className: 'donation-type' })}>
@@ -105,18 +126,41 @@ export default function Edit({
 						{attributes.showLegend && (
 							<RichText
 								multiline={false}
+								tagName="legend"
 								className="fame-form__legend"
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Donation type', 'fame_lahjoitukset')}
 								allowedFormats={[]}
 								value={attributes.legend ?? ''}
 								onChange={legend => setAttributes({ legend })}
+								style={{
+									textAlign: legendAlign as CSSProperties['textAlign'],
+									fontFamily: 'inherit',
+								}}
 							/>
 						)}
 						<DonationTypes types={types} value={value} onChange={setAttributes} />
 					</>
 				) : (
-					`Type: ${types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)`
+					<>
+						{attributes.showLegend && (
+							<RichText
+								multiline={false}
+								tagName="legend"
+								className="fame-form__legend"
+								aria-label={__('Legend', 'fame_lahjoitukset')}
+								placeholder={__('Donation type', 'fame_lahjoitukset')}
+								allowedFormats={[]}
+								value={attributes.legend ?? ''}
+								onChange={legend => setAttributes({ legend })}
+								style={{
+									textAlign: legendAlign as CSSProperties['textAlign'],
+									fontFamily: 'inherit',
+								}}
+							/>
+						)}
+						{`Type: ${types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)`}
+					</>
 				)}
 			</div>
 		</>

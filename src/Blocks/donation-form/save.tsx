@@ -1,63 +1,15 @@
-import { useBlockProps, useInnerBlocksProps } from '@wordpress/block-editor'
 import React from 'react'
-import { SaveProps } from '../common/types.ts'
+import { InnerBlocks } from '@wordpress/block-editor'
 
 /**
- * The save function defines the way in which the different attributes should
- * be combined into the final markup, which is then serialized by the block
- * editor into `post_content`.
+ * This block is rendered dynamically on the server (render.php).
  *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#save
+ * We still need to output <InnerBlocks.Content /> so that child blocks
+ * are saved into post_content. WordPress uses this serialized structure
+ * to restore the block tree in the editor.
+ *
+ * The actual frontend markup is generated in PHP.
  */
-export default function save({ attributes }: SaveProps): React.JSX.Element {
-	const {
-		returnAddress,
-		campaign,
-		token,
-		primaryColor,
-		secondaryColor,
-		thirdColor,
-		borderRadius,
-		borderWidth,
-		textFieldBorderRadius,
-		useModernStyle,
-	} = attributes
-
-	const blockProps = useBlockProps.save({
-		className: `fame-form-container ${useModernStyle ? 'has-modern-style' : ''}`,
-	})
-	const innerBlockProps = useInnerBlocksProps.save({
-		className: 'fame-form__wrapper',
-		style: {
-			'--primary-color': primaryColor || 'inherit',
-			'--secondary-color': secondaryColor || 'inherit',
-			'--third-color': thirdColor || 'inherit',
-			'--border-radius': borderRadius || 'inherit',
-			'--border-width': borderWidth || 'inherit',
-			'--text-field-border-radius': textFieldBorderRadius || 'inherit',
-		},
-	})
-
-	return (
-		<div {...blockProps}>
-			<form
-				className="fame-form fame-form--donations"
-				data-token={token || undefined}
-				noValidate
-			>
-				<div {...innerBlockProps} />
-
-				<input type="hidden" name="return_address" value={returnAddress || '/'} />
-
-				<input type="hidden" name="provider" data-selected-provider />
-
-				{campaign && <input type="hidden" name="campaign" value={campaign} />}
-			</form>
-			<div className="fame-form-overlay">
-				<div className="fame-form-spinner" role="status">
-					<span className="screen-reader-text">Loading</span>
-				</div>
-			</div>
-		</div>
-	)
+export default function save() {
+	return <InnerBlocks.Content />
 }

@@ -265,11 +265,12 @@ export default class FormHandler {
 				)
 			}
 		} catch (error) {
+			// eslint-disable-next-line no-console
 			console.error('Submit failed', error)
 
 			if (error instanceof Validation) {
-				Object.entries(error.errors).forEach(([key, error]) => {
-					this.addError(key, error)
+				Object.entries(error.errors).forEach(([key, message]) => {
+					this.addError(key, message)
 				})
 				return
 			}
