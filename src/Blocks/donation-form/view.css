@@ -141,6 +141,10 @@
 
 /* MODERN STYLE */
 
+.wp-block-famehelsinki-donation-form .wp-block-group {
+	max-width: 600px !important;
+}
+
 .wp-block-famehelsinki-donation-form {
 	--hover-lighten: 16%;
 }
@@ -164,6 +168,7 @@
 .wp-block-famehelsinki-donation-form .fame-form__fieldset {
 	border: none;
 	padding: 0;
+	margin-block-start: 1.2rem !important;
 }
 
 .wp-block-famehelsinki-donation-form .fame-form__legend {
@@ -291,6 +296,7 @@ input {
 	font-size: inherit;
 	max-width: none;
 	color: inherit;
+	margin-bottom: 0;
 }
 
 .wp-block-famehelsinki-donation-form
