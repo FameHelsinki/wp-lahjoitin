@@ -7,7 +7,7 @@ use Fame\WordPress\Lahjoitukset\Plugin;
 /**
  * Plugin Name:       Lahjoitin
  * Description:       Wordpress plugin for Fame lahjoitukset system.
- * Version:           1.1.3
+ * Version:           1.1.4
  * Requires at least: 6.7
  * Requires PHP:      8.3
  * Author:            Fame Helsinki
