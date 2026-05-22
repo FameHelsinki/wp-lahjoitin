@@ -10,7 +10,7 @@ WordPress plugin for the Lahjoitin.fi donation platform.
 
 == Description ==
 
-Lahjoitin is a WordPress plugin that provides a Gutenberg block for adding a donation form to your website.  
+Lahjoitin is a WordPress plugin that provides a Gutenberg block for adding a donation form to your website.
 It is part of the Lahjoitin.fi donation platform developed by Fame and integrates into WordPress to support easy and accessible online donations.
 
 The plugin provides configurable blocks for donation type selection, donation amounts, campaign selection, contact details and payment providers.
@@ -40,7 +40,7 @@ npm run dev
 
 == Translations ==
 
-The plugin supports translations using WordPress internationalization (i18n).  
+The plugin supports translations using WordPress internationalization (i18n).
 All source strings are written in English and use the text domain: fame_lahjoitukset.
 
 Translation files are located in the /languages directory.
@@ -65,7 +65,7 @@ languages/fame_lahjoitukset.pot
 
 After updating the POT file, update the translation files:
 
-languages/fame_lahjoitukset-fi_FI.po  
+languages/fame_lahjoitukset-fi_FI.po
 languages/fame_lahjoitukset-sv_SE.po
 
 Add or update translations for any new or changed strings.
@@ -90,9 +90,4 @@ Contact Fame Helsinki at info@fame.fi.
 
 == Changelog ==
 
-= 1.1.3 =
-* Translation workflow improvements
-* Updated translation files
-
-= 1.0.0 =
-* Initial release
+See releases: https://github.com/FameHelsinki/wp-lahjoitin/releases.
