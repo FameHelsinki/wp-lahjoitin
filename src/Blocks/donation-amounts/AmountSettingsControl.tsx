@@ -41,18 +41,26 @@ const AmountSettingsControl: FC<Props> = ({ settings, other, visible, onChange }
 						onChange({ ...settings, defaultAmount: formatAmount(value, 0) })
 					}
 				/>
-				<TextControl
-					label={__('Min Amount', 'fame_lahjoitukset')}
-					help={__('Minimum amount for other amount field.', 'fame_lahjoitukset')}
-					value={(settings.minAmount ?? MIN_AMOUNT).toString()}
-					onChange={value => onChange({ ...settings, minAmount: formatAmount(value, 0) })}
-				/>
-				<TextControl
-					label={__('Max Amount', 'fame_lahjoitukset')}
-					help={__('Maximum amount for other amount field.', 'fame_lahjoitukset')}
-					value={(settings.maxAmount ?? MAX_AMOUNT).toString()}
-					onChange={value => onChange({ ...settings, maxAmount: formatAmount(value, 0) })}
-				/>
+				{other && (
+					<>
+						<TextControl
+							label={__('Min Amount', 'fame_lahjoitukset')}
+							help={__('Minimum amount for other amount field.', 'fame_lahjoitukset')}
+							value={(settings.minAmount ?? MIN_AMOUNT).toString()}
+							onChange={value =>
+								onChange({ ...settings, minAmount: formatAmount(value, 0) })
+							}
+						/>
+						<TextControl
+							label={__('Max Amount', 'fame_lahjoitukset')}
+							help={__('Maximum amount for other amount field.', 'fame_lahjoitukset')}
+							value={(settings.maxAmount ?? MAX_AMOUNT).toString()}
+							onChange={value =>
+								onChange({ ...settings, maxAmount: formatAmount(value, 0) })
+							}
+						/>
+					</>
+				)}
 			</>
 		) : (
 			<RadioControl

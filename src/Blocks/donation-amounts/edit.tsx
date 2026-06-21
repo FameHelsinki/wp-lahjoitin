@@ -203,14 +203,19 @@ export default function Edit({
 						value={legend ?? DEFAULT_LEGEND}
 						onChange={value => setAttributes({ legend: value })}
 					/>
-					<RangeControl
-						label={__('Amount columns', 'fame_lahjoitukset')}
-						help={__('Choose 1–3 columns for the form layout.', 'fame_lahjoitukset')}
-						min={1}
-						max={3}
-						value={colsAmounts}
-						onChange={(v?: number) => setAttributes({ colsAmounts: v ?? 3 })}
-					/>
+					{settings.some(({ amounts }) => amounts?.length) && (
+						<RangeControl
+							label={__('Amount columns', 'fame_lahjoitukset')}
+							help={__(
+								'Choose 1–3 columns for the form layout.',
+								'fame_lahjoitukset'
+							)}
+							min={1}
+							max={3}
+							value={colsAmounts}
+							onChange={(v?: number) => setAttributes({ colsAmounts: v ?? 3 })}
+						/>
+					)}
 					<Flex justify="initial">
 						<Button
 							variant="primary"
