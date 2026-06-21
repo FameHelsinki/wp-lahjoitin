@@ -253,6 +253,7 @@ export default class FormHandler {
 
 		// Allow plugins to alter form data.
 		const alterFormDataEvent: FormSubmitEvent = new CustomEvent('fame-lahjoitukset-submit', {
+			cancelable: true,
 			detail: {
 				url,
 				data,
@@ -316,6 +317,7 @@ export default class FormHandler {
 
 		// Allow plugins to alter form result.
 		const formResultEvent: FormResultEvent = new CustomEvent('fame-lahjoitukset-result', {
+			cancelable: true,
 			detail: {
 				result,
 				handler: this,
@@ -351,27 +353,40 @@ export default class FormHandler {
 	}
 
 	validate(): boolean {
-		// Overrides browser validation for the provider field when the provider is hidden.
+		// The resolved provider value lives in the hidden selected-provider field,
+		// so the browser's constraint validation on the provider inputs can be
+		// overridden when a provider has been selected. Every other field is still
+		// validated normally.
 		const hasValidProvider =
 			!!this.#providerField?.value && this.#providerField?.value.trim() !== ''
 
-		const valid = this.#form.checkValidity()
+		let valid = true
+
+		Array.prototype.forEach.call(this.#form.elements, element => {
+			if (element.validity.valid) {
+				return
+			}
+
+			// Provider inputs are validated via hasValidProvider above.
+			if (element.name === 'provider' && hasValidProvider) {
+				return
+			}
+
+			valid = false
+
+			// Custom errors already carry their own message, only render messages
+			// for built-in validation failures.
+			if (!element.validity.customError) {
+				this.#addErrorToElement(
+					element,
+					this.#getErrorMessage(element.name, element.validity)
+				)
+			}
+		})
 
 		this.#form.classList.add('was-validated')
 
-		if (!valid && !hasValidProvider) {
-			// Create error messages from built in validation values.
-			Array.prototype.forEach.call(this.#form.elements, element => {
-				if (!element.validity.valid && !element.validity.customError) {
-					this.#addErrorToElement(
-						element,
-						this.#getErrorMessage(element.name, element.validity)
-					)
-				}
-			})
-		}
-
-		return valid || hasValidProvider
+		return valid
 	}
 
 	/**
