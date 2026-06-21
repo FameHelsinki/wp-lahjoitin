@@ -19,12 +19,13 @@ function isFormControl(element: any): element is FormControlElement {
 
 export default class FormHandler {
 	readonly #url: string
+	readonly #slug: string
 	readonly #form: HTMLFormElement
 	readonly #submit: NodeListOf<HTMLButtonElement | HTMLInputElement>
 	readonly #amount: AmountHandler
 	readonly #translations: ErrorTranslations
 
-	#providerField?: HTMLInputElement
+	#providerField: HTMLInputElement | null
 	#providerRadios: NodeListOf<HTMLInputElement>
 	#providerHiddens: NodeListOf<HTMLInputElement>
 	#providerSections: NodeListOf<HTMLElement>
@@ -38,8 +39,14 @@ export default class FormHandler {
 		return this.#amount
 	}
 
-	constructor(url: string, form: HTMLFormElement, translations: ErrorTranslations = {}) {
+	constructor(
+		url: string,
+		slug: string,
+		form: HTMLFormElement,
+		translations: ErrorTranslations = {}
+	) {
 		this.#url = url
+		this.#slug = slug
 		this.#form = form
 
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
@@ -423,7 +430,7 @@ export default class FormHandler {
 	 * @private
 	 */
 	getSubmitUrl() {
-		const url = new URL(`${this.#url}/donation`)
+		const url = new URL(`${this.#url}/donation/${encodeURIComponent(this.#slug)}`)
 
 		// @todo move contact parameter to form.
 		// Check if contact form should be required.

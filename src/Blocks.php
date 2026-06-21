@@ -63,6 +63,7 @@ class Blocks implements ComponentInterface, ContainerInjectionInterface
 
 			wp_localize_script($viewScript, 'fame_lahjoitukset', [
 				'backend_url' => $this->settings->getBackendUrl(),
+				'slug'        => $this->settings->getSlug(),
 			]);
 		}
 	}

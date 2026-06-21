@@ -5,9 +5,12 @@ import FormHandler from './view/FormHandler.ts'
 import './view.css'
 
 domReady(() => {
-	const { backend_url: backendUrl } = window.fame_lahjoitukset || {}
+	const { backend_url: backendUrl, slug } = window.fame_lahjoitukset || {}
 	if (!backendUrl) {
 		throw new Error('Backend URL is missing')
+	}
+	if (!slug) {
+		throw new Error('Slug is missing')
 	}
 
 	const form = document.querySelector<HTMLFormElement>('form.fame-form--donations')
@@ -34,5 +37,5 @@ domReady(() => {
 		},
 	}
 
-	new FormHandler(backendUrl, form, translations)
+	new FormHandler(backendUrl, slug, form, translations)
 })
