@@ -62,7 +62,6 @@ class Settings implements ComponentInterface
             'manage_options',
             self::MENU_SLUG,
             function () { ?>
-                <?php settings_errors(); ?>
                 <form method="post" action="options.php">
                     <?php settings_fields($this->settings->sectionId);
                     do_settings_sections(self::MENU_SLUG);
