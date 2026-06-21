@@ -27,11 +27,13 @@ jobs:
               uses: shivammathur/setup-php@v2
               with:
                   php-version: '8.3'
+                  tools: wp-cli
 
             - name: Build
               run: |
                   npm ci
                   npm run build
+                  npm run build:i18n
                   composer install --no-dev --optimize-autoloader --classmap-authoritative
 
             - name: Setup release

@@ -38,6 +38,10 @@ Start development build with watch mode:
 
 npm run dev
 
+Compile translations:
+
+npm run build:i18n
+
 == Translations ==
 
 The plugin supports translations using WordPress internationalization (i18n).

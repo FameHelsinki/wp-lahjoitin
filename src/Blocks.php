@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fame\WordPress\Lahjoitukset;
 
 use Fame\WordPress\Lahjoitukset\Attributes\Action;
+use Fame\WordPress\Lahjoitukset\Attributes\Filter;
 use Fame\WordPress\Lahjoitukset\DI\ContainerInjectionInterface;
 use Psr\Container\ContainerInterface;
 
@@ -92,21 +93,64 @@ class Blocks implements ComponentInterface, ContainerInjectionInterface
     }
 
     /**
+     * Resolve script (JSON) translations across short/full locale forms.
+     *
+     * WordPress picks the script translation file by an exact locale-string
+     * match ("{domain}-{locale}-{md5}.json") and does no short/full fallback
+     * of its own. We only ship full-locale files (e.g. fi_FI), so when a site
+     * reports a short locale (e.g. fi) the expected file is missing. This
+     * mirrors the fallback loadTextdomain() already does for PHP .mo files.
+     *
+     * @param string|false $file
+     *   Translation file path WordPress resolved, or false if there is none.
+     * @param string $handle
+     *   Script handle (unused).
+     * @param string $domain
+     *   Text domain.
+     *
+     * @return string|false
+     *   An existing file for a fallback locale, or the original value.
+     */
+    #[Filter('load_script_translation_file', acceptedArgs: 3)]
+    public function filterScriptTranslationFile(string|false $file, string $handle, string $domain): string|false
+    {
+        if ($domain !== 'fame_lahjoitukset' || !is_string($file) || $file === '' || is_readable($file)) {
+            return $file;
+        }
+
+        $locale = determine_locale();
+
+        foreach ($this->buildLocaleFallbacks($locale, dirname($file)) as $candidate) {
+            if ($candidate === $locale) {
+                continue;
+            }
+
+            $alt = str_replace("-$locale-", "-$candidate-", $file);
+
+            if ($alt !== $file && is_readable($alt)) {
+                return $alt;
+            }
+        }
+
+        return $file;
+    }
+
+    /**
      * Returns locale candidates to try, most specific first.
      *
-     * - fi_FI  →  [fi_FI, fi]
-     * - fi     →  [fi, fi_FI]  (fi_FI discovered by scanning available .mo files)
+     * We ship only full-locale files (e.g. fi_FI), so the only mismatch to
+     * resolve is a site reporting the short form:
+     *
+     * - fi_FI  →  [fi_FI]            (exact file is shipped)
+     * - fi     →  [fi, fi_FI]        (fi_FI discovered by scanning available .mo files)
      */
     /** @return string[] */
     private function buildLocaleFallbacks(string $locale, string $langDir): array
     {
         $locales = [$locale];
 
-        if (str_contains($locale, '_')) {
-            // Full locale: append the short form (fi_FI → fi).
-            $locales[] = strstr($locale, '_', true);
-        } else {
-            // Short locale: scan for available full-locale .mo files (fi → fi_FI).
+        // Short locale: scan for the full-locale .mo files we ship (fi → fi_FI).
+        if (!str_contains($locale, '_')) {
             $pattern = $langDir . '/fame_lahjoitukset-' . $locale . '_*.mo';
             foreach (glob($pattern) ?: [] as $file) {
                 $locales[] = substr(basename($file, '.mo'), strlen('fame_lahjoitukset-'));

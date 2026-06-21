@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fame\WordPress\Lahjoitukset;
 
 use Fame\WordPress\Lahjoitukset\Attributes\Action;
+use Fame\WordPress\Lahjoitukset\Attributes\Filter;
 use Fame\WordPress\Lahjoitukset\DI\ContainerException;
 use Fame\WordPress\Lahjoitukset\DI\ContainerInjectionInterface;
 use Psr\Container\ContainerInterface;
@@ -62,6 +63,15 @@ class Plugin implements ContainerInterface
                 add_action($action->action, function () use ($instance, $method) {
                     $method->invoke($instance);
                 });
+            }
+
+            foreach ($method->getAttributes(Filter::class) as $attribute) {
+                /** @var Filter $filter */
+                $filter = $attribute->newInstance();
+
+                add_filter($filter->filter, function (...$args) use ($instance, $method) {
+                    return $method->invoke($instance, ...$args);
+                }, $filter->priority, $filter->acceptedArgs);
             }
         }
     }
