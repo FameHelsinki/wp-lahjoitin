@@ -8,9 +8,18 @@ import {
 	BlockControls,
 	InnerBlocks,
 } from '@wordpress/block-editor'
-import { PanelBody, Flex, CheckboxControl, TextControl, ToggleControl } from '@wordpress/components'
+import {
+	PanelBody,
+	Flex,
+	CheckboxControl,
+	TextControl,
+	ToggleControl,
+	Notice,
+	Spinner,
+} from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
-import { PROVIDERS, Provider } from '../common/Providers.ts'
+import { Provider } from '../common/Providers.ts'
+import { useProviders } from '../common/useProviders.ts'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
 
 export type FlatProvider = Provider & { type: string }
@@ -55,6 +64,8 @@ export default function Edit({
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
 
+	const [available, loading, error] = useProviders()
+
 	const isLegendShownForType = (type: string) => {
 		if (type === 'single') return showLegendSingle ?? showLegend ?? true
 		if (type === 'recurring') return showLegendRecurring ?? showLegend ?? true
@@ -74,18 +85,22 @@ export default function Edit({
 	}
 
 	useEffect(() => {
+		// Wait until the available providers have loaded so we don't seed
+		// defaults from an empty list before the API responds.
+		if (!available.length) return
+
 		const missing = donationTypes.filter(type => !providers.some(p => p.type === type))
 		if (!missing.length) return
 
 		const defaults = missing
 			.map(type => {
-				const match = PROVIDERS.find(p => p.types.includes(type))
+				const match = available.find(p => p.types.includes(type))
 				return match ? ({ ...match, type } as FlatProvider) : null
 			})
 			.filter(Boolean) as FlatProvider[]
 
 		if (defaults.length) setAttributes({ providers: [...providers, ...defaults] })
-	}, [donationTypes, providers, setAttributes])
+	}, [donationTypes, providers, available, setAttributes])
 
 	useEffect(() => {
 		const cleaned = providers.filter(p => donationTypes.includes(p.type))
@@ -107,7 +122,7 @@ export default function Edit({
 			if (exists) {
 				updated = current
 			} else {
-				const data = PROVIDERS.find(p => p.value === value)
+				const data = available.find(p => p.value === value)
 				if (!data) return
 				updated = [...current, { ...data, type: donationType }]
 			}
@@ -155,6 +170,34 @@ export default function Edit({
 						)}
 					/>
 				</PanelBody>
+				{loading && (
+					<PanelBody>
+						<Flex justify="flex-start" gap={2}>
+							<Spinner />
+							<span>{__('Loading providers…', 'fame_lahjoitukset')}</span>
+						</Flex>
+					</PanelBody>
+				)}
+				{!loading && error && (
+					<PanelBody>
+						<Notice status="error" isDismissible={false}>
+							{__(
+								'Could not load payment providers from lahjoitin.fi. Existing selections are kept; the live list will be used when the connection is restored.',
+								'fame_lahjoitukset'
+							)}
+						</Notice>
+					</PanelBody>
+				)}
+				{!loading && !error && !available.length && (
+					<PanelBody>
+						<Notice status="warning" isDismissible={false}>
+							{__(
+								'No payment providers are enabled for this organization. Check the slug in the Lahjoitukset settings.',
+								'fame_lahjoitukset'
+							)}
+						</Notice>
+					</PanelBody>
+				)}
 				{donationTypes.map(type => {
 					const selected = new Set((grouped[type] ?? []).map(p => p.value))
 					const showForType = isLegendShownForType(type)
@@ -168,14 +211,18 @@ export default function Edit({
 									onChange={checked => setLegendShownForType(type, checked)}
 								/>
 
-								{PROVIDERS.filter(p => p.types.includes(type)).map(p => (
-									<CheckboxControl
-										key={p.value}
-										label={p.label}
-										checked={selected.has(p.value)}
-										onChange={checked => updateProvider(type, p.value, checked)}
-									/>
-								))}
+								{available
+									.filter(p => p.types.includes(type))
+									.map(p => (
+										<CheckboxControl
+											key={p.value}
+											label={p.label}
+											checked={selected.has(p.value)}
+											onChange={checked =>
+												updateProvider(type, p.value, checked)
+											}
+										/>
+									))}
 
 								{(grouped[type] ?? []).map(p => (
 									<TextControl
