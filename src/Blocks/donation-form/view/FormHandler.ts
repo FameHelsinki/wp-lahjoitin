@@ -1,6 +1,16 @@
-import AmountHandler from './AmountHandler.ts'
+import AmountHandler, { AmountMessages } from './AmountHandler.ts'
 import Validation, { ErrorTranslations, getErrorType } from './Validation.ts'
 import { FormResultEvent, FormSubmitEvent } from './Events.ts'
+
+/**
+ * All translatable strings used by the donation form, bundled into a single
+ * object. The caller passes one bundle; FormHandler distributes the pieces to
+ * the sub-components that render them.
+ */
+export type Translations = {
+	errors?: ErrorTranslations
+	amount?: AmountMessages
+}
 
 type FormControlElement =
 	| HTMLInputElement
@@ -43,15 +53,15 @@ export default class FormHandler {
 		url: string,
 		slug: string,
 		form: HTMLFormElement,
-		translations: ErrorTranslations = {}
+		translations: Translations = {}
 	) {
 		this.#url = url
 		this.#slug = slug
 		this.#form = form
 
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
-		this.#amount = new AmountHandler(this.#form)
-		this.#translations = translations
+		this.#amount = new AmountHandler(this.#form, translations.amount)
+		this.#translations = translations.errors ?? {}
 
 		// Initialize form elements.
 		this.#providerField = this.#form.querySelector<HTMLInputElement>(
