@@ -1,7 +1,16 @@
-import { __, sprintf } from '@wordpress/i18n'
+export type AmountMessages = {
+	min: (min: number, unit: string) => string
+	max: (max: number, unit: string) => string
+}
+
+export const defaultAmountMessages: AmountMessages = {
+	min: (min, unit) => `The minimum donation amount is ${min}${unit}.`,
+	max: (max, unit) => `The maximum donation amount is ${max}${unit}.`,
+}
 
 export class AmountWrapper {
 	readonly #onChange: (amount: number) => void
+	readonly #messages: AmountMessages
 	readonly #wrapper: HTMLElement
 	readonly #buttons: NodeListOf<HTMLInputElement>
 	readonly #other: HTMLInputElement | null
@@ -125,10 +134,15 @@ export class AmountWrapper {
 		return 0
 	}
 
-	constructor(wrapper: HTMLElement, onChange: (amount: number) => void) {
+	constructor(
+		wrapper: HTMLElement,
+		onChange: (amount: number) => void,
+		messages: AmountMessages = defaultAmountMessages
+	) {
 		const onChangeButton = this.#onChangeButton.bind(this)
 
 		this.#onChange = onChange
+		this.#messages = messages
 		this.#wrapper = wrapper
 		this.#buttons = wrapper.querySelectorAll('input[type="radio"]')
 		this.#buttons.forEach(radio => radio.addEventListener('change', onChangeButton))
@@ -229,15 +243,7 @@ export class AmountWrapper {
 		if (!Number.isNaN(min) && amount < min) {
 			this.#invalidOther = true
 			this.#setSubmitDisabled(true)
-			this.#showError(
-				target,
-				sprintf(
-					/* translators: %1$s: minimum amount, %2$s: currency symbol */
-					__('The minimum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
-					min,
-					unit
-				)
-			)
+			this.#showError(target, this.#messages.min(min, unit))
 			return
 		}
 
@@ -246,15 +252,7 @@ export class AmountWrapper {
 		if (!Number.isNaN(max) && amount > max) {
 			this.#invalidOther = true
 			this.#setSubmitDisabled(true)
-			this.#showError(
-				target,
-				sprintf(
-					/* translators: %1$s: maximum amount, %2$s: currency symbol */
-					__('The maximum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
-					max,
-					unit
-				)
-			)
+			this.#showError(target, this.#messages.max(max, unit))
 			return
 		}
 
@@ -304,7 +302,7 @@ export default class AmountHandler {
 		this.#amount.value = (value * 100).toString()
 	}
 
-	constructor(form: HTMLFormElement) {
+	constructor(form: HTMLFormElement, messages: AmountMessages = defaultAmountMessages) {
 		const amount = form.elements.namedItem('amount')
 		if (!(amount instanceof HTMLInputElement)) {
 			throw new Error('Missing amount element')
@@ -317,7 +315,7 @@ export default class AmountHandler {
 
 		form.querySelectorAll('.donation-amounts').forEach(wrapper => {
 			if (wrapper instanceof HTMLElement) {
-				this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount))
+				this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount, messages))
 
 				const eventTarget: any = wrapper
 				eventTarget.addEventListener('fame-lahjoitukset-change', onChangeAmount)

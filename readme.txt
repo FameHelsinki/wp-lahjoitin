@@ -1,8 +1,7 @@
 === Lahjoitin ===
 Contributors:      Fame Helsinki
 Tags:              block, donation
-Tested up to:      6.7
-Stable tag:        1.1.3
+Tested up to:      7.0
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +36,10 @@ npm run build
 Start development build with watch mode:
 
 npm run dev
+
+Compile translations:
+
+npm run build:i18n
 
 == Translations ==
 

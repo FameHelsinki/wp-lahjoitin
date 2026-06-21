@@ -1,6 +1,16 @@
-import AmountHandler from './AmountHandler.ts'
+import AmountHandler, { AmountMessages } from './AmountHandler.ts'
 import Validation, { ErrorTranslations, getErrorType } from './Validation.ts'
 import { FormResultEvent, FormSubmitEvent } from './Events.ts'
+
+/**
+ * All translatable strings used by the donation form, bundled into a single
+ * object. The caller passes one bundle; FormHandler distributes the pieces to
+ * the sub-components that render them.
+ */
+export type Translations = {
+	errors?: ErrorTranslations
+	amount?: AmountMessages
+}
 
 type FormControlElement =
 	| HTMLInputElement
@@ -19,12 +29,13 @@ function isFormControl(element: any): element is FormControlElement {
 
 export default class FormHandler {
 	readonly #url: string
+	readonly #slug: string
 	readonly #form: HTMLFormElement
 	readonly #submit: NodeListOf<HTMLButtonElement | HTMLInputElement>
 	readonly #amount: AmountHandler
 	readonly #translations: ErrorTranslations
 
-	#providerField?: HTMLInputElement
+	#providerField: HTMLInputElement | null
 	#providerRadios: NodeListOf<HTMLInputElement>
 	#providerHiddens: NodeListOf<HTMLInputElement>
 	#providerSections: NodeListOf<HTMLElement>
@@ -38,13 +49,14 @@ export default class FormHandler {
 		return this.#amount
 	}
 
-	constructor(url: string, form: HTMLFormElement, translations: ErrorTranslations = {}) {
+	constructor(url: string, slug: string, form: HTMLFormElement, translations: Translations = {}) {
 		this.#url = url
+		this.#slug = slug
 		this.#form = form
 
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
-		this.#amount = new AmountHandler(this.#form)
-		this.#translations = translations
+		this.#amount = new AmountHandler(this.#form, translations.amount)
+		this.#translations = translations.errors ?? {}
 
 		// Initialize form elements.
 		this.#providerField = this.#form.querySelector<HTMLInputElement>(
@@ -236,6 +248,7 @@ export default class FormHandler {
 
 		// Allow plugins to alter form data.
 		const alterFormDataEvent: FormSubmitEvent = new CustomEvent('fame-lahjoitukset-submit', {
+			cancelable: true,
 			detail: {
 				url,
 				data,
@@ -299,6 +312,7 @@ export default class FormHandler {
 
 		// Allow plugins to alter form result.
 		const formResultEvent: FormResultEvent = new CustomEvent('fame-lahjoitukset-result', {
+			cancelable: true,
 			detail: {
 				result,
 				handler: this,
@@ -334,27 +348,40 @@ export default class FormHandler {
 	}
 
 	validate(): boolean {
-		// Overrides browser validation for the provider field when the provider is hidden.
+		// The resolved provider value lives in the hidden selected-provider field,
+		// so the browser's constraint validation on the provider inputs can be
+		// overridden when a provider has been selected. Every other field is still
+		// validated normally.
 		const hasValidProvider =
 			!!this.#providerField?.value && this.#providerField?.value.trim() !== ''
 
-		const valid = this.#form.checkValidity()
+		let valid = true
+
+		Array.prototype.forEach.call(this.#form.elements, element => {
+			if (element.validity.valid) {
+				return
+			}
+
+			// Provider inputs are validated via hasValidProvider above.
+			if (element.name === 'provider' && hasValidProvider) {
+				return
+			}
+
+			valid = false
+
+			// Custom errors already carry their own message, only render messages
+			// for built-in validation failures.
+			if (!element.validity.customError) {
+				this.#addErrorToElement(
+					element,
+					this.#getErrorMessage(element.name, element.validity)
+				)
+			}
+		})
 
 		this.#form.classList.add('was-validated')
 
-		if (!valid && !hasValidProvider) {
-			// Create error messages from built in validation values.
-			Array.prototype.forEach.call(this.#form.elements, element => {
-				if (!element.validity.valid && !element.validity.customError) {
-					this.#addErrorToElement(
-						element,
-						this.#getErrorMessage(element.name, element.validity)
-					)
-				}
-			})
-		}
-
-		return valid || hasValidProvider
+		return valid
 	}
 
 	/**
@@ -423,7 +450,7 @@ export default class FormHandler {
 	 * @private
 	 */
 	getSubmitUrl() {
-		const url = new URL(`${this.#url}/donation`)
+		const url = new URL(`${this.#url}/donation/${encodeURIComponent(this.#slug)}`)
 
 		// @todo move contact parameter to form.
 		// Check if contact form should be required.

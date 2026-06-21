@@ -15,6 +15,10 @@ coverage
 # Build folder
 build
 
+# Compiled translations (generated in CI from the .po sources)
+languages/*.mo
+languages/*.json
+
 # Dependency directories
 node_modules/
 

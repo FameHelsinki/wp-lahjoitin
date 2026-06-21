@@ -32,3 +32,56 @@ jobs:
                   npm run lint:css
                   npm run lint:js
                   composer run-script lint:php
+
+    # Warn when the committed .po files no longer match the strings in the
+    # source code.
+    i18n:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v6
+
+            - name: Use Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+
+            - name: Use PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  tools: wp-cli
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Install gettext
+              run: sudo apt-get update && sudo apt-get install -y gettext
+
+            - name: Regenerate .pot from source
+              run: npm run i18n:pot
+
+            - name: Check .po files are up to date
+              run: |
+                  POT=languages/fame_lahjoitukset.pot
+                  stale=0
+                  for po in languages/*.po; do
+                      # msgcmp compares only the msgid set (ignoring locations
+                      # and ordering) and exits non-zero when they diverge.
+                      if ! out=$(msgcmp --use-untranslated "$po" "$POT" 2>&1); then
+                          stale=1
+                          echo "::warning file=$po::$po is out of date with the source strings. Run 'npm run i18n:pot', then merge with 'msgmerge -U $po $POT'."
+                          {
+                              echo "### ⚠️ \`$po\` is out of date"
+                              echo ''
+                              echo '```'
+                              echo "$out"
+                              echo '```'
+                          } >> "$GITHUB_STEP_SUMMARY"
+                      fi
+                  done
+                  if [ "$stale" -eq 0 ]; then
+                      echo "✅ All .po files are up to date with the source strings." >> "$GITHUB_STEP_SUMMARY"
+                  fi
+                  # Warning only — never fail the build.
+                  exit 0
