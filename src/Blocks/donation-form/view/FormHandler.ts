@@ -49,12 +49,7 @@ export default class FormHandler {
 		return this.#amount
 	}
 
-	constructor(
-		url: string,
-		slug: string,
-		form: HTMLFormElement,
-		translations: Translations = {}
-	) {
+	constructor(url: string, slug: string, form: HTMLFormElement, translations: Translations = {}) {
 		this.#url = url
 		this.#slug = slug
 		this.#form = form
