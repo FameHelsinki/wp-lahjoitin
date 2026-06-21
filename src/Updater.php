@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Fame\WordPress\Lahjoitukset;
 
+use Fame\WordPress\Lahjoitukset\Attributes\Filter;
 use Fame\WordPress\Lahjoitukset\DI\ContainerInjectionInterface;
 use Psr\Container\ContainerInterface;
 
@@ -33,9 +34,6 @@ class Updater implements ComponentInterface, ContainerInjectionInterface
         private string $pluginSlug,
         private string $currentVersion,
     ) {
-        add_filter('pre_set_site_transient_update_plugins', [$this, 'filterUpdateTransient']);
-        add_filter('plugins_api', [$this, 'filterPluginsApi'], 10, 3);
-        add_filter('upgrader_source_selection', [$this, 'filterSourceSelection'], 10, 4);
     }
 
     /**
@@ -61,6 +59,7 @@ class Updater implements ComponentInterface, ContainerInjectionInterface
      *   null or false on the very first check.
      * @return mixed
      */
+    #[Filter('pre_set_site_transient_update_plugins')]
     public function filterUpdateTransient($transient)
     {
         if (!is_object($transient)) {
@@ -99,6 +98,7 @@ class Updater implements ComponentInterface, ContainerInjectionInterface
      * @param mixed  $args   Object with at least a `slug` property.
      * @return mixed
      */
+    #[Filter('plugins_api', acceptedArgs: 3)]
     public function filterPluginsApi($result, string $action, $args)
     {
         if ($action !== 'plugin_information') {
@@ -127,6 +127,7 @@ class Updater implements ComponentInterface, ContainerInjectionInterface
      * @param array<string, mixed>                   $hookExtra    Extra args, including the plugin basename.
      * @return string|\WP_Error
      */
+    #[Filter('upgrader_source_selection', acceptedArgs: 4)]
     public function filterSourceSelection($source, $remoteSource, $upgrader, $hookExtra)
     {
         if (!is_string($source) || !is_string($remoteSource)) {
