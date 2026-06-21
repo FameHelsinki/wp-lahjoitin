@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
+use Fame\WordPress\Lahjoitukset\Settings;
+
 defined('ABSPATH') || exit;
 
 /**
  * render.php for famehelsinki/donation-providers
  *
- * @var array<string, mixed> $attributes
  * @var string              $content
  * @var WP_Block            $block
  */
@@ -47,6 +48,26 @@ foreach ($providers as $p) {
   }
 
   $grouped[$type][] = ['type' => $type, 'value' => $value, 'label' => $label];
+}
+
+// Filter the saved selection against the providers currently enabled for this
+// organization, so a provider disabled after the block was saved never renders.
+// Fails open: when the API is unreachable ($enabled === null) the saved
+// selection is rendered as-is rather than blanking the donation form.
+$enabled = (new Settings())->getEnabledProviders();
+if (is_array($enabled)) {
+  foreach ($grouped as $type => $list) {
+    $filtered = array_values(array_filter($list, static function (array $p) use ($enabled, $type): bool {
+      $value = (string) $p['value'];
+      return isset($enabled[$value]) && $enabled[$value]->supportsType((string) $type);
+    }));
+
+    if ($filtered) {
+      $grouped[$type] = $filtered;
+    } else {
+      unset($grouped[$type]);
+    }
+  }
 }
 
 $isLegendShownForType = static function (string $type) use ($showLegend, $showLegendSingle, $showLegendRecurring): bool {

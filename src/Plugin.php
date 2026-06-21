@@ -28,6 +28,7 @@ class Plugin implements ContainerInterface
         $this->registerComponent(Settings::class);
         $this->registerComponent(Blocks::class);
         $this->registerComponent(Updater::class);
+        $this->registerComponent(Rest::class);
     }
 
     /**

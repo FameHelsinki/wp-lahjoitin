@@ -122,4 +122,63 @@ class Settings implements ComponentInterface
     {
         return $this->settings->getField('slug')->getValue('');
     }
+
+    /**
+     * Resolves the payment providers currently enabled for this organization.
+     *
+     * Queries the lahjoitin API `/providers/{slug}` endpoint and normalizes the
+     * response into a map of provider machine name to its supported donation
+     * types, e.g. `['checkout' => ['single', 'recurring']]`. The result is cached
+     * in a transient (keyed by backend host + slug).
+     *
+     * Fails open: a missing slug, request error or non-200 response returns
+     * `null` so callers can fall back to their saved/default behaviour. An
+     * empty map (`[]`) is a valid "nothing enabled" answer and is cached; only
+     * failures return `null` and are not cached.
+     *
+     * @return array<string, Provider>|null
+     *   Map of provider name to its DTO, or null when undetermined.
+     */
+    public function getEnabledProviders(): ?array
+    {
+        $slug = $this->getSlug();
+        if ($slug === '') {
+            return null;
+        }
+
+        $url = $this->getBackendUrl() . '/providers/' . rawurlencode($slug);
+        $cacheKey = 'fame_lahjoitukset_providers_' . md5($url);
+
+        $cached = get_transient($cacheKey);
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        $response = wp_remote_get($url, ['timeout' => 5]);
+        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+            return null;
+        }
+
+        $decoded = json_decode(wp_remote_retrieve_body($response), true);
+        if (!is_array($decoded)) {
+            return null;
+        }
+
+		try {
+			$raw = [];
+			foreach ($decoded as $entry) {
+				$provider = Provider::fromApi($entry);
+				$raw[$provider->name] = $provider;
+			}
+
+			set_transient($cacheKey, $raw, DAY_IN_SECONDS);
+
+			return $raw;
+		}
+		catch (\InvalidArgumentException)
+		{
+			return null;
+		}
+    }
+
 }
