@@ -74,6 +74,28 @@ class Settings implements ComponentInterface
     }
 
     /**
+     * Warn in the admin while the staging environment is enabled.
+     *
+     * Staging routes donations to the test backend and never reaches the live
+     * payment providers, so make the active test mode obvious on every admin page.
+     */
+    #[Action('admin_notices')]
+    public function stagingNotice(): void
+    {
+        if (!$this->settings->getField('use_staging')->getValue('')) {
+            return;
+        }
+
+        printf(
+            '<div class="notice notice-warning"><p>%s</p></div>',
+            esc_html__(
+                'Lahjoitukset: the staging environment is enabled, donations are not sent to the live payment providers.',
+                'fame_lahjoitukset'
+            )
+        );
+    }
+
+    /**
      * Resolves the backend host all clients share.
      *
      * Order of precedence:
