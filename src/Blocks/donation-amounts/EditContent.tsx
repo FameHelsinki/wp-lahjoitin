@@ -58,9 +58,13 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 					<span className="donation-amounts__minmax">
 						{__('Min', 'fame_lahjoitukset')} {current.minAmount ?? MIN_AMOUNT}
 						{current.unit ?? ''}
-						{' – '}
-						{__('Max', 'fame_lahjoitukset')} {current.maxAmount ?? MAX_AMOUNT}
-						{current.unit ?? ''}
+						{current.showMaxAmount && (
+							<>
+								{' – '}
+								{__('Max', 'fame_lahjoitukset')} {current.maxAmount ?? MAX_AMOUNT}
+								{current.unit ?? ''}
+							</>
+						)}
 					</span>
 				</div>
 			)}

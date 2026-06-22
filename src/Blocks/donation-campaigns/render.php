@@ -20,9 +20,21 @@ $campaigns = isset($attributes['campaigns']) && is_array($attributes['campaigns'
   ? $attributes['campaigns']
   : [];
 
-if (!$show || count($campaigns) <= 1) {
+$campaigns = array_values(array_filter(array_map(static function ($campaign): string {
+  return trim((string) $campaign);
+}, $campaigns), static function (string $campaign): bool {
+  return $campaign !== '';
+}));
+
+if (!$show || count($campaigns) === 0) {
   return;
 }
+
+if (count($campaigns) === 1) : ?>
+  <input type="hidden" name="campaign" value="<?php echo esc_attr($campaigns[0]); ?>" />
+<?php
+  return;
+endif;
 
 $showLabel = array_key_exists('showLabel', $attributes) ? (bool) $attributes['showLabel'] : true;
 $label     = isset($attributes['label']) && trim((string) $attributes['label']) !== ''
@@ -42,16 +54,13 @@ $wrapper_attrs = get_block_wrapper_attributes([
   <?php endif; ?>
 
   <select name="campaign" id="campaign" class="fame-form__input">
-    <option value="" disabled selected>
+    <option value="" selected>
       <?php echo esc_html__('Select campaign', 'fame_lahjoitukset'); ?>
     </option>
 
-    <?php foreach ($campaigns as $campaign) :
-      $value = trim((string) $campaign);
-      if ($value === '') continue;
-    ?>
-      <option value="<?php echo esc_attr($value); ?>">
-        <?php echo esc_html($value); ?>
+    <?php foreach ($campaigns as $campaign) : ?>
+      <option value="<?php echo esc_attr($campaign); ?>">
+        <?php echo esc_html($campaign); ?>
       </option>
     <?php endforeach; ?>
   </select>

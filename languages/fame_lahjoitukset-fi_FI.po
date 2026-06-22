@@ -577,3 +577,13 @@ msgstr "Lomaketoiminnot"
 msgctxt "block description"
 msgid "Adds form controls."
 msgstr "Lisää lomaketoiminnot."
+
+#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:63
+msgid "Show maximum amount to donor"
+msgstr "Näytä suurin summa lahjoittajalle"
+
+#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
+msgid "Show the maximum amount in the helper text under the other amount field."
+msgstr "Näytä suurin summa muu summa -kentän alla olevassa ohjetekstissä."

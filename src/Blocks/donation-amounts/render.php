@@ -159,6 +159,7 @@ endif;
     $unit          = $str($type_setting['unit'] ?? null, $DEFAULT_UNIT);
     $min_amount    = $int($type_setting['minAmount'] ?? null, $MIN_AMOUNT);
     $max_amount    = $int($type_setting['maxAmount'] ?? null, $MAX_AMOUNT);
+    $show_max_amount = !empty($type_setting['showMaxAmount']);
     $default_euros = $int($type_setting['defaultAmount'] ?? null, $DEFAULT_AMOUNT);
 
     $amounts = isset($type_setting['amounts']) && is_array($type_setting['amounts']) ? $type_setting['amounts'] : [];
@@ -232,11 +233,14 @@ endif;
             <?php
             echo esc_html__('Min', 'fame_lahjoitukset') . ' '
               . esc_html(number_format((float) $min_amount, 0, ',', ' '))
-              . esc_html($unit)
-              . ' – '
-              . esc_html__('Max', 'fame_lahjoitukset') . ' '
-              . esc_html(number_format((float) $max_amount, 0, ',', ' '))
               . esc_html($unit);
+
+            if ($show_max_amount) {
+              echo ' – '
+                . esc_html__('Max', 'fame_lahjoitukset') . ' '
+                . esc_html(number_format((float) $max_amount, 0, ',', ' '))
+                . esc_html($unit);
+            }
             ?>
           </span>
         </div>

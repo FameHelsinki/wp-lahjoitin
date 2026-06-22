@@ -244,6 +244,7 @@ export default class FormHandler {
 
 		const formData = new FormData(this.#form)
 		const data = Object.fromEntries(formData)
+		this.#removeEmptyOptionalFields(data)
 		const url = this.getSubmitUrl()
 
 		// Allow plugins to alter form data.
@@ -435,6 +436,12 @@ export default class FormHandler {
 		}
 
 		return this.#translations[name]?.[getErrorType(validity)] ?? 'Invalid value'
+	}
+
+	#removeEmptyOptionalFields(data: Record<string, FormDataEntryValue>) {
+		if (data.campaign === '') {
+			delete data.campaign
+		}
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 import { __ } from '@wordpress/i18n'
-import { RadioControl, TextControl } from '@wordpress/components'
+import { RadioControl, TextControl, ToggleControl } from '@wordpress/components'
 import {
 	DEFAULT_AMOUNT,
 	DEFAULT_UNIT,
@@ -58,6 +58,15 @@ const AmountSettingsControl: FC<Props> = ({ settings, other, visible, onChange }
 							onChange={value =>
 								onChange({ ...settings, maxAmount: formatAmount(value, 0) })
 							}
+						/>
+						<ToggleControl
+							label={__('Show maximum amount to donor', 'fame_lahjoitukset')}
+							help={__(
+								'Show the maximum amount in the helper text under the other amount field.',
+								'fame_lahjoitukset'
+							)}
+							checked={!!settings.showMaxAmount}
+							onChange={value => onChange({ ...settings, showMaxAmount: value })}
 						/>
 					</>
 				)}

@@ -18,6 +18,7 @@ export type AmountSetting = {
 	amounts?: Amount[]
 	minAmount?: number | string
 	maxAmount?: number | string
+	showMaxAmount?: boolean
 }
 
 export const formatAmount = (amount?: string | number, def = DEFAULT_AMOUNT) =>
