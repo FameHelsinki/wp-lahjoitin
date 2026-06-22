@@ -587,3 +587,8 @@ msgstr "Visa högsta belopp för donatorn"
 #: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
 msgid "Show the maximum amount in the helper text under the other amount field."
 msgstr "Visa högsta belopp i hjälptexten under fältet för annat belopp."
+
+#: build/Blocks/donation-providers/render.php:95
+#: src/Blocks/donation-providers/render.php:95
+msgid "Payment methods are currently unavailable. Please try again later."
+msgstr "Betalningsmetoderna är inte tillgängliga just nu. Försök igen senare."

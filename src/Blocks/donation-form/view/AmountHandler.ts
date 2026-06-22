@@ -62,7 +62,7 @@ export class AmountWrapper {
 			this.#clearError(this.#other)
 		}
 
-		this.#setSubmitDisabled(false)
+		this.#notifyValidityChange(false)
 	}
 
 	/**
@@ -182,17 +182,13 @@ export class AmountWrapper {
 		return other instanceof HTMLInputElement ? other : null
 	}
 
-	#setSubmitDisabled(disabled: boolean) {
-		const form = this.#wrapper.closest('form')
-		if (!form) return
-
-		// Primary: your control block button
-		const btn = form.querySelector('.fame-form__controls .wp-element-button')
-		if (btn instanceof HTMLButtonElement) {
-			btn.disabled = disabled
-			if (disabled) btn.setAttribute('aria-disabled', 'true')
-			else btn.removeAttribute('aria-disabled')
-		}
+	#notifyValidityChange(invalid: boolean) {
+		this.#wrapper.dispatchEvent(
+			new CustomEvent('fame-lahjoitukset-amount-validity', {
+				bubbles: true,
+				detail: { invalid },
+			})
+		)
 	}
 
 	#getUnit(input: HTMLInputElement) {
@@ -242,7 +238,7 @@ export class AmountWrapper {
 
 		if (!Number.isNaN(min) && amount < min) {
 			this.#invalidOther = true
-			this.#setSubmitDisabled(true)
+			this.#notifyValidityChange(true)
 			this.#showError(target, this.#messages.min(min, unit))
 			return
 		}
@@ -251,14 +247,14 @@ export class AmountWrapper {
 
 		if (!Number.isNaN(max) && amount > max) {
 			this.#invalidOther = true
-			this.#setSubmitDisabled(true)
+			this.#notifyValidityChange(true)
 			this.#showError(target, this.#messages.max(max, unit))
 			return
 		}
 
 		this.#invalidOther = false
 		this.#clearError(target)
-		this.#setSubmitDisabled(false)
+		this.#notifyValidityChange(false)
 
 		// Select radiobuttons that have the selected amount.
 		this.#buttons.forEach(button => {
@@ -279,7 +275,7 @@ export class AmountWrapper {
 			this.#invalidOther = false
 			this.#clearError(this.#other)
 			this.#other.value = amount
-			this.#setSubmitDisabled(false)
+			this.#notifyValidityChange(false)
 		}
 
 		this.#onChange(parseInt(amount))
@@ -295,6 +291,10 @@ export default class AmountHandler {
 
 	get amount() {
 		return parseInt(this.#amount.value) / 100
+	}
+
+	get invalid() {
+		return this.#isInvalid()
 	}
 
 	set amount(value: number) {
