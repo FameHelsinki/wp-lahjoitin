@@ -577,3 +577,13 @@ msgstr "Formulärkontroller"
 msgctxt "block description"
 msgid "Adds form controls."
 msgstr "Lägger till formulärkontroller."
+
+#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:63
+msgid "Show maximum amount to donor"
+msgstr "Visa högsta belopp för donatorn"
+
+#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
+msgid "Show the maximum amount in the helper text under the other amount field."
+msgstr "Visa högsta belopp i hjälptexten under fältet för annat belopp."
