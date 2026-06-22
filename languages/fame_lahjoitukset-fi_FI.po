@@ -587,3 +587,8 @@ msgstr "Näytä suurin summa lahjoittajalle"
 #: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
 msgid "Show the maximum amount in the helper text under the other amount field."
 msgstr "Näytä suurin summa muu summa -kentän alla olevassa ohjetekstissä."
+
+#: build/Blocks/donation-providers/render.php:95
+#: src/Blocks/donation-providers/render.php:95
+msgid "Payment methods are currently unavailable. Please try again later."
+msgstr "Maksutavat eivät ole juuri nyt saatavilla. Yritä myöhemmin uudelleen."

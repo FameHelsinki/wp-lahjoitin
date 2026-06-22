@@ -25,6 +25,35 @@ describe('FormHandler', () => {
 		expect(form.addEventListener).toHaveBeenCalledWith('submit', expect.any(Function))
 	})
 
+	test('keeps submit disabled when no payment provider is available', () => {
+		new FormHandler('/submit', 'my-org', form, mockTranslations)
+
+		const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!
+		expect(submit.disabled).toBe(true)
+	})
+
+	test('keeps submit disabled when amount changes without an available provider', () => {
+		document.body.innerHTML = `
+			<form action="/submit">
+				<input type="hidden" name="amount" value="1000">
+				<div class="donation-amounts">
+					<input name="amount-single" type="number" min="1" value="10">
+				</div>
+				<button type="submit">Submit</button>
+			</form>
+		`
+		form = document.querySelector('form')!
+		new FormHandler('/submit', 'my-org', form, mockTranslations)
+
+		const amount = form.querySelector<HTMLInputElement>('input[type="number"]')!
+		const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!
+
+		amount.value = '20'
+		amount.dispatchEvent(new Event('input', { bubbles: true }))
+
+		expect(submit.disabled).toBe(true)
+	})
+
 	test('getSubmitUrl includes the backend host and slug', () => {
 		const handler = new FormHandler(
 			'https://api.lahjoitin.fi',

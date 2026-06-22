@@ -52,10 +52,14 @@ foreach ($providers as $p) {
 
 // Filter the saved selection against the providers currently enabled for this
 // organization, so a provider disabled after the block was saved never renders.
-// Fails open: when the API is unreachable ($enabled === null) the saved
-// selection is rendered as-is rather than blanking the donation form.
+// Fails closed: when the API is unreachable or the slug is missing, do not show
+// stale provider choices that may no longer be valid for this organization.
 $enabled = (new Settings())->getEnabledProviders();
-if (is_array($enabled)) {
+$providers_unavailable = !is_array($enabled) || $enabled === [];
+
+if ($providers_unavailable) {
+  $grouped = [];
+} else {
   foreach ($grouped as $type => $list) {
     $filtered = array_values(array_filter($list, static function (array $p) use ($enabled, $type): bool {
       $value = (string) $p['value'];
@@ -68,6 +72,8 @@ if (is_array($enabled)) {
       unset($grouped[$type]);
     }
   }
+
+  $providers_unavailable = $grouped === [];
 }
 
 $isLegendShownForType = static function (string $type) use ($showLegend, $showLegendSingle, $showLegendRecurring): bool {
@@ -84,6 +90,12 @@ $wrapper_attrs = get_block_wrapper_attributes();
 
 ?>
 <div <?php echo $wrapper_attrs; ?>>
+  <?php if ($providers_unavailable) : ?>
+    <div class="fame-form__notice fame-form__notice--warning" role="status">
+      <?php echo esc_html__('Payment methods are currently unavailable. Please try again later.', 'fame_lahjoitukset'); ?>
+    </div>
+  <?php endif; ?>
+
   <?php foreach ($grouped as $type => $list) :
     $single = count($list) === 1;
     $showForType = $isLegendShownForType((string) $type);

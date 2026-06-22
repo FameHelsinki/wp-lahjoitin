@@ -74,6 +74,9 @@ export default class FormHandler {
 		this.#typeRadios = this.#form.querySelectorAll<HTMLInputElement>('input[name="type"]')
 
 		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
+		this.#form.addEventListener('fame-lahjoitukset-amount-validity', () => {
+			this.#allowSubmit(this.#canSubmit())
+		})
 
 		// Bind events to provider radios and type radios.
 		this.#bindProviderEvents()
@@ -93,9 +96,9 @@ export default class FormHandler {
 			})
 		)
 
-		// Form submit requires javascript, so all
+		// Form submit requires JavaScript and an available payment provider, so all
 		// submit buttons are disabled by default.
-		this.#allowSubmit(true)
+		this.#allowSubmit(this.#canSubmit())
 	}
 
 	/**
@@ -109,6 +112,7 @@ export default class FormHandler {
 		this.#providerRadios.forEach(r =>
 			r.addEventListener('change', () => {
 				this.#updateProvider()
+				this.#allowSubmit(this.#canSubmit())
 			})
 		)
 
@@ -117,6 +121,7 @@ export default class FormHandler {
 				this.#filterProvidersByType()
 				this.#updateProvider()
 				this.#updateSubmitLabel()
+				this.#allowSubmit(this.#canSubmit())
 			})
 		)
 	}
@@ -151,6 +156,14 @@ export default class FormHandler {
 			}
 		})
 		this.#updateSubmitLabel()
+	}
+
+	#hasAvailableProvider(): boolean {
+		return !!this.#providerField?.value && this.#providerField.value.trim() !== ''
+	}
+
+	#canSubmit(): boolean {
+		return this.#hasAvailableProvider() && !this.#amount.invalid
 	}
 
 	/**
@@ -232,9 +245,9 @@ export default class FormHandler {
 		this.#updateProvider()
 
 		// Checks provider field value.
-		if (!this.#providerField?.value) {
-			this.addError('provider', 'Select payment method')
+		if (!this.#hasAvailableProvider()) {
 			this.#form.classList.add('was-validated')
+			this.#allowSubmit(false)
 			return
 		}
 
@@ -291,7 +304,7 @@ export default class FormHandler {
 
 			throw error
 		} finally {
-			this.#allowSubmit(true)
+			this.#allowSubmit(this.#canSubmit())
 			this.#form.classList.remove('fame-form--submitting')
 		}
 	}
@@ -353,8 +366,7 @@ export default class FormHandler {
 		// so the browser's constraint validation on the provider inputs can be
 		// overridden when a provider has been selected. Every other field is still
 		// validated normally.
-		const hasValidProvider =
-			!!this.#providerField?.value && this.#providerField?.value.trim() !== ''
+		const hasValidProvider = this.#hasAvailableProvider()
 
 		let valid = true
 
