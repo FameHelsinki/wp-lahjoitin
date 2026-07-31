@@ -47,6 +47,11 @@ test.describe('donation form', () => {
 			})
 			.toBeGreaterThan(0)
 
+		// The serialized markup is the save() output of every block in the
+		// tree. A snapshot catches unintended save() changes, which would
+		// invalidate already-published donation forms.
+		expect(await editor.getEditedPostContent()).toMatchSnapshot('donation-form-content.txt')
+
 		postId = await editor.publishPost()
 		expect(postId).toBeTruthy()
 	})
@@ -92,6 +97,41 @@ test.describe('donation form', () => {
 		})
 	})
 
+	test('repacks columns from the sidebar without losing content', async ({
+		admin,
+		editor,
+		page,
+	}) => {
+		await admin.createNewPost({ title: 'Donation form columns e2e' })
+		await editor.insertBlock({ name: 'famehelsinki/donation-form' })
+
+		const canvas = editor.canvas
+		await expect(canvas.locator('[data-type="famehelsinki/donation-type"]')).toBeVisible()
+
+		// Default layout is a single column (block.json colsDesktop default).
+		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
+
+		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		await editor.openDocumentSettingsSidebar()
+		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('3')
+
+		// The edit() effect rebuilds core/columns but must keep the same
+		// group blocks, so every form section survives the repack.
+		await expect.poll(() => getFormColumnCount(editor)).toBe(3)
+		const blocks = await editor.getBlocks({ full: true })
+		for (const name of [
+			'famehelsinki/donation-type',
+			'famehelsinki/donation-amounts',
+			'famehelsinki/contact-form',
+			'famehelsinki/donation-providers',
+			'famehelsinki/form-controls',
+		]) {
+			expect(findBlock(blocks, name), `${name} survives repack`).toBeTruthy()
+		}
+
+		expect(await editor.getEditedPostContent()).toContain('"colsDesktop":3')
+	})
+
 	test('disables submission when providers are unavailable', async ({ page, requestUtils }) => {
 		await setOrganizationSlug(requestUtils, 'e2e-fail')
 
@@ -110,6 +150,15 @@ test.describe('donation form', () => {
 		}
 	})
 })
+
+/**
+ * Number of core/column blocks inside the donation form's top core/columns.
+ */
+async function getFormColumnCount(editor: any): Promise<number> {
+	const blocks = await editor.getBlocks({ full: true })
+	const columns = findBlock(blocks, 'core/columns')
+	return columns?.innerBlocks?.length ?? 0
+}
 
 /**
  * Depth-first search for a block by name in the editor block tree.

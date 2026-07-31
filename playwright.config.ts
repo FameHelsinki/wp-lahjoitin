@@ -10,6 +10,7 @@ process.env.STORAGE_STATE_PATH ??= 'tests/e2e/artifacts/storage-state.json'
 export default defineConfig({
 	testDir: './tests/e2e',
 	outputDir: './tests/e2e/artifacts/test-results',
+	snapshotPathTemplate: '{testDir}/__snapshots__/{testFilePath}/{arg}{ext}',
 	globalSetup: './tests/e2e/global-setup.ts',
 	fullyParallel: false,
 	workers: 1,
