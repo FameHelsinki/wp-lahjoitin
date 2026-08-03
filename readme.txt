@@ -10,7 +10,7 @@ WordPress plugin for the Lahjoitin.fi donation platform.
 == Description ==
 
 Lahjoitin is a WordPress plugin that provides a Gutenberg block for adding a donation form to your website.
-It is part of the Lahjoitin.fi donation platform developed by Fame and integrates into WordPress to support easy and accessible online donations.
+It is part of the Lahjoitin.fi donation platform developed by Fame Helsinki and integrates into WordPress to support easy and accessible online donations.
 
 The plugin provides configurable blocks for donation type selection, donation amounts, campaign selection, contact details and payment providers.
 

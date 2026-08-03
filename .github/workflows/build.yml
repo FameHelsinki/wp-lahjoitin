@@ -66,7 +66,17 @@ jobs:
                   # in the zip.Note: vendor folder must be included too.
                   STAGE=/tmp/build
                   mkdir -p "$STAGE/fame-lahjoitukset"
-                  rsync -a --exclude='.git*' --exclude='node_modules*' ./ "$STAGE/fame-lahjoitukset/"
+                  rsync -a \
+                      --exclude='.git*' \
+                      --exclude='node_modules*' \
+                      --exclude='tests' \
+                      --exclude='phpunit.xml' \
+                      --exclude='phpunit-integration.xml' \
+                      --exclude='.phpunit.cache' \
+                      --exclude='playwright.config.ts' \
+                      --exclude='jest-unit.config.js' \
+                      --exclude='.wp-env.json' \
+                      ./ "$STAGE/fame-lahjoitukset/"
                   (cd "$STAGE" && zip -r "$PACKAGE" fame-lahjoitukset)
 
             # Create workflow artifact.

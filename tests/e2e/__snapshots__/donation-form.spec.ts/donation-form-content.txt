@@ -1,0 +1,27 @@
+<!-- wp:famehelsinki/donation-form {"types":["single"]} -->
+<!-- wp:columns -->
+<div class="wp-block-columns"><!-- wp:column -->
+<div class="wp-block-column"><!-- wp:group -->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":"Single"}]} /-->
+
+<!-- wp:famehelsinki/donation-campaigns /-->
+
+<!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"showMaxAmount":false,"unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]}]} /--></div>
+<!-- /wp:group -->
+
+<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:famehelsinki/contact-form /--></div>
+<!-- /wp:group -->
+
+<!-- wp:group -->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Checkout","types":["single","recurring"],"type":"single"}]} -->
+<!-- wp:paragraph {"placeholder":"Terms text…","className":"fame-form__terms"} -->
+<p class="fame-form__terms"></p>
+<!-- /wp:paragraph -->
+<!-- /wp:famehelsinki/donation-providers -->
+
+<!-- wp:famehelsinki/form-controls /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:column --></div>
+<!-- /wp:columns -->
+<!-- /wp:famehelsinki/donation-form -->

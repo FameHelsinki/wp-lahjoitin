@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Fame\WordPress\Lahjoitukset\Tests\Integration;
+
+use WP_Block_Type_Registry;
+use WP_UnitTestCase;
+
+final class BlocksTest extends WP_UnitTestCase
+{
+    private const BLOCKS = [
+        'famehelsinki/contact-form',
+        'famehelsinki/donation-amounts',
+        'famehelsinki/donation-campaigns',
+        'famehelsinki/donation-form',
+        'famehelsinki/donation-providers',
+        'famehelsinki/donation-type',
+        'famehelsinki/form-controls',
+    ];
+
+    public function testAllBlocksAreRegistered(): void
+    {
+        $registry = WP_Block_Type_Registry::get_instance();
+
+        foreach (self::BLOCKS as $name) {
+            $this->assertTrue($registry->is_registered($name), "Block $name is not registered.");
+        }
+    }
+
+    public function testDonationFormBlockHasViewScript(): void
+    {
+        $block = WP_Block_Type_Registry::get_instance()->get_registered('famehelsinki/donation-form');
+
+        $this->assertNotEmpty($block->view_script_handles);
+
+        // The view script receives the backend configuration.
+        $viewScript = reset($block->view_script_handles);
+        $data = wp_scripts()->get_data($viewScript, 'data');
+        $this->assertStringContainsString('backend_url', (string) $data);
+    }
+
+    public function testDonationFormMarkupSurvivesRendering(): void
+    {
+        $markup = '<!-- wp:famehelsinki/donation-form {"type":"single"} -->'
+            . '<form class="wp-block-famehelsinki-donation-form" data-type="single"></form>'
+            . '<!-- /wp:famehelsinki/donation-form -->';
+
+        $rendered = do_blocks($markup);
+
+        $this->assertStringContainsString('wp-block-famehelsinki-donation-form', $rendered);
+    }
+}

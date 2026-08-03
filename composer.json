@@ -21,7 +21,8 @@
 		"szepeviktor/phpstan-wordpress": "^2.0",
 		"phpstan/extension-installer": "^1.4",
 		"10up/wp_mock": "^1.0",
-		"phpunit/phpunit": "^9.6"
+		"phpunit/phpunit": "^9.6",
+		"yoast/phpunit-polyfills": "^4.0"
 	},
 	"config": {
         "optimize-autoloader": true,
@@ -31,10 +32,14 @@
 		}
 	},
 	"scripts": {
-		"lint:php": "phpcs && phpstan --memory-limit=-1 analyze && composer validate"
+		"lint:php": "phpcs && phpstan --memory-limit=-1 analyze && composer validate",
+		"test:php": "phpunit"
 	},
     "autoload": {
         "psr-4": {"Fame\\WordPress\\Lahjoitukset\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Fame\\WordPress\\Lahjoitukset\\Tests\\": "tests/"}
     },
 	"require": {
 		"psr/container": "^2.0"

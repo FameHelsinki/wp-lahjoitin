@@ -39,3 +39,9 @@ node_modules/
 
 # Composer vendor dir
 vendor
+
+# PHPUnit result cache
+.phpunit.cache
+
+# Playwright artifacts (auth state, traces, reports)
+tests/e2e/artifacts

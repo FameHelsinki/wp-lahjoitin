@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Integration tests against a real WordPress installation.
+
+	These run inside the wp-env tests environment:
+	npm run test:php:integration
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
+         bootstrap="tests/Integration/bootstrap.php"
+         cacheResultFile=".phpunit.cache/integration-test-results"
+         colors="true"
+         convertDeprecationsToExceptions="true"
+         failOnWarning="true">
+	<testsuites>
+		<testsuite name="integration">
+			<directory>tests/Integration</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
