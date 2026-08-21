@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.x\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fame-lahjoitukset\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-21T11:54:45+00:00\n"
+"POT-Creation-Date: 2026-08-21T07:38:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -46,36 +46,43 @@ msgstr ""
 msgid "Donation amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/render.php:233
-#: src/Blocks/donation-amounts/render.php:233
+#: build/Blocks/donation-amounts/render.php:234
+#: src/Blocks/donation-amounts/render.php:234
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Min"
 msgstr ""
 
-#: build/Blocks/donation-amounts/render.php:237
-#: src/Blocks/donation-amounts/render.php:237
+#: build/Blocks/donation-amounts/render.php:240
+#: src/Blocks/donation-amounts/render.php:240
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Max"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/render.php:30
-#: src/Blocks/donation-campaigns/render.php:30
+#: build/Blocks/donation-campaigns/render.php:42
+#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/render.php:46
-#: src/Blocks/donation-campaigns/render.php:46
+#: build/Blocks/donation-campaigns/render.php:58
+#: src/Blocks/donation-campaigns/render.php:58
 msgid "Select campaign"
 msgstr ""
 
-#: build/Blocks/donation-form/render.php:120
-#: src/Blocks/donation-form/render.php:120
+#: build/Blocks/donation-form/render.php:141
+#: src/Blocks/donation-form/render.php:141
 msgid "Loading"
 msgstr ""
 
-#: build/Blocks/donation-providers/render.php:25
-#: src/Blocks/donation-providers/render.php:25
+#: build/Blocks/donation-providers/render.php:26
+#: src/Blocks/donation-providers/render.php:26
+#: build/Blocks/donation-providers/index.js:1
 msgid "Payment provider"
+msgstr ""
+
+#: build/Blocks/donation-providers/render.php:134
+#: src/Blocks/donation-providers/render.php:134
+msgid "Payment methods are currently unavailable. Please try again later."
 msgstr ""
 
 #: build/Blocks/donation-type/render.php:21
@@ -150,11 +157,11 @@ msgstr ""
 msgid "Lahjoitukset"
 msgstr ""
 
-#: src/Settings.php:91
+#: src/Settings.php:90
 msgid "Lahjoitukset: the staging environment is enabled, donations are not sent to the live payment providers."
 msgstr ""
 
-#: src/Updater.php:155
+#: src/Updater.php:156
 msgid "Could not rename the extracted plugin folder."
 msgstr ""
 
@@ -163,7 +170,7 @@ msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
-msgid "Show contact fields"
+msgid "Enable contact fields"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
@@ -258,6 +265,14 @@ msgid "Maximum amount for other amount field."
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
+msgid "Show maximum amount to donor"
+msgstr ""
+
+#: build/Blocks/donation-amounts/index.js:1
+msgid "Show the maximum amount in the helper text under the other amount field."
+msgstr ""
+
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Other amount text"
 msgstr ""
 
@@ -287,7 +302,7 @@ msgid "Remove button"
 msgstr ""
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "Show campaign selector"
+msgid "Enable campaign selector"
 msgstr ""
 
 #: build/Blocks/donation-campaigns/index.js:1
@@ -324,6 +339,14 @@ msgid "Maximum of 10 campaigns reached."
 msgstr ""
 
 #: build/Blocks/donation-campaigns/index.js:1
+msgid "Hidden because only one campaign is configured."
+msgstr ""
+
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "No campaigns added yet."
+msgstr ""
+
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "No campaigns added yet"
 msgstr ""
 
@@ -352,11 +375,31 @@ msgid "Page that is displayed after donation is submitted."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Return userinfo token"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Styles"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Selected button background color"
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
 msgid "This is the background color for selected buttons."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Button border color"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "This is the border color for selected and unselected donation type and amount buttons."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -373,6 +416,22 @@ msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
 msgid "This defines the border and helper text color of the input field."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label color"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "This color is used for all form section legends."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label font size"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Used for all form section legends. For example: 1.25em, 20px or 1.5rem."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -405,14 +464,6 @@ msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
 msgid "This is the border-radius for the text fields."
-msgstr ""
-
-#: build/Blocks/donation-form/index.js:1
-msgid "Return userinfo token"
-msgstr ""
-
-#: build/Blocks/donation-form/index.js:1
-msgid "This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token."
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
@@ -460,19 +511,23 @@ msgid "The maximum donation amount is %1$s%2$s."
 msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1
-msgid "MobilePay"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "Paytrail"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
 msgid "Provider type"
 msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1
 msgid "General settings"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Loading providers…"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Could not load payment providers from lahjoitin.fi. Existing selections are kept; the live list will be used when the connection is restored."
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "No payment providers are enabled for this organization. Check the slug in the Lahjoitukset settings."
 msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1
@@ -484,7 +539,11 @@ msgid "Donation provider"
 msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1
-msgid "Terms text…"
+msgid "Hidden because only one payment provider is configured."
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Add privacy policy and terms text here…"
 msgstr ""
 
 #: build/Blocks/donation-type/index.js:1
@@ -493,6 +552,10 @@ msgstr ""
 
 #: build/Blocks/donation-type/index.js:1
 msgid "Select donation type that will be used by default."
+msgstr ""
+
+#: build/Blocks/donation-type/index.js:1
+msgid "Hidden because only one donation type is enabled."
 msgstr ""
 
 #: build/Blocks/form-controls/index.js:1
@@ -589,19 +652,4 @@ msgstr ""
 #: src/Blocks/form-controls/block.json
 msgctxt "block description"
 msgid "Adds form controls."
-msgstr ""
-
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:63
-msgid "Show maximum amount to donor"
-msgstr ""
-
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
-msgid "Show the maximum amount in the helper text under the other amount field."
-msgstr ""
-
-#: build/Blocks/donation-providers/render.php:95
-#: src/Blocks/donation-providers/render.php:95
-msgid "Payment methods are currently unavailable. Please try again later."
 msgstr ""

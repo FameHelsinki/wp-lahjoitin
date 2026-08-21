@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
-"POT-Creation-Date: 2026-03-12T10:31:31+00:00\n"
+"POT-Creation-Date: 2026-08-21T07:38:40+00:00\n"
 "PO-Revision-Date: 2026-03-12 00:00+0000\n"
 "Last-Translator: Fame Helsinki\n"
 "Language-Team: Finnish\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: fame-lahjoitukset.php
 msgid "Lahjoitin"
-msgstr ""
+msgstr "Lahjoitin"
 
 #. Description of the plugin
 #: fame-lahjoitukset.php
@@ -30,11 +30,10 @@ msgstr "WordPress-lisäosa Fame lahjoitukset -järjestelmälle."
 #. Author of the plugin
 #: fame-lahjoitukset.php
 msgid "Fame Helsinki"
-msgstr ""
+msgstr "Fame Helsinki"
 
 #: build/Blocks/contact-form/render.php:26
-#: src/Blocks/contact-form/render.php:26
-#: build/Blocks/contact-form/index.js:1
+#: src/Blocks/contact-form/render.php:26 build/Blocks/contact-form/index.js:1
 msgid "Contacts"
 msgstr "Yhteystiedot"
 
@@ -49,41 +48,47 @@ msgstr "Muu summa"
 msgid "Donation amount"
 msgstr "Lahjoitussumma"
 
-#: build/Blocks/donation-amounts/render.php:233
-#: src/Blocks/donation-amounts/render.php:233
+#: build/Blocks/donation-amounts/render.php:234
+#: src/Blocks/donation-amounts/render.php:234
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Min"
 msgstr "Vähintään"
 
-#: build/Blocks/donation-amounts/render.php:235
-#: src/Blocks/donation-amounts/render.php:235
+#: build/Blocks/donation-amounts/render.php:240
+#: src/Blocks/donation-amounts/render.php:240
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Max"
 msgstr "Enintään"
 
-#: build/Blocks/donation-campaigns/render.php:30
-#: src/Blocks/donation-campaigns/render.php:30
+#: build/Blocks/donation-campaigns/render.php:42
+#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr "Kampanja"
 
-#: build/Blocks/donation-campaigns/render.php:46
-#: src/Blocks/donation-campaigns/render.php:46
+#: build/Blocks/donation-campaigns/render.php:58
+#: src/Blocks/donation-campaigns/render.php:58
 msgid "Select campaign"
 msgstr "Valitse kampanja"
 
-#: build/Blocks/donation-form/render.php:120
-#: src/Blocks/donation-form/render.php:120
+#: build/Blocks/donation-form/render.php:141
+#: src/Blocks/donation-form/render.php:141
 msgid "Loading"
 msgstr "Ladataan"
 
-#: build/Blocks/donation-providers/render.php:25
-#: src/Blocks/donation-providers/render.php:25
+#: build/Blocks/donation-providers/render.php:26
+#: src/Blocks/donation-providers/render.php:26
+#: build/Blocks/donation-providers/index.js:1
 msgid "Payment provider"
 msgstr "Maksupalveluntarjoaja"
 
+#: build/Blocks/donation-providers/render.php:134
+#: src/Blocks/donation-providers/render.php:134
+msgid "Payment methods are currently unavailable. Please try again later."
+msgstr "Maksutavat eivät ole juuri nyt saatavilla. Yritä myöhemmin uudelleen."
+
 #: build/Blocks/donation-type/render.php:21
-#: src/Blocks/donation-type/render.php:21
-#: build/Blocks/donation-type/index.js:1
+#: src/Blocks/donation-type/render.php:21 build/Blocks/donation-type/index.js:1
 msgid "Donation type"
 msgstr "Lahjoitustapa"
 
@@ -94,8 +99,7 @@ msgstr "Lahjoitustapa"
 #: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-form/index.js:1
 #: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/donation-type/index.js:1 build/Blocks/form-controls/index.js:1
 msgid "Single"
 msgstr "Kertalahjoitus"
 
@@ -104,14 +108,12 @@ msgstr "Kertalahjoitus"
 #: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-form/index.js:1
 #: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/donation-type/index.js:1 build/Blocks/form-controls/index.js:1
 msgid "Recurring"
 msgstr "Toistuva"
 
 #: build/Blocks/form-controls/render.php:12
-#: src/Blocks/form-controls/render.php:12
-#: build/Blocks/form-controls/index.js:1
+#: src/Blocks/form-controls/render.php:12 build/Blocks/form-controls/index.js:1
 msgid "Donate"
 msgstr "Lahjoita"
 
@@ -120,38 +122,56 @@ msgstr "Lahjoita"
 msgid "Please enable JavaScript to use this form."
 msgstr "Ota JavaScript käyttöön käyttääksesi tätä lomaketta."
 
-#: fame-lahjoitukset.php:44
-#: build/Blocks/contact-form/index.js:1
+#: fame-lahjoitukset.php:48 build/Blocks/contact-form/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
-#: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/donation-form/index.js:1 build/Blocks/donation-type/index.js:1
 msgid "Settings"
 msgstr "Asetukset"
 
-#: src/Settings.php:36
-msgid "Backend URL"
-msgstr "Backend-osoite"
+#: src/Settings.php:49
+msgid "Slug"
+msgstr "Organisaation tunniste"
 
-#: src/Settings.php:37
-msgid "Your lahjoitukset-backend instance"
-msgstr "Lahjoitukset-backend-instanssisi"
+#: src/Settings.php:50
+msgid "Your organization slug provided by lahjoitin.fi"
+msgstr "Lahjoitin.fi-palvelun organisaatiollesi antama tunniste"
 
-#: src/Settings.php:42
+#: src/Settings.php:54
+msgid "Use staging environment"
+msgstr "Käytä testiympäristöä"
+
+#: src/Settings.php:55
+msgid "Send donations to the staging/test environment for testing."
+msgstr "Lähetä lahjoitukset testausta varten testiympäristöön."
+
+#: src/Settings.php:60
 msgid "Fame lahjoitukset settings"
 msgstr "Fame lahjoitukset -asetukset"
 
-#: src/Settings.php:43
+#: src/Settings.php:61
 msgid "Lahjoitukset"
+msgstr "Lahjoitukset"
+
+#: src/Settings.php:90
+msgid ""
+"Lahjoitukset: the staging environment is enabled, donations are not sent to "
+"the live payment providers."
 msgstr ""
+"Lahjoitukset: testiympäristö on käytössä, eikä lahjoituksia lähetetä "
+"oikeille maksupalveluntarjoajille."
+
+#: src/Updater.php:156
+msgid "Could not rename the extracted plugin folder."
+msgstr "Puretun lisäosakansion nimeäminen epäonnistui."
 
 #: templates/error-reinstall.php:7
 msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
 msgstr "Lahjoitin-lisäosa on asennettu väärin, asenna se uudelleen"
 
 #: build/Blocks/contact-form/index.js:1
-msgid "Show contact fields"
-msgstr "Näytä yhteystietokentät"
+msgid "Enable contact fields"
+msgstr "Ota yhteystietokentät käyttöön"
 
 #: build/Blocks/contact-form/index.js:1
 msgid "Require contact"
@@ -205,8 +225,10 @@ msgid "Description for screen readers (for accessibility)."
 msgstr "Kuvaus ruudunlukijoille (saavutettavuus)."
 
 #: build/Blocks/contact-form/index.js:1
-msgid "The contact form is not in use. Use the toggle in the sidebar to enable it."
-msgstr "Yhteystietolomake ei ole käytössä. Ota se käyttöön sivupalkin kytkimestä."
+msgid ""
+"The contact form is not in use. Use the toggle in the sidebar to enable it."
+msgstr ""
+"Yhteystietolomake ei ole käytössä. Ota se käyttöön sivupalkin kytkimestä."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
@@ -217,8 +239,12 @@ msgid "Currency label"
 msgstr "Valuuttamerkki"
 
 #: build/Blocks/donation-amounts/index.js:1
-msgid "Label that is shown next to amounts. This does not control actual donation currency. Currently only euros are supported."
-msgstr "Merkki, joka näytetään summien vieressä. Tämä ei ohjaa todellista lahjoitusvaluuttaa. Tällä hetkellä vain eurot ovat tuettuja."
+msgid ""
+"Label that is shown next to amounts. This does not control actual donation "
+"currency. Currently only euros are supported."
+msgstr ""
+"Merkki, joka näytetään summien vieressä. Tämä ei ohjaa todellista "
+"lahjoitusvaluuttaa. Tällä hetkellä vain eurot ovat tuettuja."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Default amount"
@@ -243,6 +269,15 @@ msgstr "Enimmäissumma"
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Maximum amount for other amount field."
 msgstr "Suurin sallittu summa muulle summakentälle."
+
+#: build/Blocks/donation-amounts/index.js:1
+msgid "Show maximum amount to donor"
+msgstr "Näytä suurin summa lahjoittajalle"
+
+#: build/Blocks/donation-amounts/index.js:1
+msgid ""
+"Show the maximum amount in the helper text under the other amount field."
+msgstr "Näytä suurin summa muu summa -kentän alla olevassa ohjetekstissä."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Other amount text"
@@ -274,8 +309,8 @@ msgid "Remove button"
 msgstr "Poista painike"
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "Show campaign selector"
-msgstr "Näytä kampanjavalitsin"
+msgid "Enable campaign selector"
+msgstr "Ota kampanjavalitsin käyttöön"
 
 #: build/Blocks/donation-campaigns/index.js:1
 msgid "Show label"
@@ -311,12 +346,23 @@ msgid "Maximum of 10 campaigns reached."
 msgstr "Enintään 10 kampanjaa on saavutettu."
 
 #: build/Blocks/donation-campaigns/index.js:1
+msgid "Hidden because only one campaign is configured."
+msgstr "Piilotettu, koska vain yksi kampanja on määritetty."
+
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "No campaigns added yet."
+msgstr "Kampanjoja ei ole vielä lisätty."
+
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "No campaigns added yet"
 msgstr "Kampanjoja ei ole vielä lisätty"
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "The campaign selector is not in use. Use the toggle in the sidebar to enable it."
-msgstr "Kampanjavalitsin ei ole käytössä. Ota se käyttöön sivupalkin kytkimestä."
+msgid ""
+"The campaign selector is not in use. Use the toggle in the sidebar to enable "
+"it."
+msgstr ""
+"Kampanjavalitsin ei ole käytössä. Ota se käyttöön sivupalkin kytkimestä."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Desktop columns"
@@ -339,12 +385,41 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sivu, joka näytetään lahjoituksen lähettämisen jälkeen."
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Return userinfo token"
+msgstr "Palauta käyttäjätietotunnus"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"This option includes userinfo token in the return address. This is not "
+"generally useful and requires custom logic to handle the token."
+msgstr ""
+"Tämä asetus sisällyttää käyttäjätietotunnuksen paluuosoitteeseen. Tämä ei "
+"ole yleensä hyödyllistä ja vaatii mukautetun logiikan tunnuksen "
+"käsittelemiseen."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Styles"
+msgstr "Tyylit"
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Selected button background color"
 msgstr "Valitun napin taustaväri"
 
 #: build/Blocks/donation-form/index.js:1
 msgid "This is the background color for selected buttons."
 msgstr "Tämä on taustaväri valitulle napille."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Button border color"
+msgstr "Painikkeiden reunan väri"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"This is the border color for selected and unselected donation type and "
+"amount buttons."
+msgstr ""
+"Tämä on valittujen ja valitsemattomien lahjoitustapa- ja "
+"summapainikkeiden reunan väri."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Selected button text color"
@@ -363,19 +438,37 @@ msgid "This defines the border and helper text color of the input field."
 msgstr "Määrittää syötekentän reunan ja ohjetekstin värin."
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Section label color"
+msgstr "Osio-otsikoiden väri"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "This color is used for all form section legends."
+msgstr "Tätä väriä käytetään lomakkeen kaikissa osio-otsikoissa."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label font size"
+msgstr "Osio-otsikoiden fonttikoko"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Used for all form section legends. For example: 1.25em, 20px or 1.5rem."
+msgstr "Käytetään lomakkeen kaikissa osio-otsikoissa. Esimerkiksi: 1.25em, 20px tai 1.5rem."
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Danger color"
 msgstr "Vaaraväri"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This defines the danger color for error messages and invalid input fields."
-msgstr "Määrittää vaaravärin virheviestejä ja virheellisiä syötekenttiä varten."
+msgid ""
+"This defines the danger color for error messages and invalid input fields."
+msgstr ""
+"Määrittää vaaravärin virheviestejä ja virheellisiä syötekenttiä varten."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Border Radius"
 msgstr "Reunan pyöristys"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-radius for tabs."
+msgid "This is the border-radius for selection buttons."
 msgstr "Tämä on valintanappien reunan pyöristys."
 
 #: build/Blocks/donation-form/index.js:1
@@ -383,7 +476,7 @@ msgid "Border Width"
 msgstr "Reunan leveys"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-width for tabs and input fields."
+msgid "This is the border-width for selection buttons and input fields."
 msgstr "Tämä on valintanappien ja syötekenttien reunan leveys."
 
 #: build/Blocks/donation-form/index.js:1
@@ -394,65 +487,47 @@ msgstr "Tekstikentän reunan pyöristys"
 msgid "This is the border-radius for the text fields."
 msgstr "Tämä on tekstikenttien reunan pyöristys."
 
-#: build/Blocks/donation-form/index.js:1
-msgid "Return userinfo token"
-msgstr "Palauta käyttäjätietotunnus"
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid amount"
+msgstr "Virheellinen summa"
 
-#: build/Blocks/donation-form/index.js:1
-msgid "This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token."
-msgstr "Tämä asetus sisällyttää käyttäjätietotunnuksen paluuosoitteeseen. Tämä ei ole yleensä hyödyllistä ja vaatii mukautetun logiikan tunnuksen käsittelemiseen."
+#: build/Blocks/donation-form/view.js:1
+msgid "First name is required"
+msgstr "Etunimi on pakollinen"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid first name"
+msgstr "Virheellinen etunimi"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Last name is required"
+msgstr "Sukunimi on pakollinen"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid last name"
+msgstr "Virheellinen sukunimi"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Email is required"
+msgstr "Sähköposti on pakollinen"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid email"
+msgstr "Virheellinen sähköpostiosoite"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid phone number"
+msgstr "Virheellinen puhelinnumero"
 
 #. translators: %1$s: minimum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:2
-#, js-format
 msgid "The minimum donation amount is %1$s%2$s."
 msgstr "Pienin mahdollinen lahjoitussumma on %1$s%2$s."
 
 #. translators: %1$s: maximum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:3
-#, js-format
 msgid "The maximum donation amount is %1$s%2$s."
 msgstr "Suurin mahdollinen lahjoitussumma on %1$s%2$s."
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid amount"
-msgstr "Virheellinen summa"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "First name is required"
-msgstr "Etunimi on pakollinen"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid first name"
-msgstr "Virheellinen etunimi"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Last name is required"
-msgstr "Sukunimi on pakollinen"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid last name"
-msgstr "Virheellinen sukunimi"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Email is required"
-msgstr "Sähköposti on pakollinen"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid email"
-msgstr "Virheellinen sähköpostiosoite"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid phone number"
-msgstr "Virheellinen puhelinnumero"
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "MobilePay"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "Paytrail"
-msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1
 msgid "Provider type"
@@ -463,6 +538,27 @@ msgid "General settings"
 msgstr "Yleiset asetukset"
 
 #: build/Blocks/donation-providers/index.js:1
+msgid "Loading providers…"
+msgstr "Ladataan maksupalveluntarjoajia…"
+
+#: build/Blocks/donation-providers/index.js:1
+msgid ""
+"Could not load payment providers from lahjoitin.fi. Existing selections are "
+"kept; the live list will be used when the connection is restored."
+msgstr ""
+"Maksupalveluntarjoajia ei voitu ladata lahjoitin.fi-palvelusta. Nykyiset "
+"valinnat säilytetään, ja ajantasainen luettelo otetaan käyttöön, kun yhteys "
+"palautuu."
+
+#: build/Blocks/donation-providers/index.js:1
+msgid ""
+"No payment providers are enabled for this organization. Check the slug in "
+"the Lahjoitukset settings."
+msgstr ""
+"Tälle organisaatiolle ei ole otettu käyttöön maksupalveluntarjoajia. "
+"Tarkista slug Lahjoitukset-asetuksista."
+
+#: build/Blocks/donation-providers/index.js:1
 msgid "label"
 msgstr "otsikko"
 
@@ -471,8 +567,12 @@ msgid "Donation provider"
 msgstr "Lahjoitusmaksuntarjoaja"
 
 #: build/Blocks/donation-providers/index.js:1
-msgid "Terms text…"
-msgstr "Ehtojen teksti…"
+msgid "Hidden because only one payment provider is configured."
+msgstr "Piilotettu, koska vain yksi maksupalveluntarjoaja on määritetty."
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Add privacy policy and terms text here…"
+msgstr "Lisää tietosuojaselosteen ja käyttöehtojen teksti tähän…"
 
 #: build/Blocks/donation-type/index.js:1
 msgid "Default donation type"
@@ -481,6 +581,10 @@ msgstr "Oletuslahjoistuistapa"
 #: build/Blocks/donation-type/index.js:1
 msgid "Select donation type that will be used by default."
 msgstr "Valitse oletuksena käytettävä lahjoitustapa."
+
+#: build/Blocks/donation-type/index.js:1
+msgid "Hidden because only one donation type is enabled."
+msgstr "Piilotettu, koska vain yksi lahjoitustapa on käytössä."
 
 #: build/Blocks/form-controls/index.js:1
 msgid "Button labels"
@@ -494,14 +598,12 @@ msgstr "Kertalahjoitus-painikkeen teksti"
 msgid "Recurring button text"
 msgstr "Toistuva-painikkeen teksti"
 
-#: build/Blocks/contact-form/block.json
-#: src/Blocks/contact-form/block.json
+#: build/Blocks/contact-form/block.json src/Blocks/contact-form/block.json
 msgctxt "block title"
 msgid "Contact form"
 msgstr "Yhteystietolomake"
 
-#: build/Blocks/contact-form/block.json
-#: src/Blocks/contact-form/block.json
+#: build/Blocks/contact-form/block.json src/Blocks/contact-form/block.json
 msgctxt "block description"
 msgid "Gutenberg block for Fame lahjoitukset backend."
 msgstr "Gutenberg-lohko Fame lahjoitukset -backendille."
@@ -530,14 +632,12 @@ msgctxt "block description"
 msgid "Campaign selector for the donation form."
 msgstr "Kampanjavalitsin lahjoituslomakkeelle."
 
-#: build/Blocks/donation-form/block.json
-#: src/Blocks/donation-form/block.json
+#: build/Blocks/donation-form/block.json src/Blocks/donation-form/block.json
 msgctxt "block title"
 msgid "Lahjoitin"
-msgstr ""
+msgstr "Lahjoitin"
 
-#: build/Blocks/donation-form/block.json
-#: src/Blocks/donation-form/block.json
+#: build/Blocks/donation-form/block.json src/Blocks/donation-form/block.json
 msgctxt "block description"
 msgid "Gutenberg block for Fame donation system."
 msgstr "Gutenberg-lohko Fame-lahjoitusjärjestelmälle."
@@ -554,41 +654,31 @@ msgctxt "block description"
 msgid "Allows selecting payment providers."
 msgstr "Mahdollistaa maksupalveluntarjoajan valitsemisen."
 
-#: build/Blocks/donation-type/block.json
-#: src/Blocks/donation-type/block.json
+#: build/Blocks/donation-type/block.json src/Blocks/donation-type/block.json
 msgctxt "block title"
 msgid "Donation type"
 msgstr "Lahjoitustapa"
 
-#: build/Blocks/donation-type/block.json
-#: src/Blocks/donation-type/block.json
+#: build/Blocks/donation-type/block.json src/Blocks/donation-type/block.json
 msgctxt "block description"
 msgid "Allows selecting donation type."
 msgstr "Mahdollistaa lahjoitustavan valitsemisen."
 
-#: build/Blocks/form-controls/block.json
-#: src/Blocks/form-controls/block.json
+#: build/Blocks/form-controls/block.json src/Blocks/form-controls/block.json
 msgctxt "block title"
 msgid "Form controls"
 msgstr "Lomaketoiminnot"
 
-#: build/Blocks/form-controls/block.json
-#: src/Blocks/form-controls/block.json
+#: build/Blocks/form-controls/block.json src/Blocks/form-controls/block.json
 msgctxt "block description"
 msgid "Adds form controls."
 msgstr "Lisää lomaketoiminnot."
 
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:63
-msgid "Show maximum amount to donor"
-msgstr "Näytä suurin summa lahjoittajalle"
+#~ msgid "Terms text…"
+#~ msgstr "Ehtojen teksti…"
 
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
-msgid "Show the maximum amount in the helper text under the other amount field."
-msgstr "Näytä suurin summa muu summa -kentän alla olevassa ohjetekstissä."
+#~ msgid "Backend URL"
+#~ msgstr "Backend-osoite"
 
-#: build/Blocks/donation-providers/render.php:95
-#: src/Blocks/donation-providers/render.php:95
-msgid "Payment methods are currently unavailable. Please try again later."
-msgstr "Maksutavat eivät ole juuri nyt saatavilla. Yritä myöhemmin uudelleen."
+#~ msgid "Your lahjoitukset-backend instance"
+#~ msgstr "Lahjoitukset-backend-instanssisi"
