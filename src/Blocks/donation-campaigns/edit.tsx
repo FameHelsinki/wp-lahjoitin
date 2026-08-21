@@ -147,14 +147,15 @@ export default function Edit({
 						) : (
 							<>
 								{showLabel && (
-									<label
-										htmlFor="campaigns-preview"
-										className="fame-form__label"
-									>
+									<label htmlFor="campaigns-preview" className="fame-form__label">
 										{label}
 									</label>
 								)}
-								<select id="campaigns-preview" className="fame-form__input" disabled>
+								<select
+									id="campaigns-preview"
+									className="fame-form__input"
+									disabled
+								>
 									{campaigns.length > 0 ? (
 										campaigns.map((campaign, index) => (
 											<option key={index} value={campaign}>

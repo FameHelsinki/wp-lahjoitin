@@ -18,8 +18,6 @@ describe('provider display labels', () => {
 
 	test('does not rename other or future providers', () => {
 		expect(defaultProviderLabel('mobilepay')).toBe('Mobilepay')
-		expect(providerDisplayLabel('future-provider', 'Future provider')).toBe(
-			'Future provider'
-		)
+		expect(providerDisplayLabel('future-provider', 'Future provider')).toBe('Future provider')
 	})
 })

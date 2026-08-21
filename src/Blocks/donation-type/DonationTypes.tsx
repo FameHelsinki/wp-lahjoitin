@@ -17,8 +17,9 @@ const Component: FC<Props> = ({ types, value: defaultValue, onChange, name }) =>
 	<div className="donation-type__controls">
 		{types?.map(({ value, label }) => (
 			<div key={value} className="donation-type__control fame-form__group">
-				<label className="fame-form__label">
+				<label htmlFor={`${name}-${value}`} className="fame-form__label">
 					<input
+						id={`${name}-${value}`}
 						type="radio"
 						name={name}
 						className="fame-form__check-input"

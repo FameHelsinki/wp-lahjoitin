@@ -19,14 +19,7 @@ import { EditProps } from '../common/types.ts'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
-	const {
-		contact,
-		showAddress,
-		showPhone,
-		showLegend,
-		legend,
-		legendAlign = 'left',
-	} = attributes
+	const { contact, showAddress, showPhone, showLegend, legend, legendAlign = 'left' } = attributes
 	const { show = true } = attributes as { show?: boolean }
 
 	return (

@@ -123,15 +123,17 @@ export default function Edit({
 				provider.value.toLowerCase() === 'checkout' &&
 				paytrail !== undefined &&
 				paytrail.types.includes(provider.type)
-			const next = shouldMigrate && paytrail
-				? {
-						...provider,
-						value: paytrail.value,
-						label: providerDisplayLabel(paytrail.value, provider.label),
-					}
-				: provider
+			const next =
+				shouldMigrate && paytrail
+					? {
+							...provider,
+							value: paytrail.value,
+							label: providerDisplayLabel(paytrail.value, provider.label),
+						}
+					: provider
 			const duplicateIndex = normalized.findIndex(
-				item => item.type === next.type && item.value.toLowerCase() === next.value.toLowerCase()
+				item =>
+					item.type === next.type && item.value.toLowerCase() === next.value.toLowerCase()
 			)
 
 			if (duplicateIndex === -1) {
@@ -312,9 +314,16 @@ export default function Edit({
 								<div>
 									<div className="fame-form__label">
 										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
-										{providerDisplayLabel(list[0].value, list[0].label)} (hidden)
+										{providerDisplayLabel(list[0].value, list[0].label)}{' '}
+										(hidden)
 									</div>
-									<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
+									<p
+										style={{
+											color: '#757575',
+											fontSize: 12,
+											margin: '4px 0 0',
+										}}
+									>
 										{__(
 											'Hidden because only one payment provider is configured.',
 											'fame_lahjoitukset'
@@ -323,30 +332,30 @@ export default function Edit({
 								</div>
 							) : (
 								list.map(p => (
-										<div
-											className="fame-form__group"
-											key={`${type}-${p.value}`}
-											data-type={type}
-										>
-											<label htmlFor={`payment_method_${type}_${p.value}`}>
-												<input
-													type="radio"
-													id={`payment_method_${type}_${p.value}`}
-													name={`payment_method_${type}`}
-													value={p.value}
-													disabled
-												/>
-												<RichText
-													tagName="span"
-													className="provider-type__label"
-													value={providerDisplayLabel(p.value, p.label)}
-													onChange={val => updateLabel(type, p.value, val)}
-													allowedFormats={[]}
-													placeholder={__('Label', 'fame_lahjoitukset')}
-												/>
-											</label>
-										</div>
-									))
+									<div
+										className="fame-form__group"
+										key={`${type}-${p.value}`}
+										data-type={type}
+									>
+										<label htmlFor={`payment_method_${type}_${p.value}`}>
+											<input
+												type="radio"
+												id={`payment_method_${type}_${p.value}`}
+												name={`payment_method_${type}`}
+												value={p.value}
+												disabled
+											/>
+											<RichText
+												tagName="span"
+												className="provider-type__label"
+												value={providerDisplayLabel(p.value, p.label)}
+												onChange={val => updateLabel(type, p.value, val)}
+												allowedFormats={[]}
+												placeholder={__('Label', 'fame_lahjoitukset')}
+											/>
+										</label>
+									</div>
+								))
 							)}
 						</fieldset>
 					)
