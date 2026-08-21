@@ -352,7 +352,10 @@ export default function Edit({
 						<ColorPicker
 							color={buttonBorderColor || primaryColor || '#000000'}
 							onChangeComplete={value =>
-								setAttributes({ buttonBorderColor: value?.hex || '' })
+								setAttributes({
+									buttonBorderColor:
+										typeof value === 'string' ? value : value?.hex || '',
+								})
 							}
 							disableAlpha
 						/>
@@ -403,7 +406,10 @@ export default function Edit({
 						<ColorPicker
 							color={sectionLabelColor || '#000000'}
 							onChangeComplete={value =>
-								setAttributes({ sectionLabelColor: value?.hex || '' })
+								setAttributes({
+									sectionLabelColor:
+										typeof value === 'string' ? value : value?.hex || '',
+								})
 							}
 							disableAlpha
 						/>
