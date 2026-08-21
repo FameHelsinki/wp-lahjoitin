@@ -104,17 +104,21 @@ export default function Edit({
 		token,
 		primaryColor,
 		secondaryColor,
+		buttonBorderColor,
 		thirdColor,
 		borderRadius,
 		borderWidth,
 		textFieldBorderRadius,
 		colsDesktop,
 		dangerColor,
+		sectionLabelColor,
+		sectionLabelFontSize,
 	} = attributes as {
 		types?: string[]
 		returnAddress?: string
 		primaryColor?: string
 		secondaryColor?: string
+		buttonBorderColor?: string
 		thirdColor?: string
 		borderRadius?: string
 		borderWidth?: string
@@ -122,6 +126,8 @@ export default function Edit({
 		token?: boolean
 		colsDesktop?: number
 		dangerColor?: string
+		sectionLabelColor?: string
+		sectionLabelFontSize?: string
 	}
 
 	const cols = Math.min(3, Math.max(1, colsDesktop ?? 3)) as 1 | 2 | 3
@@ -139,11 +145,14 @@ export default function Edit({
 		Record<
 			| '--primary-color'
 			| '--secondary-color'
+			| '--button-border-color'
 			| '--third-color'
 			| '--border-radius'
 			| '--border-width'
 			| '--text-field-border-radius'
-			| '--fame-clr-danger',
+			| '--fame-clr-danger'
+			| '--section-label-color'
+			| '--section-label-font-size',
 			string
 		>
 	>
@@ -151,17 +160,22 @@ export default function Edit({
 	const styleVars: React.CSSProperties & ThemeVars = {
 		'--primary-color': primaryColor ?? undefined,
 		'--secondary-color': secondaryColor ?? undefined,
+		'--button-border-color': buttonBorderColor || primaryColor || undefined,
 		'--third-color': thirdColor ?? undefined,
 		'--border-radius': borderRadius ?? undefined,
 		'--border-width': borderWidth ?? undefined,
 		'--text-field-border-radius': textFieldBorderRadius ?? undefined,
 		'--fame-clr-danger': dangerColor ?? undefined,
+		'--section-label-color': sectionLabelColor || undefined,
+		'--section-label-font-size': sectionLabelFontSize || '1.25em',
 	}
 
 	const primaryColorId = useInstanceId(BaseControl, 'primary-color')
 	const secondaryColorId = useInstanceId(BaseControl, 'secondary-color')
+	const buttonBorderColorId = useInstanceId(BaseControl, 'button-border-color')
 	const thirdColorId = useInstanceId(BaseControl, 'third-color')
 	const dangerColorId = useInstanceId(BaseControl, 'fame-clr-danger')
+	const sectionLabelColorId = useInstanceId(BaseControl, 'section-label-color')
 
 	const innerBlocks = useSelect(
 		select => select(blockEditorStore).getBlocks(clientId) as BlockInstance[],
@@ -296,6 +310,20 @@ export default function Edit({
 						}
 					/>
 
+					<ToggleControl
+						label={__('Return userinfo token', 'fame_lahjoitukset')}
+						help={__(
+							'This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token.',
+							'fame_lahjoitukset'
+						)}
+						checked={!!token}
+						onChange={newToken => setAttributes({ token: newToken })}
+					/>
+				</PanelBody>
+			</InspectorControls>
+
+			<InspectorControls group="styles">
+				<PanelBody title={__('Styles', 'fame_lahjoitukset')}>
 					<BaseControl
 						id={primaryColorId}
 						label={__('Selected button background color', 'fame_lahjoitukset')}
@@ -308,6 +336,23 @@ export default function Edit({
 							color={primaryColor || '#000000'}
 							onChangeComplete={value =>
 								setAttributes({ primaryColor: value?.hex || '' })
+							}
+							disableAlpha
+						/>
+					</BaseControl>
+
+					<BaseControl
+						id={buttonBorderColorId}
+						label={__('Button border color', 'fame_lahjoitukset')}
+						help={__(
+							'This is the border color for selected and unselected donation type and amount buttons.',
+							'fame_lahjoitukset'
+						)}
+					>
+						<ColorPicker
+							color={buttonBorderColor || primaryColor || '#000000'}
+							onChangeComplete={value =>
+								setAttributes({ buttonBorderColor: value?.hex || '' })
 							}
 							disableAlpha
 						/>
@@ -346,6 +391,34 @@ export default function Edit({
 							disableAlpha
 						/>
 					</BaseControl>
+
+					<BaseControl
+						id={sectionLabelColorId}
+						label={__('Section label color', 'fame_lahjoitukset')}
+						help={__(
+							'This color is used for all form section legends.',
+							'fame_lahjoitukset'
+						)}
+					>
+						<ColorPicker
+							color={sectionLabelColor || '#000000'}
+							onChangeComplete={value =>
+								setAttributes({ sectionLabelColor: value?.hex || '' })
+							}
+							disableAlpha
+						/>
+					</BaseControl>
+
+					<TextControl
+						label={__('Section label font size', 'fame_lahjoitukset')}
+						help={__(
+							'Used for all form section legends. For example: 1.25em, 20px or 1.5rem.',
+							'fame_lahjoitukset'
+						)}
+						value={sectionLabelFontSize ?? ''}
+						onChange={value => setAttributes({ sectionLabelFontSize: value })}
+						placeholder="1.25em"
+					/>
 
 					<BaseControl
 						id={dangerColorId}
@@ -395,16 +468,6 @@ export default function Edit({
 						)}
 						value={textFieldBorderRadius ?? ''}
 						onChange={value => setAttributes({ textFieldBorderRadius: value })}
-					/>
-
-					<ToggleControl
-						label={__('Return userinfo token', 'fame_lahjoitukset')}
-						help={__(
-							'This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token.',
-							'fame_lahjoitukset'
-						)}
-						checked={!!token}
-						onChange={newToken => setAttributes({ token: newToken })}
 					/>
 				</PanelBody>
 			</InspectorControls>

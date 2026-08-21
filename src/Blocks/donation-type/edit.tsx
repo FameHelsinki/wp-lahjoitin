@@ -33,7 +33,15 @@ export default function Edit({
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': enabledTypes } = context
-	const { types, value, legendAlign = 'left' } = attributes
+	const {
+		types,
+		value,
+		legendAlign = 'left',
+	} = attributes
+	const legendStyle = {
+		textAlign: legendAlign as CSSProperties['textAlign'],
+		fontFamily: 'inherit',
+	}
 
 	useEffect(() => {
 		const enabled =
@@ -134,10 +142,7 @@ export default function Edit({
 								allowedFormats={[]}
 								value={attributes.legend ?? ''}
 								onChange={legend => setAttributes({ legend })}
-								style={{
-									textAlign: legendAlign as CSSProperties['textAlign'],
-									fontFamily: 'inherit',
-								}}
+								style={legendStyle}
 							/>
 						)}
 						<DonationTypes
@@ -159,10 +164,7 @@ export default function Edit({
 								allowedFormats={[]}
 								value={attributes.legend ?? ''}
 								onChange={legend => setAttributes({ legend })}
-								style={{
-									textAlign: legendAlign as CSSProperties['textAlign'],
-									fontFamily: 'inherit',
-								}}
+								style={legendStyle}
 							/>
 						)}
 						<div>

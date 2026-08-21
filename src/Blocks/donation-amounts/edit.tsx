@@ -273,7 +273,9 @@ export default function Edit({
 						allowedFormats={[]}
 						value={legend ?? DEFAULT_LEGEND}
 						onChange={value => setAttributes({ legend: value })}
-						style={{ textAlign: legendAlign as CSSProperties['textAlign'] }}
+						style={{
+							textAlign: legendAlign as CSSProperties['textAlign'],
+						}}
 					/>
 				)}
 				<EditContent

@@ -62,22 +62,43 @@ $attrs = wp_parse_args($attributes, [
   'token'                 => false,
   'primaryColor'          => '#000000',
   'secondaryColor'        => '#FFFFFF',
+  'buttonBorderColor'     => '',
   'thirdColor'            => '#444',
   'borderRadius'          => '0px',
   'borderWidth'           => '1px',
   'textFieldBorderRadius' => '0px',
   'dangerColor'           => '#dc3545',
+  'sectionLabelColor'     => '',
+  'sectionLabelFontSize'  => '1.25em',
 ]);
 
+$primary_color       = sanitize_hex_color((string) $attrs['primaryColor']) ?: '#000000';
+$secondary_color     = sanitize_hex_color((string) $attrs['secondaryColor']) ?: '#FFFFFF';
+$third_color         = sanitize_hex_color((string) $attrs['thirdColor']) ?: '#444';
+$danger_color        = sanitize_hex_color((string) $attrs['dangerColor']) ?: '#dc3545';
+$button_border_color = sanitize_hex_color((string) $attrs['buttonBorderColor']) ?: $primary_color;
+$section_label_color = sanitize_hex_color((string) $attrs['sectionLabelColor']) ?: 'inherit';
+$valid_css_length = static function ($value, string $fallback): string {
+  $length = (string) $value;
+  return preg_match('/^\d*\.?\d+(px|rem|em|%)$/', $length) ? $length : $fallback;
+};
+$border_radius           = $valid_css_length($attrs['borderRadius'], '0px');
+$border_width            = $valid_css_length($attrs['borderWidth'], '1px');
+$text_field_border_radius = $valid_css_length($attrs['textFieldBorderRadius'], '0px');
+$section_label_size      = $valid_css_length($attrs['sectionLabelFontSize'], '1.25em');
+
 $wrapper_style = sprintf(
-  '--primary-color:%s;--secondary-color:%s;--third-color:%s;--border-radius:%s;--border-width:%s;--text-field-border-radius:%s;--fame-clr-danger:%s;',
-  esc_attr($attrs['primaryColor'] ?: 'inherit'),
-  esc_attr($attrs['secondaryColor'] ?: 'inherit'),
-  esc_attr($attrs['thirdColor'] ?: 'inherit'),
-  esc_attr($attrs['borderRadius'] ?: 'inherit'),
-  esc_attr($attrs['borderWidth'] ?: 'inherit'),
-  esc_attr($attrs['textFieldBorderRadius'] ?: 'inherit'),
-  esc_attr($attrs['dangerColor'] ?: '#dc3545')
+  '--primary-color:%s;--secondary-color:%s;--button-border-color:%s;--third-color:%s;--border-radius:%s;--border-width:%s;--text-field-border-radius:%s;--fame-clr-danger:%s;--section-label-color:%s;--section-label-font-size:%s;',
+  esc_attr($primary_color),
+  esc_attr($secondary_color),
+  esc_attr($button_border_color),
+  esc_attr($third_color),
+  esc_attr($border_radius),
+  esc_attr($border_width),
+  esc_attr($text_field_border_radius),
+  esc_attr($danger_color),
+  esc_attr($section_label_color),
+  esc_attr($section_label_size)
 );
 
 $block_wrapper_attrs = get_block_wrapper_attributes([

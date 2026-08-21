@@ -35,6 +35,10 @@
 			"type": "string",
 			"default": "#FFFFFF"
 		},
+		"buttonBorderColor": {
+			"type": "string",
+			"default": ""
+		},
 		"thirdColor": {
 			"type": "string",
 			"default": "#444"
@@ -54,6 +58,14 @@
 		"dangerColor": {
 			"type": "string",
 			"default": "#dc3545"
+		},
+		"sectionLabelColor": {
+			"type": "string",
+			"default": ""
+		},
+		"sectionLabelFontSize": {
+			"type": "string",
+			"default": "1.25em"
 		}
 	},
 	"supports": {
