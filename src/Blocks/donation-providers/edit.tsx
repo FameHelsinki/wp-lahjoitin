@@ -78,10 +78,7 @@ export default function Edit({
 
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
-	const termsPlaceholder = __(
-		'Add privacy policy and terms text here…',
-		'fame_lahjoitukset'
-	)
+	const termsPlaceholder = __('Add privacy policy and terms text here…', 'fame_lahjoitukset')
 	const innerBlocks = useSelect(
 		select => {
 			const blockEditor = select('core/block-editor') as any
@@ -358,8 +355,8 @@ export default function Edit({
 								<div>
 									<div className="fame-form__label">
 										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
-										{providerDisplayLabel(list[0].value, list[0].label)}{' '}
-										({__('hidden', 'fame_lahjoitukset')})
+										{providerDisplayLabel(list[0].value, list[0].label)} (
+										{__('hidden', 'fame_lahjoitukset')})
 									</div>
 									<p
 										style={{

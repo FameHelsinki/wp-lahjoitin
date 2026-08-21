@@ -28,11 +28,7 @@ export default function Edit({
 }: EditProps<Attributes>): React.JSX.Element {
 	const translatedDonate = __('Donate', 'fame_lahjoitukset')
 	const submitLabel = localizedDefault(attributes.submitLabel, 'Donate', translatedDonate)
-	const submitLabelSingle = localizedDefault(
-		attributes.submitLabelSingle,
-		'Donate',
-		submitLabel
-	)
+	const submitLabelSingle = localizedDefault(attributes.submitLabelSingle, 'Donate', submitLabel)
 	const submitLabelRecurring = localizedDefault(
 		attributes.submitLabelRecurring,
 		'Donate',

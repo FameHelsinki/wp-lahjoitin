@@ -192,12 +192,8 @@ export default function Edit({
 						<div>
 							<div className="fame-form__label">
 								{__('Donation type', 'fame_lahjoitukset')}:{' '}
-								{localizedDonationTypeLabel(
-									types?.[0] ?? DEFAULT_DONATION_TYPE
-								)} ({__(
-									'hidden',
-									'fame_lahjoitukset'
-								)})
+								{localizedDonationTypeLabel(types?.[0] ?? DEFAULT_DONATION_TYPE)} (
+								{__('hidden', 'fame_lahjoitukset')})
 							</div>
 							<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
 								{__(

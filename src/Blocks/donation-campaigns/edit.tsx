@@ -19,11 +19,7 @@ export default function Edit({
 	setAttributes,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { show, campaigns, label, showLabel } = attributes
-	const localizedLabel = localizedDefault(
-		label,
-		'Campaign',
-		__('Campaign', 'fame_lahjoitukset')
-	)
+	const localizedLabel = localizedDefault(label, 'Campaign', __('Campaign', 'fame_lahjoitukset'))
 
 	const [newCampaign, setNewCampaign] = useState('')
 
@@ -139,10 +135,8 @@ export default function Edit({
 							<div>
 								<div className="fame-form__label">
 									{localizedLabel}
-									{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} ({__(
-										'hidden',
-										'fame_lahjoitukset'
-									)})
+									{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} (
+									{__('hidden', 'fame_lahjoitukset')})
 								</div>
 								<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
 									{campaigns.length === 1
