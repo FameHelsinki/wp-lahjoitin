@@ -70,7 +70,7 @@ $types = array_values(array_filter(
 ));
 
 $types = array_map(static function (array $type) use ($localized_default): array {
-  $value = (string) ($type['value'] ?? '');
+  $value = (string) $type['value'];
   if ($value === 'single') {
     $type['label'] = $localized_default($type['label'] ?? '', 'Single', __('Single', 'fame_lahjoitukset'));
   } elseif ($value === 'recurring') {
