@@ -120,20 +120,17 @@ $wrapper_attrs = get_block_wrapper_attributes();
           name="provider"
           value="<?php echo esc_attr((string) $list[0]['value']); ?>"
           data-type="<?php echo esc_attr((string) $list[0]['type']); ?>" />
-      <?php endif; ?>
+      <?php else : ?>
 
       <?php foreach ($list as $provider) :
         $ptype = (string) $provider['type'];
         $pval  = (string) $provider['value'];
         $plab  = (string) $provider['label'];
 
-        $hideSingleLabel = $single && !$showForType;
-
-        $group_class = 'fame-form__group' . ($hideSingleLabel ? ' screen-reader-text' : '');
         $id = 'payment_method_' . sanitize_key($ptype) . '_' . sanitize_key($pval);
       ?>
         <div
-          class="<?php echo esc_attr($group_class); ?>"
+          class="fame-form__group"
           data-type="<?php echo esc_attr($ptype); ?>">
           <label for="<?php echo esc_attr($id); ?>">
             <input
@@ -151,6 +148,7 @@ $wrapper_attrs = get_block_wrapper_attributes();
         </div>
 
       <?php endforeach; ?>
+      <?php endif; ?>
     </fieldset>
   <?php endforeach; ?>
 

@@ -37,7 +37,7 @@ export default function Edit({
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show campaign selector', 'fame_lahjoitukset')}
+						label={__('Enable campaign selector', 'fame_lahjoitukset')}
 						checked={show}
 						onChange={value => setAttributes({ show: value })}
 					/>
@@ -129,24 +129,46 @@ export default function Edit({
 			<div {...useBlockProps()}>
 				{show ? (
 					<div className="fame-form__group">
-						{showLabel && (
-							<label htmlFor="campaigns-preview" className="fame-form__label">
-								{label}
-							</label>
+						{campaigns.length <= 1 ? (
+							<div>
+								<div className="fame-form__label">
+									{label || __('Campaign', 'fame_lahjoitukset')}
+									{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} (hidden)
+								</div>
+								<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
+									{campaigns.length === 1
+										? __(
+												'Hidden because only one campaign is configured.',
+												'fame_lahjoitukset'
+											)
+										: __('No campaigns added yet.', 'fame_lahjoitukset')}
+								</p>
+							</div>
+						) : (
+							<>
+								{showLabel && (
+									<label
+										htmlFor="campaigns-preview"
+										className="fame-form__label"
+									>
+										{label}
+									</label>
+								)}
+								<select id="campaigns-preview" className="fame-form__input" disabled>
+									{campaigns.length > 0 ? (
+										campaigns.map((campaign, index) => (
+											<option key={index} value={campaign}>
+												{campaign}
+											</option>
+										))
+									) : (
+										<option value="">
+											{__('No campaigns added yet', 'fame_lahjoitukset')}
+										</option>
+									)}
+								</select>
+							</>
 						)}
-						<select id="campaigns-preview" className="fame-form__input" disabled>
-							{campaigns.length > 0 ? (
-								campaigns.map((campaign, index) => (
-									<option key={index} value={campaign}>
-										{campaign}
-									</option>
-								))
-							) : (
-								<option value="">
-									{__('No campaigns added yet', 'fame_lahjoitukset')}
-								</option>
-							)}
-						</select>
 					</div>
 				) : (
 					<div

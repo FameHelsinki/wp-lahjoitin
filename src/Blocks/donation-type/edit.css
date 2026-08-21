@@ -1,11 +1,12 @@
-.donation-type__control,
 .donation-type__controls {
 	display: flex;
-	gap: 16px;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
 }
 
-.donation-type__input {
-	width: 1.5em;
+.donation-type__control {
+	width: 100%;
 }
 
 .fame-form__legend {

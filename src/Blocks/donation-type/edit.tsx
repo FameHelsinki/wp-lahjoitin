@@ -30,6 +30,7 @@ export default function Edit({
 	context,
 	attributes,
 	setAttributes,
+	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': enabledTypes } = context
 	const { types, value, legendAlign = 'left' } = attributes
@@ -139,7 +140,12 @@ export default function Edit({
 								}}
 							/>
 						)}
-						<DonationTypes types={types} value={value} onChange={setAttributes} />
+						<DonationTypes
+							types={types}
+							value={value}
+							onChange={setAttributes}
+							name={`donation-type-preview-${clientId}`}
+						/>
 					</>
 				) : (
 					<>
@@ -159,7 +165,18 @@ export default function Edit({
 								}}
 							/>
 						)}
-						{`Type: ${types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)`}
+						<div>
+							<div className="fame-form__label">
+								{__('Donation type', 'fame_lahjoitukset')}:{' '}
+								{types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)
+							</div>
+							<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
+								{__(
+									'Hidden because only one donation type is enabled.',
+									'fame_lahjoitukset'
+								)}
+							</p>
+						</div>
 					</>
 				)}
 			</div>

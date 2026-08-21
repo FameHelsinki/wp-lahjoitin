@@ -18,7 +18,7 @@ import {
 	Spinner,
 } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
-import { Provider } from '../common/Providers.ts'
+import { Provider, providerDisplayLabel } from '../common/Providers.ts'
 import { useProviders } from '../common/useProviders.ts'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
 
@@ -216,7 +216,7 @@ export default function Edit({
 									.map(p => (
 										<CheckboxControl
 											key={p.value}
-											label={p.label}
+											label={providerDisplayLabel(p.value, p.label)}
 											checked={selected.has(p.value)}
 											onChange={checked =>
 												updateProvider(type, p.value, checked)
@@ -227,8 +227,8 @@ export default function Edit({
 								{(grouped[type] ?? []).map(p => (
 									<TextControl
 										key={p.value}
-										label={`${p.label} ${__('label', 'fame_lahjoitukset')}`}
-										value={p.label}
+										label={`${providerDisplayLabel(p.value, p.label)} ${__('label', 'fame_lahjoitukset')}`}
+										value={providerDisplayLabel(p.value, p.label)}
 										onChange={val => updateLabel(type, p.value, val)}
 									/>
 								))}
@@ -269,22 +269,21 @@ export default function Edit({
 								/>
 							)}
 
-							{isSingle
-								? showForType && (
-										<div className="fame-form__group" data-type={type}>
-											<RichText
-												tagName="span"
-												className="provider-type__label"
-												value={list[0].label}
-												onChange={val =>
-													updateLabel(type, list[0].value, val)
-												}
-												allowedFormats={[]}
-												placeholder={__('Label', 'fame_lahjoitukset')}
-											/>
-										</div>
-									)
-								: list.map(p => (
+							{isSingle ? (
+								<div>
+									<div className="fame-form__label">
+										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
+										{providerDisplayLabel(list[0].value, list[0].label)} (hidden)
+									</div>
+									<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
+										{__(
+											'Hidden because only one payment provider is configured.',
+											'fame_lahjoitukset'
+										)}
+									</p>
+								</div>
+							) : (
+								list.map(p => (
 										<div
 											className="fame-form__group"
 											key={`${type}-${p.value}`}
@@ -301,16 +300,15 @@ export default function Edit({
 												<RichText
 													tagName="span"
 													className="provider-type__label"
-													value={p.label}
-													onChange={val =>
-														updateLabel(type, p.value, val)
-													}
+													value={providerDisplayLabel(p.value, p.label)}
+													onChange={val => updateLabel(type, p.value, val)}
 													allowedFormats={[]}
 													placeholder={__('Label', 'fame_lahjoitukset')}
 												/>
 											</label>
 										</div>
-									))}
+									))
+							)}
 						</fieldset>
 					)
 				})}
@@ -321,7 +319,10 @@ export default function Edit({
 							'core/paragraph',
 							{
 								className: 'fame-form__terms',
-								placeholder: __('Terms text…', 'fame_lahjoitukset'),
+								placeholder: __(
+									'Add privacy policy and terms text here…',
+									'fame_lahjoitukset'
+								),
 							},
 						],
 					]}
