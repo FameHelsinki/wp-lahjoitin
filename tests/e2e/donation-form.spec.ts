@@ -46,6 +46,9 @@ test.describe('donation form', () => {
 				return providers?.attributes?.providers?.length ?? 0
 			})
 			.toBeGreaterThan(0)
+		await expect(
+			canvas.getByText('Payment provider: Paytrail (hidden)', { exact: true })
+		).toBeVisible()
 
 		// The serialized markup is the save() output of every block in the
 		// tree. A snapshot catches unintended save() changes, which would
@@ -72,7 +75,8 @@ test.describe('donation form', () => {
 		const form = page.locator('form.fame-form--donations')
 		await expect(form).toBeVisible()
 		await expect(page.locator('.fame-form__notice--warning')).toHaveCount(0)
-		await expect(form.getByText('Paytrail', { exact: true })).toBeVisible()
+		// A single provider is selected implicitly and has no visible frontend control.
+		await expect(form.getByText('Paytrail', { exact: true })).toHaveCount(0)
 		await expect(form.getByText('Checkout', { exact: true })).toHaveCount(0)
 
 		// The seeded default provider is auto-selected for the default type.

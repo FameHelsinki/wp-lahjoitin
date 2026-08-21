@@ -15,7 +15,7 @@
 
 <!-- wp:group -->
 <div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"}]} -->
-<!-- wp:paragraph {"placeholder":"Terms text…","className":"fame-form__terms"} -->
+<!-- wp:paragraph {"placeholder":"Add privacy policy and terms text here…","className":"fame-form__terms"} -->
 <p class="fame-form__terms"></p>
 <!-- /wp:paragraph -->
 <!-- /wp:famehelsinki/donation-providers -->
