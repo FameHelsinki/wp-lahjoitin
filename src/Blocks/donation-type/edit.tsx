@@ -190,7 +190,7 @@ export default function Edit({
 							/>
 						)}
 						<div>
-							<div className="fame-form__label">
+							<div>
 								{__('Donation type', 'fame_lahjoitukset')}:{' '}
 								{localizedDonationTypeLabel(types?.[0] ?? DEFAULT_DONATION_TYPE)} (
 								{__('hidden', 'fame_lahjoitukset')})
