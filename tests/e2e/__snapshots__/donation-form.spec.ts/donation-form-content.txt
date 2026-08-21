@@ -14,7 +14,7 @@
 <!-- /wp:group -->
 
 <!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Checkout","types":["single","recurring"],"type":"single"}]} -->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"}]} -->
 <!-- wp:paragraph {"placeholder":"Terms text…","className":"fame-form__terms"} -->
 <p class="fame-form__terms"></p>
 <!-- /wp:paragraph -->

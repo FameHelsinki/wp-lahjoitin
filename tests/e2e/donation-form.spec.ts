@@ -72,6 +72,8 @@ test.describe('donation form', () => {
 		const form = page.locator('form.fame-form--donations')
 		await expect(form).toBeVisible()
 		await expect(page.locator('.fame-form__notice--warning')).toHaveCount(0)
+		await expect(form.getByText('Paytrail', { exact: true })).toBeVisible()
+		await expect(form.getByText('Checkout', { exact: true })).toHaveCount(0)
 
 		// The seeded default provider is auto-selected for the default type.
 		await expect(form.locator('input[data-selected-provider]')).toHaveValue('checkout')

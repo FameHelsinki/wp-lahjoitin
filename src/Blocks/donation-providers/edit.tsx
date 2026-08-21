@@ -64,7 +64,18 @@ export default function Edit({
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
 
-	const [available, loading, error] = useProviders()
+	const [rawAvailable, loading, error] = useProviders()
+	const available = useMemo(() => {
+		const paytrail = rawAvailable.find(p => p.value.toLowerCase() === 'paytrail')
+		if (!paytrail) return rawAvailable
+
+		return rawAvailable.flatMap(provider => {
+			if (provider.value.toLowerCase() !== 'checkout') return [provider]
+
+			const remainingTypes = provider.types.filter(type => !paytrail.types.includes(type))
+			return remainingTypes.length ? [{ ...provider, types: remainingTypes }] : []
+		})
+	}, [rawAvailable])
 
 	const isLegendShownForType = (type: string) => {
 		if (type === 'single') return showLegendSingle ?? showLegend ?? true
@@ -103,9 +114,37 @@ export default function Edit({
 	}, [donationTypes, providers, available, setAttributes])
 
 	useEffect(() => {
-		const cleaned = providers.filter(p => donationTypes.includes(p.type))
-		if (cleaned.length !== providers.length) setAttributes({ providers: cleaned })
-	}, [donationTypes, providers, setAttributes])
+		const paytrail = available.find(p => p.value.toLowerCase() === 'paytrail')
+		const normalized: FlatProvider[] = []
+
+		for (const provider of providers.filter(p => donationTypes.includes(p.type))) {
+			const isNativePaytrail = provider.value.toLowerCase() === 'paytrail'
+			const shouldMigrate =
+				provider.value.toLowerCase() === 'checkout' &&
+				paytrail !== undefined &&
+				paytrail.types.includes(provider.type)
+			const next = shouldMigrate && paytrail
+				? {
+						...provider,
+						value: paytrail.value,
+						label: providerDisplayLabel(paytrail.value, provider.label),
+					}
+				: provider
+			const duplicateIndex = normalized.findIndex(
+				item => item.type === next.type && item.value.toLowerCase() === next.value.toLowerCase()
+			)
+
+			if (duplicateIndex === -1) {
+				normalized.push(next)
+			} else if (isNativePaytrail) {
+				normalized[duplicateIndex] = next
+			}
+		}
+
+		if (JSON.stringify(normalized) !== JSON.stringify(providers)) {
+			setAttributes({ providers: normalized })
+		}
+	}, [available, donationTypes, providers, setAttributes])
 
 	const grouped = providers.reduce<Record<string, FlatProvider[]>>((acc, p) => {
 		if (!acc[p.type]) acc[p.type] = []
