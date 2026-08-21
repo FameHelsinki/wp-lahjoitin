@@ -37,9 +37,10 @@ if (count($campaigns) === 1) : ?>
 endif;
 
 $showLabel = array_key_exists('showLabel', $attributes) ? (bool) $attributes['showLabel'] : true;
-$label     = isset($attributes['label']) && trim((string) $attributes['label']) !== ''
-  ? (string) $attributes['label']
-  : __('Campaign', 'fame_lahjoitukset');
+$label_raw = trim((string) ($attributes['label'] ?? ''));
+$label     = $label_raw === '' || $label_raw === 'Campaign'
+  ? __('Campaign', 'fame_lahjoitukset')
+  : $label_raw;
 
 $wrapper_attrs = get_block_wrapper_attributes([
   'class' => 'fame-form__group',

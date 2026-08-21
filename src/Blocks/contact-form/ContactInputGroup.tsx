@@ -5,7 +5,8 @@ import ContactInputControl, {
 	ContentProps as ContactInputContentProps,
 } from './ContactInputControl.tsx'
 import { RichText } from '@wordpress/block-editor'
-import { formatPlaceholder } from '../common/utils.ts'
+import { __ } from '@wordpress/i18n'
+import { localizedDefault } from '../common/localized-default.ts'
 
 type ContactInput = Omit<ContactInputProps, 'setAttributes' | 'attributes'>
 type ContactInputContent = Omit<ContactInputContentProps, 'attributes'>
@@ -38,8 +39,16 @@ const ContactInputGroup: FC<Props> = ({ name, controls, attributes, setAttribute
 			multiline={false}
 			allowedFormats={['core/bold', 'core/italic']}
 			onChange={help => setAttributes({ [`${name}_help`]: help })}
-			value={attributes[`${name}_help`]}
-			placeholder={`${formatPlaceholder(name)} help`}
+			value={
+				name === 'city_postal_code'
+					? localizedDefault(
+							attributes[`${name}_help`],
+							'City',
+							__('City', 'fame_lahjoitukset')
+						)
+					: attributes[`${name}_help`]
+			}
+			placeholder={__('Help text', 'fame_lahjoitukset')}
 		/>
 	</div>
 )

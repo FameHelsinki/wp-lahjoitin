@@ -21,9 +21,10 @@ $providers = (isset($attributes['providers']) && is_array($attributes['providers
   ? $attributes['providers']
   : [];
 
-$legend = (isset($attributes['legend']) && trim((string) $attributes['legend']) !== '')
-  ? (string) $attributes['legend']
-  : __('Payment provider', 'fame_lahjoitukset');
+$legend_raw = trim((string) ($attributes['legend'] ?? ''));
+$legend = $legend_raw === '' || in_array($legend_raw, ['Payment provider', 'Provider type'], true)
+  ? __('Payment provider', 'fame_lahjoitukset')
+  : $legend_raw;
 
 $showLegend = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
 $showLegendSingle = array_key_exists('showLegendSingle', $attributes) ? (bool) $attributes['showLegendSingle'] : null;

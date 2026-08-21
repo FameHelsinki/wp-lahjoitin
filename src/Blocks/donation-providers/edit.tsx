@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, CSSProperties } from 'react'
 import { __ } from '@wordpress/i18n'
+import { useDispatch, useSelect } from '@wordpress/data'
 import {
 	useBlockProps,
 	InspectorControls,
@@ -21,8 +22,16 @@ import { EditProps } from '../common/types.ts'
 import { Provider, providerDisplayLabel } from '../common/Providers.ts'
 import { useProviders } from '../common/useProviders.ts'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 
 export type FlatProvider = Provider & { type: string }
+
+const DEFAULT_TERMS_PLACEHOLDERS = new Set([
+	'Terms text…',
+	'Add privacy policy and terms text here…',
+	'Lisää tietosuojaselosteen ja käyttöehtojen teksti tähän…',
+	'Lägg till text för integritetspolicy och villkor här…',
+])
 
 export type Attributes = {
 	legend?: string
@@ -49,12 +58,18 @@ export default function Edit({
 }: EditProps<Attributes>) {
 	const {
 		providers = [],
-		legend = __('Provider type', 'fame_lahjoitukset'),
+		legend: savedLegend,
 		showLegend = true,
 		showLegendSingle,
 		showLegendRecurring,
 		legendAlign = 'left',
 	} = attributes
+	const translatedLegend = __('Payment provider', 'fame_lahjoitukset')
+	const legend = localizedDefault(
+		localizedDefault(savedLegend, 'Provider type', translatedLegend),
+		'Payment provider',
+		translatedLegend
+	)
 
 	const donationTypes: string[] = useMemo(
 		() => context['famehelsinki/donation-types'] || [],
@@ -63,6 +78,35 @@ export default function Edit({
 
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
+	const termsPlaceholder = __(
+		'Add privacy policy and terms text here…',
+		'fame_lahjoitukset'
+	)
+	const innerBlocks = useSelect(
+		select => {
+			const blockEditor = select('core/block-editor') as any
+			return blockEditor.getBlocks(clientId) as any[]
+		},
+		[clientId]
+	)
+	const { updateBlockAttributes } = useDispatch('core/block-editor') as any
+
+	useEffect(() => {
+		for (const innerBlock of innerBlocks) {
+			if (innerBlock.name !== 'core/paragraph') continue
+			if (!String(innerBlock.attributes?.className ?? '').includes('fame-form__terms')) {
+				continue
+			}
+
+			const savedPlaceholder = String(innerBlock.attributes?.placeholder ?? '')
+			if (
+				DEFAULT_TERMS_PLACEHOLDERS.has(savedPlaceholder) &&
+				savedPlaceholder !== termsPlaceholder
+			) {
+				updateBlockAttributes(innerBlock.clientId, { placeholder: termsPlaceholder })
+			}
+		}
+	}, [innerBlocks, termsPlaceholder, updateBlockAttributes])
 
 	const [rawAvailable, loading, error] = useProviders()
 	const available = useMemo(() => {
@@ -301,7 +345,7 @@ export default function Edit({
 									aria-label={__('Legend', 'fame_lahjoitukset')}
 									placeholder={__('Donation provider', 'fame_lahjoitukset')}
 									allowedFormats={[]}
-									value={attributes.legend ?? ''}
+									value={legend}
 									onChange={le => setAttributes({ legend: le })}
 									style={{
 										textAlign: legendAlign as CSSProperties['textAlign'],
@@ -315,7 +359,7 @@ export default function Edit({
 									<div className="fame-form__label">
 										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
 										{providerDisplayLabel(list[0].value, list[0].label)}{' '}
-										(hidden)
+										({__('hidden', 'fame_lahjoitukset')})
 									</div>
 									<p
 										style={{
@@ -367,10 +411,7 @@ export default function Edit({
 							'core/paragraph',
 							{
 								className: 'fame-form__terms',
-								placeholder: __(
-									'Add privacy policy and terms text here…',
-									'fame_lahjoitukset'
-								),
+								placeholder: termsPlaceholder,
 							},
 						],
 					]}

@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { AmountSetting, DEFAULT_AMOUNT, MIN_AMOUNT, MAX_AMOUNT } from '../common/donation-amount.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
+import { localizedDefault } from '../common/localized-default.ts'
 
 type Props = {
 	current?: AmountSetting
@@ -15,8 +16,17 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 	if (!current) return null
 
 	if (!other && !current?.amounts?.length) {
-		return `Amount: ${current?.defaultAmount} (hidden)`
+		return `${__('Amount', 'fame_lahjoitukset')}: ${current?.defaultAmount} (${__(
+			'hidden',
+			'fame_lahjoitukset'
+		)})`
 	}
+
+	const localizedOtherLabel = localizedDefault(
+		otherLabel,
+		'Other amount',
+		__('Other amount', 'fame_lahjoitukset')
+	)
 
 	return (
 		<>
@@ -48,7 +58,7 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 						allowedFormats={['core/bold', 'core/italic']}
 						onChange={value => setAttributes({ otherLabel: value })}
 						placeholder={__('Other amount', 'fame_lahjoitukset')}
-						value={otherLabel ?? __('Other amount', 'fame_lahjoitukset')}
+						value={localizedOtherLabel}
 						className="donation-amounts__other-label"
 					/>
 					{/* Placeholder mimics input field in Gutenberg UI. */}

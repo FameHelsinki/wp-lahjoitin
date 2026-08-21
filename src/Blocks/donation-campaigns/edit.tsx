@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n'
 import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
 import { PanelBody, TextControl, ToggleControl, Button } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 
 const MAX_CAMPAIGNS = 10
 
@@ -18,6 +19,11 @@ export default function Edit({
 	setAttributes,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { show, campaigns, label, showLabel } = attributes
+	const localizedLabel = localizedDefault(
+		label,
+		'Campaign',
+		__('Campaign', 'fame_lahjoitukset')
+	)
 
 	const [newCampaign, setNewCampaign] = useState('')
 
@@ -51,7 +57,7 @@ export default function Edit({
 							/>
 							<TextControl
 								label={__('Label', 'fame_lahjoitukset')}
-								value={label}
+								value={localizedLabel}
 								onChange={value => setAttributes({ label: value })}
 							/>
 
@@ -132,8 +138,11 @@ export default function Edit({
 						{campaigns.length <= 1 ? (
 							<div>
 								<div className="fame-form__label">
-									{label || __('Campaign', 'fame_lahjoitukset')}
-									{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} (hidden)
+									{localizedLabel}
+									{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} ({__(
+										'hidden',
+										'fame_lahjoitukset'
+									)})
 								</div>
 								<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
 									{campaigns.length === 1
@@ -148,7 +157,7 @@ export default function Edit({
 							<>
 								{showLabel && (
 									<label htmlFor="campaigns-preview" className="fame-form__label">
-										{label}
+										{localizedLabel}
 									</label>
 								)}
 								<select

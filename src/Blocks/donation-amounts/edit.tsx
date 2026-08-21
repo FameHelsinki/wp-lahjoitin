@@ -17,6 +17,7 @@ import {
 } from '@wordpress/block-editor'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 import {
 	AmountSetting,
 	DEFAULT_AMOUNT,
@@ -106,6 +107,11 @@ export default function Edit({
 	} = attributes
 	const currentType = useCurrentDonationType(clientId)
 	const current = settings?.find(({ type }) => type === currentType)
+	const localizedLegend = localizedDefault(
+		localizedDefault(legend, 'Amount', DEFAULT_LEGEND),
+		'Donation amount',
+		DEFAULT_LEGEND
+	)
 
 	useEffect(() => {
 		if (!currentType) {
@@ -202,7 +208,7 @@ export default function Edit({
 							'Description for screen readers (for accessibility).',
 							'fame_lahjoitukset'
 						)}
-						value={legend ?? DEFAULT_LEGEND}
+						value={localizedLegend}
 						onChange={value => setAttributes({ legend: value })}
 					/>
 					{settings.some(({ amounts }) => amounts?.length) && (
@@ -271,7 +277,7 @@ export default function Edit({
 						aria-label={__('Legend', 'fame_lahjoitukset')}
 						placeholder={__('Amount', 'fame_lahjoitukset')}
 						allowedFormats={[]}
-						value={legend ?? DEFAULT_LEGEND}
+						value={localizedLegend}
 						onChange={value => setAttributes({ legend: value })}
 						style={{
 							textAlign: legendAlign as CSSProperties['textAlign'],

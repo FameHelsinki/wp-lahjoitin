@@ -8,8 +8,14 @@ import {
 	AlignmentToolbar,
 	BlockControls,
 } from '@wordpress/block-editor'
-import { DEFAULT_DONATION_TYPE, DONATION_TYPES, DonationType } from '../common/donation-type.ts'
+import {
+	DEFAULT_DONATION_TYPE,
+	DONATION_TYPES,
+	DonationType,
+	localizedDonationTypeLabel,
+} from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 import DonationTypes from './DonationTypes.tsx'
 
 export type Attributes = {
@@ -34,6 +40,11 @@ export default function Edit({
 }: EditProps<Attributes>): React.JSX.Element {
 	const { 'famehelsinki/donation-types': enabledTypes } = context
 	const { types, value, legendAlign = 'left' } = attributes
+	const localizedLegend = localizedDefault(
+		attributes.legend,
+		'Donation type',
+		__('Donation type', 'fame_lahjoitukset')
+	)
 	const legendStyle = {
 		textAlign: legendAlign as CSSProperties['textAlign'],
 		fontFamily: 'inherit',
@@ -53,7 +64,19 @@ export default function Edit({
 			.filter(({ value: typeValue }) => enabled.includes(typeValue))
 			// Use existing type from if it exists, otherwise add
 			// new with default label from DONATION_TYPES array.
-			.map(t => types?.find(({ value: typeValue }) => t.value === typeValue) ?? t)
+			.map(t => {
+				const existing = types?.find(({ value: typeValue }) => t.value === typeValue)
+				if (!existing) return { value: t.value, label: '' }
+
+				const legacyLabel = t.value === 'recurring' ? 'Recurring' : 'Single'
+				return {
+					...existing,
+					label:
+						!existing.label?.trim() || existing.label === legacyLabel
+							? ''
+							: existing.label,
+				}
+			})
 
 		// Calculate default value. Use existing if it exists in updated list, otherwise use first from updated list or fallback to default.
 		const defaultValue =
@@ -67,7 +90,10 @@ export default function Edit({
 		// have the same order.
 		if (
 			update?.length !== types?.length ||
-			!update.every((item, idx) => item.value === types?.[idx]?.value)
+			!update.every(
+				(item, idx) =>
+					item.value === types?.[idx]?.value && item.label === types?.[idx]?.label
+			)
 		) {
 			setAttributes({
 				types: update,
@@ -120,7 +146,7 @@ export default function Edit({
 							'Description for screen readers (for accessibility).',
 							'fame_lahjoitukset'
 						)}
-						value={attributes.legend ?? __('Donation type')}
+						value={localizedLegend}
 						onChange={legend => setAttributes({ legend })}
 					/>
 				</PanelBody>
@@ -136,7 +162,7 @@ export default function Edit({
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Donation type', 'fame_lahjoitukset')}
 								allowedFormats={[]}
-								value={attributes.legend ?? ''}
+								value={localizedLegend}
 								onChange={legend => setAttributes({ legend })}
 								style={legendStyle}
 							/>
@@ -158,7 +184,7 @@ export default function Edit({
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Donation type', 'fame_lahjoitukset')}
 								allowedFormats={[]}
-								value={attributes.legend ?? ''}
+								value={localizedLegend}
 								onChange={legend => setAttributes({ legend })}
 								style={legendStyle}
 							/>
@@ -166,7 +192,12 @@ export default function Edit({
 						<div>
 							<div className="fame-form__label">
 								{__('Donation type', 'fame_lahjoitukset')}:{' '}
-								{types?.[0]?.value ?? DEFAULT_DONATION_TYPE.value} (hidden)
+								{localizedDonationTypeLabel(
+									types?.[0] ?? DEFAULT_DONATION_TYPE
+								)} ({__(
+									'hidden',
+									'fame_lahjoitukset'
+								)})
 							</div>
 							<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
 								{__(

@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { RichText } from '@wordpress/block-editor'
-import { formatPlaceholder } from '../common/utils.ts'
+import { __ } from '@wordpress/i18n'
+import { localizedDefault } from '../common/localized-default.ts'
 
 export type Props = {
 	name: string
@@ -11,6 +12,21 @@ export type Props = {
 }
 
 export type ContentProps = Omit<Props, 'setAttributes'> & { type: string }
+
+const contactLabels: Record<string, { legacy: string; translated: string }> = {
+	first_name: { legacy: 'First name', translated: __('First name', 'fame_lahjoitukset') },
+	last_name: { legacy: 'Last name', translated: __('Last name', 'fame_lahjoitukset') },
+	email: { legacy: 'Email', translated: __('Email', 'fame_lahjoitukset') },
+	address: { legacy: 'Address', translated: __('Address', 'fame_lahjoitukset') },
+	city: { legacy: 'City', translated: __('City', 'fame_lahjoitukset') },
+	postal_code: { legacy: 'Postal code', translated: __('Postal code', 'fame_lahjoitukset') },
+	phone: { legacy: 'Phone', translated: __('Phone', 'fame_lahjoitukset') },
+}
+
+export function localizedContactLabel(name: string, value?: string): string {
+	const fallback = contactLabels[name]
+	return fallback ? localizedDefault(value, fallback.legacy, fallback.translated) : (value ?? '')
+}
 
 const ContactInputControl: FC<Props> = ({
 	name,
@@ -25,8 +41,8 @@ const ContactInputControl: FC<Props> = ({
 			className="fame-form__label"
 			allowedFormats={['core/bold', 'core/italic']}
 			onChange={value => setAttributes({ [`${name}_label`]: value })}
-			value={attributes[`${name}_label`]}
-			placeholder={`${formatPlaceholder(name)} label`}
+			value={localizedContactLabel(name, attributes[`${name}_label`])}
+			placeholder={contactLabels[name]?.translated ?? __('Label', 'fame_lahjoitukset')}
 		/>
 		<div
 			className="fame-form__fake-input"
@@ -41,7 +57,7 @@ const ContactInputControl: FC<Props> = ({
 				allowedFormats={['core/bold', 'core/italic']}
 				onChange={value => setAttributes({ [`${name}_help`]: value })}
 				value={attributes[`${name}_help`]}
-				placeholder={`${formatPlaceholder(name)} help`}
+				placeholder={__('Help text', 'fame_lahjoitukset')}
 			/>
 		)}
 	</div>
@@ -63,7 +79,7 @@ export const ContactInputContent: FC<ContentProps> = ({
 				htmlFor={`contact-${name}`}
 				tagName="label"
 				className="fame-form__label"
-				value={attributes[`${name}_label`]}
+				value={localizedContactLabel(name, attributes[`${name}_label`])}
 			/>
 			<input
 				type={type}

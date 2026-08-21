@@ -10,15 +10,15 @@
 	"attributes": {
 		"submitLabel": {
 			"type": "string",
-			"default": "Donate"
+			"default": ""
 		},
 		"submitLabelSingle": {
 			"type": "string",
-			"default": "Donate"
+			"default": ""
 		},
 		"submitLabelRecurring": {
 			"type": "string",
-			"default": "Donate"
+			"default": ""
 		}
 	},
 	"supports": {

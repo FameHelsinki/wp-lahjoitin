@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { DonationType } from '../common/donation-type.ts'
+import { DonationType, localizedDonationTypeLabel } from '../common/donation-type.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 
@@ -37,8 +37,8 @@ const Component: FC<Props> = ({ types, value: defaultValue, onChange, name }) =>
 								),
 							})
 						}
-						placeholder={label}
-						value={label}
+						placeholder={localizedDonationTypeLabel({ value, label })}
+						value={localizedDonationTypeLabel({ value, label })}
 					/>
 				</label>
 			</div>

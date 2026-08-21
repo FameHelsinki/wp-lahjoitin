@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n'
 import { useSelect } from '@wordpress/data'
+import { localizedDefault } from './localized-default.ts'
 
 export type DonationType = {
 	value: string
@@ -17,6 +18,12 @@ export const DONATION_TYPES: DonationType[] = Object.entries(TYPES).map(([value,
 }))
 
 export const DEFAULT_DONATION_TYPE = DONATION_TYPES[0]
+
+export function localizedDonationTypeLabel(type: DonationType): string {
+	const translated = DONATION_TYPES.find(item => item.value === type.value)?.label ?? type.value
+	const legacy = type.value === 'recurring' ? 'Recurring' : 'Single'
+	return localizedDefault(type.label, legacy, translated)
+}
 
 /**
  * Get donation label from type value.

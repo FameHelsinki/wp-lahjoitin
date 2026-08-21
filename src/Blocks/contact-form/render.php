@@ -21,9 +21,10 @@ if (!$show) {
 }
 
 $showLegend  = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
-$legend      = isset($attributes['legend']) && trim((string) $attributes['legend']) !== ''
-  ? (string) $attributes['legend']
-  : __('Contacts', 'fame_lahjoitukset');
+$legend_raw  = trim((string) ($attributes['legend'] ?? ''));
+$legend      = $legend_raw === '' || $legend_raw === 'Contacts'
+  ? __('Contacts', 'fame_lahjoitukset')
+  : $legend_raw;
 
 $contact     = array_key_exists('contact', $attributes) ? (bool) $attributes['contact'] : false;
 $showAddress = array_key_exists('showAddress', $attributes) ? (bool) $attributes['showAddress'] : true;
@@ -33,8 +34,24 @@ $wrapper_attrs = get_block_wrapper_attributes([
   'class' => 'fame-form__fieldset',
 ]);
 
-$get = static function (array $attrs, string $key, string $fallback = ''): string {
-  return isset($attrs[$key]) ? (string) $attrs[$key] : $fallback;
+$localized_defaults = [
+  'first_name_label' => ['First name', __('First name', 'fame_lahjoitukset')],
+  'last_name_label' => ['Last name', __('Last name', 'fame_lahjoitukset')],
+  'email_label' => ['Email', __('Email', 'fame_lahjoitukset')],
+  'address_label' => ['Address', __('Address', 'fame_lahjoitukset')],
+  'city_label' => ['City', __('City', 'fame_lahjoitukset')],
+  'postal_code_label' => ['Postal code', __('Postal code', 'fame_lahjoitukset')],
+  'phone_label' => ['Phone', __('Phone', 'fame_lahjoitukset')],
+  'city_postal_code_help' => ['City', __('City', 'fame_lahjoitukset')],
+];
+
+$get = static function (array $attrs, string $key, string $fallback = '') use ($localized_defaults): string {
+  $value = isset($attrs[$key]) ? trim((string) $attrs[$key]) : '';
+  if (isset($localized_defaults[$key])) {
+    [$legacy, $translated] = $localized_defaults[$key];
+    return $value === '' || $value === $legacy ? $translated : $value;
+  }
+  return $value !== '' ? $value : $fallback;
 };
 
 $render_input = static function (

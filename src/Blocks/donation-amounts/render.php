@@ -34,8 +34,14 @@ $attr_string = static function (string $key, string $fallback = '') use ($attrib
 $settings     = isset($attributes['settings']) && is_array($attributes['settings']) ? $attributes['settings'] : [];
 $other        = $attr_bool('other', false);
 $other_label  = $attr_string('otherLabel', __('Other amount', 'fame_lahjoitukset'));
+$other_label  = $other_label === 'Other amount'
+  ? __('Other amount', 'fame_lahjoitukset')
+  : $other_label;
 $show_legend  = $attr_bool('showLegend', true);
 $legend       = $attr_string('legend', __('Donation amount', 'fame_lahjoitukset'));
+$legend       = in_array($legend, ['Amount', 'Donation amount'], true)
+  ? __('Donation amount', 'fame_lahjoitukset')
+  : $legend;
 $legend_align_raw = $attr_string('legendAlign', 'left');
 $legend_align     = in_array($legend_align_raw, ['left', 'center', 'right', 'justify'], true)
   ? $legend_align_raw
