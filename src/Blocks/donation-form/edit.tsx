@@ -31,11 +31,12 @@ function buildInitialLayout(colsDesktop: 1 | 2 | 3): BlockInstance[] {
 	const donationType = createBlock('famehelsinki/donation-type')
 	const donationCampaigns = createBlock('famehelsinki/donation-campaigns')
 	const donationAmounts = createBlock('famehelsinki/donation-amounts')
+	const recurringDueDate = createBlock('famehelsinki/recurring-due-date')
 	const contactForm = createBlock('famehelsinki/contact-form')
 	const donationProviders = createBlock('famehelsinki/donation-providers')
 	const formControls = createBlock('famehelsinki/form-controls')
 
-	const g1 = group([donationType, donationCampaigns, donationAmounts])
+	const g1 = group([donationType, donationCampaigns, donationAmounts, recurringDueDate])
 
 	const g2 = group([contactForm])
 
@@ -220,20 +221,37 @@ export default function Edit({
 			return
 		}
 
-		// Migration: insert donation-campaigns into g1 if it is missing.
+		// Migrations: keep the first group complete without replacing existing blocks.
 		const g1 = groups[0]
+		const migratedG1Inner = [...(g1.innerBlocks ?? [])]
+		let migrated = false
 		const hasCampaigns = g1.innerBlocks?.some(b => b.name === 'famehelsinki/donation-campaigns')
 		if (!hasCampaigns) {
 			const campaigns = createBlock('famehelsinki/donation-campaigns')
-			const donationTypeIdx =
-				g1.innerBlocks?.findIndex(b => b.name === 'famehelsinki/donation-type') ?? -1
+			const donationTypeIdx = migratedG1Inner.findIndex(
+				b => b.name === 'famehelsinki/donation-type'
+			)
 			const insertAt = donationTypeIdx >= 0 ? donationTypeIdx + 1 : 0
-			const newG1Inner = [
-				...(g1.innerBlocks?.slice(0, insertAt) ?? []),
-				campaigns,
-				...(g1.innerBlocks?.slice(insertAt) ?? []),
-			]
-			const newG1 = createBlock('core/group', g1.attributes, newG1Inner)
+			migratedG1Inner.splice(insertAt, 0, campaigns)
+			migrated = true
+		}
+
+		const hasRecurringDueDate = migratedG1Inner.some(
+			b => b.name === 'famehelsinki/recurring-due-date'
+		)
+		if (!hasRecurringDueDate) {
+			const recurringDueDate = createBlock('famehelsinki/recurring-due-date')
+			const donationAmountsIdx = migratedG1Inner.findIndex(
+				b => b.name === 'famehelsinki/donation-amounts'
+			)
+			const insertAt =
+				donationAmountsIdx >= 0 ? donationAmountsIdx + 1 : migratedG1Inner.length
+			migratedG1Inner.splice(insertAt, 0, recurringDueDate)
+			migrated = true
+		}
+
+		if (migrated) {
+			const newG1 = createBlock('core/group', g1.attributes, migratedG1Inner)
 			const nextTop = repackColumns(cols, top as BlockInstance, [newG1, groups[1], groups[2]])
 			replaceInnerBlocks(clientId, [nextTop], false)
 			return

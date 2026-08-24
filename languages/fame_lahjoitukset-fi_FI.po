@@ -753,6 +753,38 @@ msgctxt "block description"
 msgid "Adds form controls."
 msgstr "Lisää lomaketoiminnot."
 
+#: src/Blocks/recurring-due-date/edit.tsx
+#: src/Blocks/recurring-due-date/render.php
+msgid "Charge day"
+msgstr "Veloituspäivä"
+
+#: src/Blocks/recurring-due-date/edit.tsx
+msgid "Default charge day"
+msgstr "Oletusveloituspäivä"
+
+#: src/Blocks/recurring-due-date/edit.tsx
+msgid "Donors can change this day when making a recurring donation."
+msgstr "Lahjoittaja voi muuttaa päivää tehdessään kuukausilahjoituksen."
+
+#: src/Blocks/recurring-due-date/edit.tsx
+#: src/Blocks/recurring-due-date/render.php
+msgid "The donation will be charged on this day each month."
+msgstr "Lahjoitus veloitetaan kuukausittain valittuna päivänä."
+
+#: src/Blocks/recurring-due-date/edit.tsx
+msgid "Hidden because recurring donations are not enabled."
+msgstr "Piilotettu, koska kuukausilahjoitukset eivät ole käytössä."
+
+#: src/Blocks/recurring-due-date/block.json
+msgctxt "block title"
+msgid "Recurring charge day"
+msgstr "Kuukausilahjoituksen veloituspäivä"
+
+#: src/Blocks/recurring-due-date/block.json
+msgctxt "block description"
+msgid "Allows donors to choose the monthly recurring charge day."
+msgstr "Mahdollistaa kuukausilahjoituksen veloituspäivän valitsemisen."
+
 #~ msgid "Provider type"
 #~ msgstr "Tarjoajatyyppi"
 

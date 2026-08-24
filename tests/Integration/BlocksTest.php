@@ -16,6 +16,7 @@ final class BlocksTest extends WP_UnitTestCase
         'famehelsinki/donation-form',
         'famehelsinki/donation-providers',
         'famehelsinki/donation-type',
+		'famehelsinki/recurring-due-date',
         'famehelsinki/form-controls',
     ];
 

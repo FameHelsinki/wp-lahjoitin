@@ -26,7 +26,7 @@ test.describe('donation form', () => {
 		await setOrganizationSlug(requestUtils, 'e2e-ok')
 	})
 
-	test('is scaffolded in the editor and publishes', async ({ admin, editor }) => {
+	test('is scaffolded in the editor and publishes', async ({ admin, editor, page }) => {
 		await admin.createNewPost({ title: 'Donation form e2e' })
 		await editor.insertBlock({ name: 'famehelsinki/donation-form' })
 
@@ -34,8 +34,15 @@ test.describe('donation form', () => {
 		const canvas = editor.canvas
 		await expect(canvas.locator('[data-type="famehelsinki/donation-type"]')).toBeVisible()
 		await expect(canvas.locator('[data-type="famehelsinki/donation-amounts"]')).toBeVisible()
+		await expect(canvas.locator('[data-type="famehelsinki/recurring-due-date"]')).toBeVisible()
 		await expect(canvas.locator('[data-type="famehelsinki/donation-providers"]')).toBeVisible()
 		await expect(canvas.locator('[data-type="famehelsinki/form-controls"]')).toBeVisible()
+
+		// Enable both donation types so the published form exercises the recurring
+		// charge-day selector while keeping single as the default.
+		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		await editor.openDocumentSettingsSidebar()
+		await page.getByRole('checkbox', { name: 'Recurring' }).check()
 
 		// The providers block seeds its attributes from the (mocked) backend;
 		// wait for that before saving so the frontend has providers to render.
@@ -103,6 +110,43 @@ test.describe('donation form', () => {
 		})
 	})
 
+	test('submits the selected charge day for a recurring donation', async ({ page }) => {
+		const submissions: Record<string, unknown>[] = []
+
+		await page.route('**/donation/e2e-ok*', async route => {
+			submissions.push(route.request().postDataJSON())
+			await route.fulfill({
+				json: { redirect_url: `${process.env.WP_BASE_URL}/?donation=recurring-success` },
+			})
+		})
+
+		await page.goto(`/?p=${postId}`)
+		const form = page.locator('form.fame-form--donations')
+
+		const recurringType = form.locator('input[name="type"][value="recurring"]')
+		await form.locator('label:has(input[name="type"][value="recurring"])').click()
+		await expect(recurringType).toBeChecked()
+
+		const dueDate = form.locator('select[name="due_date"]')
+		await expect(dueDate).toBeVisible()
+		await dueDate.selectOption('21')
+
+		const amountRadio = form.locator('input[name="amount-radio-recurring"][value="20"]')
+		await form.locator('label:has(input[name="amount-radio-recurring"][value="20"])').click()
+		await expect(amountRadio).toBeChecked()
+
+		await form.locator('button[type="submit"]').click()
+		await page.waitForURL('**/?donation=recurring-success')
+
+		expect(submissions).toHaveLength(1)
+		expect(submissions[0]).toMatchObject({
+			type: 'recurring',
+			provider: 'checkout',
+			amount: '2000',
+			due_date: '21',
+		})
+	})
+
 	test('repacks columns from the sidebar without losing content', async ({
 		admin,
 		editor,
@@ -128,6 +172,7 @@ test.describe('donation form', () => {
 		for (const name of [
 			'famehelsinki/donation-type',
 			'famehelsinki/donation-amounts',
+			'famehelsinki/recurring-due-date',
 			'famehelsinki/contact-form',
 			'famehelsinki/donation-providers',
 			'famehelsinki/form-controls',
