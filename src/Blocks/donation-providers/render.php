@@ -21,9 +21,10 @@ $providers = (isset($attributes['providers']) && is_array($attributes['providers
   ? $attributes['providers']
   : [];
 
-$legend = (isset($attributes['legend']) && trim((string) $attributes['legend']) !== '')
-  ? (string) $attributes['legend']
-  : __('Payment provider', 'fame_lahjoitukset');
+$legend_raw = trim((string) ($attributes['legend'] ?? ''));
+$legend = $legend_raw === '' || in_array($legend_raw, ['Payment provider', 'Provider type'], true)
+  ? __('Payment provider', 'fame_lahjoitukset')
+  : $legend_raw;
 
 $showLegend = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
 $showLegendSingle = array_key_exists('showLegendSingle', $attributes) ? (bool) $attributes['showLegendSingle'] : null;
@@ -56,18 +57,57 @@ foreach ($providers as $p) {
 // stale provider choices that may no longer be valid for this organization.
 $enabled = (new Settings())->getEnabledProviders();
 $providers_unavailable = !is_array($enabled) || $enabled === [];
+$display_provider_label = static function (string $value, string $label): string {
+  if (in_array(strtolower($value), ['checkout', 'paytrail'], true)) {
+    $normalized_label = strtolower(trim($label));
+    // Empty and legacy provider names intentionally mean "use the Paytrail default".
+    if ($normalized_label === '' || in_array($normalized_label, ['checkout', 'paytrail'], true)) {
+      return 'Paytrail';
+    }
+  }
+
+  return $label;
+};
 
 if ($providers_unavailable) {
   $grouped = [];
 } else {
   foreach ($grouped as $type => $list) {
-    $filtered = array_values(array_filter($list, static function (array $p) use ($enabled, $type): bool {
-      $value = (string) $p['value'];
-      return isset($enabled[$value]) && $enabled[$value]->supportsType((string) $type);
-    }));
+    $filtered = [];
+    $priorities = [];
+
+    foreach ($list as $provider) {
+      $value = (string) $provider['value'];
+      $was_native_paytrail = strtolower($value) === 'paytrail';
+
+      // Migrate legacy Checkout selections when the backend starts exposing
+      // the same provider by its current Paytrail machine name.
+      if (
+        strtolower($value) === 'checkout' &&
+        isset($enabled['paytrail']) &&
+        $enabled['paytrail']->supportsType((string) $type)
+      ) {
+        $provider['value'] = 'paytrail';
+        $provider['label'] = $display_provider_label('paytrail', (string) $provider['label']);
+        $value = 'paytrail';
+      }
+
+      if (isset($enabled[$value]) && $enabled[$value]->supportsType((string) $type)) {
+        if (in_array(strtolower($value), ['checkout', 'paytrail'], true)) {
+          $provider['label'] = $display_provider_label($value, (string) $provider['label']);
+        }
+        $key = strtolower($value);
+        $priority = $was_native_paytrail ? 2 : 1;
+
+        if (!isset($priorities[$key]) || $priority > $priorities[$key]) {
+          $filtered[$key] = $provider;
+          $priorities[$key] = $priority;
+        }
+      }
+    }
 
     if ($filtered) {
-      $grouped[$type] = $filtered;
+      $grouped[$type] = array_values($filtered);
     } else {
       unset($grouped[$type]);
     }
@@ -120,20 +160,17 @@ $wrapper_attrs = get_block_wrapper_attributes();
           name="provider"
           value="<?php echo esc_attr((string) $list[0]['value']); ?>"
           data-type="<?php echo esc_attr((string) $list[0]['type']); ?>" />
-      <?php endif; ?>
+      <?php else : ?>
 
       <?php foreach ($list as $provider) :
         $ptype = (string) $provider['type'];
         $pval  = (string) $provider['value'];
         $plab  = (string) $provider['label'];
 
-        $hideSingleLabel = $single && !$showForType;
-
-        $group_class = 'fame-form__group' . ($hideSingleLabel ? ' screen-reader-text' : '');
         $id = 'payment_method_' . sanitize_key($ptype) . '_' . sanitize_key($pval);
       ?>
         <div
-          class="<?php echo esc_attr($group_class); ?>"
+          class="fame-form__group"
           data-type="<?php echo esc_attr($ptype); ?>">
           <label for="<?php echo esc_attr($id); ?>">
             <input
@@ -151,6 +188,7 @@ $wrapper_attrs = get_block_wrapper_attributes();
         </div>
 
       <?php endforeach; ?>
+      <?php endif; ?>
     </fieldset>
   <?php endforeach; ?>
 

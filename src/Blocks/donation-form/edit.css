@@ -29,6 +29,13 @@
 .fame-form__controls
 .wp-element-button {
 	display: inline;
+	font-family: inherit;
+	font-size: inherit;
+}
+
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__input {
+	font-family: inherit;
+	font-size: inherit;
 }
 
 .editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__row {
@@ -83,6 +90,8 @@
 .editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__legend {
 	line-height: 1.3;
 	margin: 0 0 0.5rem 0;
+	font-size: var(--section-label-font-size, 1.25em);
+	color: var(--section-label-color, inherit);
 }
 
 /* Tabs / amount buttons: shared label look */
@@ -102,7 +111,7 @@
 
 	padding: 0.5rem;
 	margin: 0; /* avoid overflow caused by per-label margins */
-	border: var(--border-width, 1px) solid var(--primary-color, #000);
+	border: var(--border-width, 1px) solid var(--button-border-color, var(--primary-color, #000));
 	border-radius: var(--border-radius, 0);
 
 	cursor: pointer;
@@ -142,7 +151,7 @@
 ).fame-form__label--default {
 	background-color: var(--primary-color, #000);
 	color: var(--secondary-color, #fff);
-	border-color: var(--primary-color, #000);
+	border-color: var(--button-border-color, var(--primary-color, #000));
 }
 
 /* Checked state (works when the input is actually toggled) */
@@ -154,7 +163,7 @@
 ):has(:where(input[type="radio"], input[type="checkbox"], .fame-form__check-input):checked) {
 	background-color: var(--primary-color, #000);
 	color: var(--secondary-color, #fff);
-	border-color: var(--primary-color, #000);
+	border-color: var(--button-border-color, var(--primary-color, #000));
 }
 
 /* Contact form: labels are not button-like */
@@ -203,7 +212,7 @@
 .wp-block-famehelsinki-donation-amounts
 .donation-amounts__other
 :where(input, .fame-form__input) {
-	border: var(--border-width, 1px) solid var(--primary-color, #000) !important;
+	border: var(--border-width, 1px) solid var(--third-color, #000) !important;
 	border-radius: var(--text-field-border-radius, 0) !important;
 	background: transparent;
 	color: var(--primary-color, #000);
@@ -292,7 +301,7 @@ label {
 	align-items: center;
 
 	padding: 0.5rem 1rem;
-	border: var(--border-width, 1px) solid var(--primary-color, #000);
+	border: var(--border-width, 1px) solid var(--button-border-color, var(--primary-color, #000));
 	border-radius: var(--border-radius, 0);
 	cursor: pointer;
 }
@@ -320,7 +329,7 @@ label {
 .wp-block-famehelsinki-donation-form
 .wp-block-famehelsinki-donation-amounts
 .donation-amounts__other__placeholder {
-	border: var(--border-width, 1px) solid var(--primary-color, #000);
+	border: var(--border-width, 1px) solid var(--third-color, #000);
 	border-radius: var(--border-radius, 0);
 	padding: 0.6rem 0.75rem;
 	box-sizing: border-box;

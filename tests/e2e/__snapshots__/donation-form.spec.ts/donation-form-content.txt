@@ -2,7 +2,7 @@
 <!-- wp:columns -->
 <div class="wp-block-columns"><!-- wp:column -->
 <div class="wp-block-column"><!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":"Single"}]} /-->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":""}]} /-->
 
 <!-- wp:famehelsinki/donation-campaigns /-->
 
@@ -14,8 +14,8 @@
 <!-- /wp:group -->
 
 <!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Checkout","types":["single","recurring"],"type":"single"}]} -->
-<!-- wp:paragraph {"placeholder":"Terms text…","className":"fame-form__terms"} -->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"}]} -->
+<!-- wp:paragraph {"placeholder":"Add privacy policy and terms text here…","className":"fame-form__terms"} -->
 <p class="fame-form__terms"></p>
 <!-- /wp:paragraph -->
 <!-- /wp:famehelsinki/donation-providers -->

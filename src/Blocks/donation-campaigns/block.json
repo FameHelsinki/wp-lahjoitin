@@ -11,12 +11,14 @@
 	"attributes": {
 		"show": { "type": "boolean", "default": false },
 		"campaigns": { "type": "array", "default": [] },
-		"label": { "type": "string", "default": "Campaign" },
+		"label": { "type": "string", "default": "" },
 		"showLabel": { "type": "boolean", "default": true }
 	},
 	"supports": {
 		"multiple": false,
-		"html": false
+		"color": { "background": false, "text": true },
+		"html": false,
+		"typography": { "fontSize": true }
 	},
 	"icon": "tag",
 	"textdomain": "fame_lahjoitukset",

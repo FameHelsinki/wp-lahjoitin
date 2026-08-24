@@ -1,4 +1,7 @@
 import apiFetch from '@wordpress/api-fetch'
+import { defaultProviderLabel } from './provider-label.ts'
+
+export { isPaytrailProvider, providerDisplayLabel } from './provider-label.ts'
 
 export type Provider = {
 	/** Provider machine name. */
@@ -24,7 +27,7 @@ type ApiProvider = {
  * value.
  */
 export function defaultLabel(value: string): string {
-	return value.charAt(0).toUpperCase() + value.slice(1)
+	return defaultProviderLabel(value)
 }
 
 /**

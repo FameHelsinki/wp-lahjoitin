@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
-"POT-Creation-Date: 2026-03-12T10:31:31+00:00\n"
+"POT-Creation-Date: 2026-08-21T08:36:02+00:00\n"
 "PO-Revision-Date: 2026-03-12 00:00+0000\n"
 "Last-Translator: Fame Helsinki\n"
 "Language-Team: Swedish\n"
@@ -20,7 +20,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: fame-lahjoitukset.php
 msgid "Lahjoitin"
-msgstr ""
+msgstr "Lahjoitin"
 
 #. Description of the plugin
 #: fame-lahjoitukset.php
@@ -30,88 +30,148 @@ msgstr "WordPress-tillägg för Fame lahjoitukset-system."
 #. Author of the plugin
 #: fame-lahjoitukset.php
 msgid "Fame Helsinki"
-msgstr ""
+msgstr "Fame Helsinki"
 
 #: build/Blocks/contact-form/render.php:26
-#: src/Blocks/contact-form/render.php:26
-#: build/Blocks/contact-form/index.js:1
+#: src/Blocks/contact-form/render.php:26 build/Blocks/contact-form/index.js:305
+#: build/Blocks/contact-form/index.js:373
 msgid "Contacts"
 msgstr "Kontaktuppgifter"
 
+#: build/Blocks/contact-form/render.php:38
+#: src/Blocks/contact-form/render.php:38 build/Blocks/contact-form/index.js:54
+msgid "First name"
+msgstr "Förnamn"
+
+#: build/Blocks/contact-form/render.php:39
+#: src/Blocks/contact-form/render.php:39 build/Blocks/contact-form/index.js:58
+msgid "Last name"
+msgstr "Efternamn"
+
+#: build/Blocks/contact-form/render.php:40
+#: src/Blocks/contact-form/render.php:40 build/Blocks/contact-form/index.js:62
+msgid "Email"
+msgstr "E-post"
+
+#: build/Blocks/contact-form/render.php:41
+#: src/Blocks/contact-form/render.php:41 build/Blocks/contact-form/index.js:66
+msgid "Address"
+msgstr "Adress"
+
+#: build/Blocks/contact-form/render.php:42
+#: build/Blocks/contact-form/render.php:45
+#: src/Blocks/contact-form/render.php:42 src/Blocks/contact-form/render.php:45
+#: build/Blocks/contact-form/index.js:70 build/Blocks/contact-form/index.js:202
+msgid "City"
+msgstr "Ort"
+
+#: build/Blocks/contact-form/render.php:43
+#: src/Blocks/contact-form/render.php:43 build/Blocks/contact-form/index.js:74
+msgid "Postal code"
+msgstr "Postnummer"
+
+#: build/Blocks/contact-form/render.php:44
+#: src/Blocks/contact-form/render.php:44 build/Blocks/contact-form/index.js:78
+msgid "Phone"
+msgstr "Telefon"
+
 #: build/Blocks/donation-amounts/render.php:36
+#: build/Blocks/donation-amounts/render.php:38
 #: src/Blocks/donation-amounts/render.php:36
-#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-amounts/render.php:38
+#: build/Blocks/donation-amounts/index.js:340
+#: build/Blocks/donation-amounts/index.js:371
 msgid "Other amount"
 msgstr "Annat belopp"
 
-#: build/Blocks/donation-amounts/render.php:38
-#: src/Blocks/donation-amounts/render.php:38
+#: build/Blocks/donation-amounts/render.php:41
+#: build/Blocks/donation-amounts/render.php:43
+#: src/Blocks/donation-amounts/render.php:41
+#: src/Blocks/donation-amounts/render.php:43
+#: build/Blocks/donation-amounts/index.js:28
 msgid "Donation amount"
 msgstr "Donationsbelopp"
 
-#: build/Blocks/donation-amounts/render.php:233
-#: src/Blocks/donation-amounts/render.php:233
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/render.php:240
+#: src/Blocks/donation-amounts/render.php:240
+#: build/Blocks/donation-amounts/index.js:379
 msgid "Min"
 msgstr "Min"
 
-#: build/Blocks/donation-amounts/render.php:235
-#: src/Blocks/donation-amounts/render.php:235
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/render.php:246
+#: src/Blocks/donation-amounts/render.php:246
+#: build/Blocks/donation-amounts/index.js:380
 msgid "Max"
 msgstr "Max"
 
-#: build/Blocks/donation-campaigns/render.php:30
-#: src/Blocks/donation-campaigns/render.php:30
+#: build/Blocks/donation-campaigns/render.php:42
+#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/index.js:73
 msgid "Campaign"
 msgstr "Kampanj"
 
-#: build/Blocks/donation-campaigns/render.php:46
-#: src/Blocks/donation-campaigns/render.php:46
+#: build/Blocks/donation-campaigns/render.php:59
+#: src/Blocks/donation-campaigns/render.php:59
 msgid "Select campaign"
 msgstr "Välj kampanj"
 
-#: build/Blocks/donation-form/render.php:120
-#: src/Blocks/donation-form/render.php:120
+#: build/Blocks/donation-form/render.php:141
+#: src/Blocks/donation-form/render.php:141
 msgid "Loading"
 msgstr "Laddar"
 
-#: build/Blocks/donation-providers/render.php:25
-#: src/Blocks/donation-providers/render.php:25
+#: build/Blocks/donation-providers/render.php:26
+#: src/Blocks/donation-providers/render.php:26
+#: build/Blocks/donation-providers/index.js:329
+#: build/Blocks/donation-providers/index.js:561
 msgid "Payment provider"
 msgstr "Betalningsleverantör"
 
-#: build/Blocks/donation-type/render.php:21
-#: src/Blocks/donation-type/render.php:21
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/donation-providers/render.php:135
+#: src/Blocks/donation-providers/render.php:135
+msgid "Payment methods are currently unavailable. Please try again later."
+msgstr "Betalningsmetoderna är inte tillgängliga just nu. Försök igen senare."
+
+#: build/Blocks/donation-type/render.php:27
+#: src/Blocks/donation-type/render.php:27
+#: build/Blocks/donation-type/index.js:151
+#: build/Blocks/donation-type/index.js:243
+#: build/Blocks/donation-type/index.js:339
+#: build/Blocks/donation-type/index.js:358
+#: build/Blocks/donation-type/index.js:368
 msgid "Donation type"
 msgstr "Donationstyp"
 
-#: build/Blocks/donation-type/render.php:55
+#: build/Blocks/donation-type/render.php:62
 #: build/Blocks/donation-type/render.php:75
-#: src/Blocks/donation-type/render.php:55
+#: build/Blocks/donation-type/render.php:92
+#: src/Blocks/donation-type/render.php:62
 #: src/Blocks/donation-type/render.php:75
-#: build/Blocks/donation-amounts/index.js:1
+#: src/Blocks/donation-type/render.php:92
+#: build/Blocks/donation-amounts/index.js:70
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/donation-providers/index.js:81
+#: build/Blocks/donation-type/index.js:25
+#: build/Blocks/form-controls/index.js:25
 msgid "Single"
 msgstr "Engång"
 
-#: build/Blocks/donation-type/render.php:56
-#: src/Blocks/donation-type/render.php:56
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-type/render.php:63
+#: build/Blocks/donation-type/render.php:77
+#: src/Blocks/donation-type/render.php:63
+#: src/Blocks/donation-type/render.php:77
+#: build/Blocks/donation-amounts/index.js:71
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/donation-providers/index.js:82
+#: build/Blocks/donation-type/index.js:26
+#: build/Blocks/form-controls/index.js:26
 msgid "Recurring"
 msgstr "Återkommande"
 
 #: build/Blocks/form-controls/render.php:12
 #: src/Blocks/form-controls/render.php:12
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/form-controls/index.js:153
+#: build/Blocks/form-controls/index.js:210
 msgid "Donate"
 msgstr "Donera"
 
@@ -120,203 +180,273 @@ msgstr "Donera"
 msgid "Please enable JavaScript to use this form."
 msgstr "Aktivera JavaScript för att använda detta formulär."
 
-#: fame-lahjoitukset.php:44
-#: build/Blocks/contact-form/index.js:1
-#: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-campaigns/index.js:1
+#: fame-lahjoitukset.php:48 build/Blocks/contact-form/index.js:317
+#: build/Blocks/donation-amounts/index.js:586
+#: build/Blocks/donation-campaigns/index.js:91
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/donation-type/index.js:304
 msgid "Settings"
 msgstr "Inställningar"
 
-#: src/Settings.php:36
-msgid "Backend URL"
-msgstr "Backend-URL"
+#: src/Settings.php:49
+msgid "Slug"
+msgstr "Organisationsslug"
 
-#: src/Settings.php:37
-msgid "Your lahjoitukset-backend instance"
-msgstr "Din lahjoitukset-backend-instans"
+#: src/Settings.php:50
+msgid "Your organization slug provided by lahjoitin.fi"
+msgstr "Organisationssluggen som tillhandahålls av lahjoitin.fi"
 
-#: src/Settings.php:42
+#: src/Settings.php:54
+msgid "Use staging environment"
+msgstr "Använd testmiljön"
+
+#: src/Settings.php:55
+msgid "Send donations to the staging/test environment for testing."
+msgstr "Skicka donationer till testmiljön för testning."
+
+#: src/Settings.php:60
 msgid "Fame lahjoitukset settings"
 msgstr "Fame lahjoitukset-inställningar"
 
-#: src/Settings.php:43
+#: src/Settings.php:61
 msgid "Lahjoitukset"
+msgstr "Donationer"
+
+#: src/Settings.php:90
+msgid ""
+"Lahjoitukset: the staging environment is enabled, donations are not sent to "
+"the live payment providers."
 msgstr ""
+"Lahjoitukset: testmiljön är aktiverad och donationer skickas inte till de "
+"riktiga betalningsleverantörerna."
+
+#: src/Updater.php:156
+msgid "Could not rename the extracted plugin folder."
+msgstr "Det gick inte att byta namn på den extraherade tilläggsmappen."
 
 #: templates/error-reinstall.php:7
 msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
-msgstr "Lahjoitin-insticksprogrammet är installerat felaktigt, installera om det"
+msgstr ""
+"Lahjoitin-insticksprogrammet är installerat felaktigt, installera om det"
 
-#: build/Blocks/contact-form/index.js:1
-msgid "Show contact fields"
-msgstr "Visa kontaktfält"
+#: build/Blocks/contact-form/index.js:103
+#: build/Blocks/donation-campaigns/index.js:106
+#: build/Blocks/donation-providers/index.js:587
+msgid "Label"
+msgstr "Etikett"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:117
+#: build/Blocks/contact-form/index.js:203
+msgid "Help text"
+msgstr "Hjälptext"
+
+#: build/Blocks/contact-form/index.js:319
+msgid "Enable contact fields"
+msgstr "Aktivera kontaktfält"
+
+#: build/Blocks/contact-form/index.js:326
 msgid "Require contact"
 msgstr "Kräv kontaktuppgifter"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:327
 msgid "Contact details are required if enabled"
 msgstr "Kontaktuppgifter krävs om aktiverat"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:333
 msgid "Show address"
 msgstr "Visa adress"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:334
 msgid "Show address fields"
 msgstr "Visa adressfält"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:340
 msgid "Show phone"
 msgstr "Visa telefon"
 
-#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/contact-form/index.js:341
 msgid "Show phone number fields"
 msgstr "Visa telefonnummerfält"
 
-#: build/Blocks/contact-form/index.js:1
-#: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/contact-form/index.js:347
+#: build/Blocks/donation-amounts/index.js:595
+#: build/Blocks/donation-providers/index.js:514
+#: build/Blocks/donation-type/index.js:314
 msgid "Show legend"
 msgstr "Visa rubrik"
 
-#: build/Blocks/contact-form/index.js:1
-#: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/contact-form/index.js:352
+#: build/Blocks/donation-amounts/index.js:596
+#: build/Blocks/donation-type/index.js:315
 msgid "If disabled, the legend is marked visually hidden."
 msgstr "Om inaktiverat markeras rubriken som visuellt dold."
 
-#: build/Blocks/contact-form/index.js:1
-#: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/contact-form/index.js:354
+#: build/Blocks/contact-form/index.js:372
+#: build/Blocks/donation-amounts/index.js:603
+#: build/Blocks/donation-amounts/index.js:667
+#: build/Blocks/donation-providers/index.js:477
+#: build/Blocks/donation-providers/index.js:547
+#: build/Blocks/donation-type/index.js:321
+#: build/Blocks/donation-type/index.js:338
+#: build/Blocks/donation-type/index.js:357
 msgid "Legend"
 msgstr "Rubrik"
 
-#: build/Blocks/contact-form/index.js:1
-#: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/contact-form/index.js:355
+#: build/Blocks/donation-amounts/index.js:604
+#: build/Blocks/donation-providers/index.js:482
+#: build/Blocks/donation-type/index.js:322
 msgid "Description for screen readers (for accessibility)."
 msgstr "Beskrivning för skärmläsare (för tillgänglighet)."
 
-#: build/Blocks/contact-form/index.js:1
-msgid "The contact form is not in use. Use the toggle in the sidebar to enable it."
-msgstr "Kontaktformuläret används inte. Använd knappen i sidofältet för att aktivera det."
+#: build/Blocks/contact-form/index.js:424
+msgid ""
+"The contact form is not in use. Use the toggle in the sidebar to enable it."
+msgstr ""
+"Kontaktformuläret används inte. Använd knappen i sidofältet för att aktivera "
+"det."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:182
+#: build/Blocks/donation-amounts/index.js:338
+#: build/Blocks/donation-amounts/index.js:668
 msgid "Amount"
 msgstr "Belopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:236
 msgid "Currency label"
 msgstr "Valutaetikett"
 
-#: build/Blocks/donation-amounts/index.js:1
-msgid "Label that is shown next to amounts. This does not control actual donation currency. Currently only euros are supported."
-msgstr "Etikett som visas bredvid belopp. Detta styr inte faktisk donationsvaluta. För närvarande stöds endast euro."
+#: build/Blocks/donation-amounts/index.js:237
+msgid ""
+"Label that is shown next to amounts. This does not control actual donation "
+"currency. Currently only euros are supported."
+msgstr ""
+"Etikett som visas bredvid belopp. Detta styr inte faktisk donationsvaluta. "
+"För närvarande stöds endast euro."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:245
+#: build/Blocks/donation-amounts/index.js:280
 msgid "Default amount"
 msgstr "Standardbelopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:246
+#: build/Blocks/donation-amounts/index.js:281
 msgid "Amount that is preselected."
 msgstr "Förvalt belopp."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:254
 msgid "Min Amount"
 msgstr "Minbelopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:255
 msgid "Minimum amount for other amount field."
 msgstr "Minsta belopp för fältet Annat belopp."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:262
 msgid "Max Amount"
 msgstr "Maxbelopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:263
 msgid "Maximum amount for other amount field."
 msgstr "Maximalt belopp för fältet Annat belopp."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:270
+msgid "Show maximum amount to donor"
+msgstr "Visa högsta belopp för donatorn"
+
+#: build/Blocks/donation-amounts/index.js:271
+msgid ""
+"Show the maximum amount in the helper text under the other amount field."
+msgstr "Visa högsta belopp i hjälptexten under fältet för annat belopp."
+
+#: build/Blocks/donation-amounts/index.js:338
+#: build/Blocks/donation-campaigns/index.js:185
+#: build/Blocks/donation-providers/index.js:561
+#: build/Blocks/donation-type/index.js:368
+msgid "hidden"
+msgstr "dold"
+
+#: build/Blocks/donation-amounts/index.js:366
 msgid "Other amount text"
 msgstr "Text för annat belopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:588
 msgid "Show other amount"
 msgstr "Visa annat belopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:589
 msgid "Show other amount input field"
 msgstr "Visa inmatningsfält för annat belopp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:612
 msgid "Amount columns"
 msgstr "Beloppskolumner"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:613
 #: build/Blocks/donation-form/index.js:1
 msgid "Choose 1–3 columns for the form layout."
 msgstr "Välj 1–3 kolumner för formulärets layout."
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:627
 msgid "Add button"
 msgstr "Lägg till knapp"
 
-#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-amounts/index.js:636
 msgid "Remove button"
 msgstr "Ta bort knapp"
 
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "Show campaign selector"
-msgstr "Visa kampanjväljare"
+#: build/Blocks/donation-campaigns/index.js:93
+msgid "Enable campaign selector"
+msgstr "Aktivera kampanjväljare"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:100
 msgid "Show label"
 msgstr "Visa etikett"
 
-#: build/Blocks/donation-campaigns/index.js:1
-#: build/Blocks/donation-providers/index.js:1
-msgid "Label"
-msgstr "Etikett"
-
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:116
 msgid "Campaigns"
 msgstr "Kampanjer"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:133
 msgid "Remove campaign"
 msgstr "Ta bort kampanj"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:134
 msgid "Remove"
 msgstr "Ta bort"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:148
 msgid "New campaign"
 msgstr "Ny kampanj"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:165
 msgid "Add"
 msgstr "Lägg till"
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:173
 msgid "Maximum of 10 campaigns reached."
 msgstr "Maximalt 10 kampanjer har nåtts."
 
-#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-campaigns/index.js:192
+msgid "Hidden because only one campaign is configured."
+msgstr "Dold eftersom endast en kampanj är konfigurerad."
+
+#: build/Blocks/donation-campaigns/index.js:192
+msgid "No campaigns added yet."
+msgstr "Inga kampanjer har lagts till ännu."
+
+#: build/Blocks/donation-campaigns/index.js:208
 msgid "No campaigns added yet"
 msgstr "Inga kampanjer har lagts till ännu"
 
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "The campaign selector is not in use. Use the toggle in the sidebar to enable it."
-msgstr "Kampanjväljaren används inte. Använd knappen i sidofältet för att aktivera den."
+#: build/Blocks/donation-campaigns/index.js:218
+msgid ""
+"The campaign selector is not in use. Use the toggle in the sidebar to enable "
+"it."
+msgstr ""
+"Kampanjväljaren används inte. Använd knappen i sidofältet för att aktivera "
+"den."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Desktop columns"
@@ -339,12 +469,41 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sida som visas efter att donationen skickats."
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Return userinfo token"
+msgstr "Returnera användarinformationstoken"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"This option includes userinfo token in the return address. This is not "
+"generally useful and requires custom logic to handle the token."
+msgstr ""
+"Det här alternativet inkluderar användarinformationstoken i returadressen. "
+"Det är i allmänhet inte användbart och kräver anpassad logik för att hantera "
+"token."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Styles"
+msgstr "Stilar"
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Selected button background color"
 msgstr "Markerad knappens bakgrundsfärg"
 
 #: build/Blocks/donation-form/index.js:1
 msgid "This is the background color for selected buttons."
 msgstr "Bakgrundsfärgen för markerade knappar."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Button border color"
+msgstr "Knapparnas kantfärg"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"This is the border color for selected and unselected donation type and "
+"amount buttons."
+msgstr ""
+"Detta är kantfärgen för markerade och omarkerade knappar för donationstyp "
+"och belopp."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Selected button text color"
@@ -363,28 +522,48 @@ msgid "This defines the border and helper text color of the input field."
 msgstr "Definierar kantens och hjälptextens färg för inmatningsfältet."
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Section label color"
+msgstr "Färg på sektionsrubriker"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "This color is used for all form section legends."
+msgstr "Den här färgen används för alla sektionsrubriker i formuläret."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label font size"
+msgstr "Teckenstorlek för sektionsrubriker"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Used for all form section legends. For example: 1.25em, 20px or 1.5rem."
+msgstr ""
+"Används för alla sektionsrubriker i formuläret. Till exempel: 1.25em, 20px "
+"eller 1.5rem."
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Danger color"
 msgstr "Varningsfärg"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This defines the danger color for error messages and invalid input fields."
-msgstr "Definierar varningsfärgen för felmeddelanden och ogiltiga inmatningsfält."
+msgid ""
+"This defines the danger color for error messages and invalid input fields."
+msgstr ""
+"Definierar varningsfärgen för felmeddelanden och ogiltiga inmatningsfält."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Border Radius"
 msgstr "Kantradie"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-radius for tabs."
-msgstr "Detta är kantradien för flikar."
+msgid "This is the border-radius for selection buttons."
+msgstr "Detta är kantradien för valknappar."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Border Width"
 msgstr "Kantbredd"
 
 #: build/Blocks/donation-form/index.js:1
-msgid "This is the border-width for tabs and input fields."
-msgstr "Detta är kantbredden för flikar och inmatningsfält."
+msgid "This is the border-width for selection buttons and input fields."
+msgstr "Detta är kantbredden för valknappar och inmatningsfält."
 
 #: build/Blocks/donation-form/index.js:1
 msgid "Text field border radius"
@@ -394,114 +573,119 @@ msgstr "Textfältets kantradie"
 msgid "This is the border-radius for the text fields."
 msgstr "Detta är kantradien för textfälten."
 
-#: build/Blocks/donation-form/index.js:1
-msgid "Return userinfo token"
-msgstr "Returnera användarinformationstoken"
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid amount"
+msgstr "Ogiltigt belopp"
 
-#: build/Blocks/donation-form/index.js:1
-msgid "This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token."
-msgstr "Det här alternativet inkluderar användarinformationstoken i returadressen. Det är i allmänhet inte användbart och kräver anpassad logik för att hantera token."
+#: build/Blocks/donation-form/view.js:1
+msgid "First name is required"
+msgstr "Förnamn krävs"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid first name"
+msgstr "Ogiltigt förnamn"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Last name is required"
+msgstr "Efternamn krävs"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid last name"
+msgstr "Ogiltigt efternamn"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Email is required"
+msgstr "E-post krävs"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid email"
+msgstr "Ogiltig e-postadress"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid phone number"
+msgstr "Ogiltigt telefonnummer"
 
 #. translators: %1$s: minimum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:2
-#, js-format
 msgid "The minimum donation amount is %1$s%2$s."
 msgstr "Det minsta donationsbeloppet är %1$s%2$s."
 
 #. translators: %1$s: maximum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:3
-#, js-format
 msgid "The maximum donation amount is %1$s%2$s."
 msgstr "Det maximala donationsbeloppet är %1$s%2$s."
 
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid amount"
-msgstr "Ogiltigt belopp"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "First name is required"
-msgstr "Förnamn krävs"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid first name"
-msgstr "Ogiltigt förnamn"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Last name is required"
-msgstr "Efternamn krävs"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid last name"
-msgstr "Ogiltigt efternamn"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Email is required"
-msgstr "E-post krävs"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid email"
-msgstr "Ogiltig e-postadress"
-
-#: build/Blocks/donation-form/view.js:3
-msgid "Invalid phone number"
-msgstr "Ogiltigt telefonnummer"
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "MobilePay"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "Paytrail"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "Provider type"
-msgstr "Leverantörstyp"
-
-#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-providers/index.js:475
 msgid "General settings"
 msgstr "Allmänna inställningar"
 
-#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-providers/index.js:489
+msgid "Loading providers…"
+msgstr "Läser in betalningsleverantörer…"
+
+#: build/Blocks/donation-providers/index.js:496
+msgid ""
+"Could not load payment providers from lahjoitin.fi. Existing selections are "
+"kept; the live list will be used when the connection is restored."
+msgstr ""
+"Det gick inte att läsa in betalningsleverantörer från lahjoitin.fi. "
+"Befintliga val behålls och den aktuella listan används när anslutningen har "
+"återställts."
+
+#: build/Blocks/donation-providers/index.js:502
+msgid ""
+"No payment providers are enabled for this organization. Check the slug in "
+"the Lahjoitukset settings."
+msgstr ""
+"Inga betalningsleverantörer är aktiverade för den här organisationen. "
+"Kontrollera sluggen i Lahjoitukset-inställningarna."
+
+#: build/Blocks/donation-providers/index.js:522
 msgid "label"
 msgstr "etikett"
 
-#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-providers/index.js:548
 msgid "Donation provider"
 msgstr "Donationsleverantör"
 
-#: build/Blocks/donation-providers/index.js:1
-msgid "Terms text…"
-msgstr "Villkorstext…"
+#: build/Blocks/donation-providers/index.js:568
+msgid "Hidden because only one payment provider is configured."
+msgstr "Dold eftersom endast en betalningsleverantör är konfigurerad."
 
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/donation-providers/index.js:596
+msgid "Add privacy policy and terms text here…"
+msgstr "Lägg till text för integritetspolicy och villkor här…"
+
+#: build/Blocks/donation-type/index.js:306
 msgid "Default donation type"
 msgstr "Standard donationstyp"
 
-#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/donation-type/index.js:307
 msgid "Select donation type that will be used by default."
 msgstr "Välj donationstyp som används som standard."
 
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/donation-type/index.js:375
+msgid "Hidden because only one donation type is enabled."
+msgstr "Dold eftersom endast en donationstyp är aktiverad."
+
+#: build/Blocks/form-controls/index.js:185
 msgid "Button labels"
 msgstr "Knappetikett"
 
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/form-controls/index.js:187
 msgid "Single button text"
 msgstr "Knapptext för engångsdonation"
 
-#: build/Blocks/form-controls/index.js:1
+#: build/Blocks/form-controls/index.js:193
 msgid "Recurring button text"
 msgstr "Knapptext för återkommande"
 
-#: build/Blocks/contact-form/block.json
-#: src/Blocks/contact-form/block.json
+#: build/Blocks/contact-form/block.json src/Blocks/contact-form/block.json
 msgctxt "block title"
 msgid "Contact form"
 msgstr "Kontaktformulär"
 
-#: build/Blocks/contact-form/block.json
-#: src/Blocks/contact-form/block.json
+#: build/Blocks/contact-form/block.json src/Blocks/contact-form/block.json
 msgctxt "block description"
 msgid "Gutenberg block for Fame lahjoitukset backend."
 msgstr "Gutenberg-block för Fame lahjoitukset-backend."
@@ -530,14 +714,12 @@ msgctxt "block description"
 msgid "Campaign selector for the donation form."
 msgstr "Kampanjväljare för donationsformuläret."
 
-#: build/Blocks/donation-form/block.json
-#: src/Blocks/donation-form/block.json
+#: build/Blocks/donation-form/block.json src/Blocks/donation-form/block.json
 msgctxt "block title"
 msgid "Lahjoitin"
-msgstr ""
+msgstr "Lahjoitin"
 
-#: build/Blocks/donation-form/block.json
-#: src/Blocks/donation-form/block.json
+#: build/Blocks/donation-form/block.json src/Blocks/donation-form/block.json
 msgctxt "block description"
 msgid "Gutenberg block for Fame donation system."
 msgstr "Gutenberg-block för Fame donationssystem."
@@ -554,41 +736,34 @@ msgctxt "block description"
 msgid "Allows selecting payment providers."
 msgstr "Möjliggör val av betalningsleverantör."
 
-#: build/Blocks/donation-type/block.json
-#: src/Blocks/donation-type/block.json
+#: build/Blocks/donation-type/block.json src/Blocks/donation-type/block.json
 msgctxt "block title"
 msgid "Donation type"
 msgstr "Donationstyp"
 
-#: build/Blocks/donation-type/block.json
-#: src/Blocks/donation-type/block.json
+#: build/Blocks/donation-type/block.json src/Blocks/donation-type/block.json
 msgctxt "block description"
 msgid "Allows selecting donation type."
 msgstr "Möjliggör val av donationstyp."
 
-#: build/Blocks/form-controls/block.json
-#: src/Blocks/form-controls/block.json
+#: build/Blocks/form-controls/block.json src/Blocks/form-controls/block.json
 msgctxt "block title"
 msgid "Form controls"
 msgstr "Formulärkontroller"
 
-#: build/Blocks/form-controls/block.json
-#: src/Blocks/form-controls/block.json
+#: build/Blocks/form-controls/block.json src/Blocks/form-controls/block.json
 msgctxt "block description"
 msgid "Adds form controls."
 msgstr "Lägger till formulärkontroller."
 
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:63
-msgid "Show maximum amount to donor"
-msgstr "Visa högsta belopp för donatorn"
+#~ msgid "Provider type"
+#~ msgstr "Leverantörstyp"
 
-#: build/Blocks/donation-amounts/index.js:1
-#: src/Blocks/donation-amounts/AmountSettingsControl.tsx:65
-msgid "Show the maximum amount in the helper text under the other amount field."
-msgstr "Visa högsta belopp i hjälptexten under fältet för annat belopp."
+#~ msgid "Terms text…"
+#~ msgstr "Villkorstext…"
 
-#: build/Blocks/donation-providers/render.php:95
-#: src/Blocks/donation-providers/render.php:95
-msgid "Payment methods are currently unavailable. Please try again later."
-msgstr "Betalningsmetoderna är inte tillgängliga just nu. Försök igen senare."
+#~ msgid "Backend URL"
+#~ msgstr "Backend-URL"
+
+#~ msgid "Your lahjoitukset-backend instance"
+#~ msgstr "Din lahjoitukset-backend-instans"

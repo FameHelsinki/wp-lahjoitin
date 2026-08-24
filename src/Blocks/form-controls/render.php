@@ -8,17 +8,17 @@ defined('ABSPATH') || exit;
 $attributes = $attributes ?? [];
 
 $submit_label = isset($attributes['submitLabel']) ? trim((string) $attributes['submitLabel']) : '';
-if ($submit_label === '') {
+if ($submit_label === '' || $submit_label === 'Donate') {
   $submit_label = __('Donate', 'fame_lahjoitukset');
 }
 
 $submit_label_single = isset($attributes['submitLabelSingle']) ? trim((string) $attributes['submitLabelSingle']) : '';
-if ($submit_label_single === '') {
+if ($submit_label_single === '' || $submit_label_single === 'Donate') {
   $submit_label_single = $submit_label;
 }
 
 $submit_label_recurring = isset($attributes['submitLabelRecurring']) ? trim((string) $attributes['submitLabelRecurring']) : '';
-if ($submit_label_recurring === '') {
+if ($submit_label_recurring === '' || $submit_label_recurring === 'Donate') {
   $submit_label_recurring = $submit_label;
 }
 

@@ -10,29 +10,29 @@
 	"example": {},
 	"attributes": {
 		"showLegend": { "type": "boolean", "default": true },
-		"legend": { "type": "string", "default": "Contacts" },
+		"legend": { "type": "string", "default": "" },
 
 		"contact": { "type": "boolean", "default": false },
 		"showAddress": { "type": "boolean", "default": true },
 		"showPhone": { "type": "boolean", "default": true },
 
-		"first_name_label": { "type": "string", "default": "First name" },
-		"last_name_label": { "type": "string", "default": "Last name" },
+		"first_name_label": { "type": "string", "default": "" },
+		"last_name_label": { "type": "string", "default": "" },
 		"name_help": { "type": "string", "default": "" },
 
-		"email_label": { "type": "string", "default": "Email" },
+		"email_label": { "type": "string", "default": "" },
 		"email_help": { "type": "string", "default": "" },
 
-		"address_label": { "type": "string", "default": "Address" },
+		"address_label": { "type": "string", "default": "" },
 		"address_help": { "type": "string", "default": "" },
 
-		"city_label": { "type": "string", "default": "City" },
-		"city_postal_code_help": { "type": "string", "default": "City" },
+		"city_label": { "type": "string", "default": "" },
+		"city_postal_code_help": { "type": "string", "default": "" },
 
-		"postal_code_label": { "type": "string", "default": "Postal code" },
-		"postal_code_help": { "type": "string", "default": "Postal code" },
+		"postal_code_label": { "type": "string", "default": "" },
+		"postal_code_help": { "type": "string", "default": "" },
 
-		"phone_label": { "type": "string", "default": "Phone" },
+		"phone_label": { "type": "string", "default": "" },
 		"phone_help": { "type": "string", "default": "" },
 
 		"show": { "type": "boolean", "default": true },

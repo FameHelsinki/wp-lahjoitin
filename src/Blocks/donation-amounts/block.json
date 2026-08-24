@@ -36,9 +36,9 @@
 			]
 		},
 		"showLegend": { "type": "boolean", "default": true },
-		"legend": { "type": "string", "default": "Donation amount" },
+		"legend": { "type": "string", "default": "" },
 		"other": { "type": "boolean", "default": false },
-		"otherLabel": { "type": "string", "default": "Other amount" },
+		"otherLabel": { "type": "string", "default": "" },
 		"legendAlign": { "type": "string", "default": "left" },
 		"colsAmounts": {
 			"type": "number",

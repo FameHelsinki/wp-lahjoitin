@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n'
 
 export const DEFAULT_AMOUNT = 10
 export const DEFAULT_UNIT = '€'
-export const DEFAULT_LEGEND = __('Amount', 'fame_lahjoitukset')
+export const DEFAULT_LEGEND = __('Donation amount', 'fame_lahjoitukset')
 export const MIN_AMOUNT = 10
 export const MAX_AMOUNT = 10000
 

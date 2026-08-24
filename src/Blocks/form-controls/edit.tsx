@@ -4,6 +4,7 @@ import { RichText, useBlockProps, InspectorControls } from '@wordpress/block-edi
 import { PanelBody, TextControl } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
 import { useCurrentDonationType } from '../common/donation-type.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 
 type DonationType = 'single' | 'recurring'
 type DonationTypeOrUnknown = DonationType | undefined
@@ -25,11 +26,14 @@ export default function Edit({
 	setAttributes,
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
-	const {
-		submitLabel = __('Donate', 'fame_lahjoitukset'),
-		submitLabelSingle,
-		submitLabelRecurring,
-	} = attributes
+	const translatedDonate = __('Donate', 'fame_lahjoitukset')
+	const submitLabel = localizedDefault(attributes.submitLabel, 'Donate', translatedDonate)
+	const submitLabelSingle = localizedDefault(attributes.submitLabelSingle, 'Donate', submitLabel)
+	const submitLabelRecurring = localizedDefault(
+		attributes.submitLabelRecurring,
+		'Donate',
+		submitLabel
+	)
 
 	const currentTypeRaw = useCurrentDonationType(clientId)
 	const currentType: DonationTypeOrUnknown =

@@ -14,11 +14,18 @@ defined('ABSPATH') || exit;
 
 $attributes = $attributes ?? [];
 
+$localized_default = static function ($value, string $legacy, string $translated): string {
+  $value = trim((string) $value);
+  return $value === '' || $value === $legacy ? $translated : $value;
+};
+
 $show_legend = array_key_exists('showLegend', $attributes) ? (bool) $attributes['showLegend'] : true;
 
-$legend = (isset($attributes['legend']) && trim((string) $attributes['legend']) !== '')
-  ? (string) $attributes['legend']
-  : __('Donation type', 'fame_lahjoitukset');
+$legend = $localized_default(
+  $attributes['legend'] ?? '',
+  'Donation type',
+  __('Donation type', 'fame_lahjoitukset')
+);
 
 $legend_align_raw = isset($attributes['legendAlign']) ? (string) $attributes['legendAlign'] : 'left';
 $legend_align     = in_array($legend_align_raw, ['left', 'center', 'right', 'justify'], true)
@@ -61,6 +68,16 @@ $types = array_values(array_filter(
   static fn($t) =>
   is_array($t) && isset($t['value']) && (string) $t['value'] !== ''
 ));
+
+$types = array_map(static function (array $type) use ($localized_default): array {
+  $value = (string) $type['value'];
+  if ($value === 'single') {
+    $type['label'] = $localized_default($type['label'] ?? '', 'Single', __('Single', 'fame_lahjoitukset'));
+  } elseif ($value === 'recurring') {
+    $type['label'] = $localized_default($type['label'] ?? '', 'Recurring', __('Recurring', 'fame_lahjoitukset'));
+  }
+  return $type;
+}, $types);
 
 if (!empty($enabled_types)) {
   $types = array_values(array_filter(

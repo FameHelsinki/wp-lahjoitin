@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, CSSProperties } from 'react'
 import { __ } from '@wordpress/i18n'
+import { useDispatch, useSelect } from '@wordpress/data'
 import {
 	useBlockProps,
 	InspectorControls,
@@ -18,11 +19,19 @@ import {
 	Spinner,
 } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
-import { Provider } from '../common/Providers.ts'
+import { Provider, providerDisplayLabel } from '../common/Providers.ts'
 import { useProviders } from '../common/useProviders.ts'
 import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 
 export type FlatProvider = Provider & { type: string }
+
+const DEFAULT_TERMS_PLACEHOLDERS = new Set([
+	'Terms text…',
+	'Add privacy policy and terms text here…',
+	'Lisää tietosuojaselosteen ja käyttöehtojen teksti tähän…',
+	'Lägg till text för integritetspolicy och villkor här…',
+])
 
 export type Attributes = {
 	legend?: string
@@ -49,12 +58,18 @@ export default function Edit({
 }: EditProps<Attributes>) {
 	const {
 		providers = [],
-		legend = __('Provider type', 'fame_lahjoitukset'),
+		legend: savedLegend,
 		showLegend = true,
 		showLegendSingle,
 		showLegendRecurring,
 		legendAlign = 'left',
 	} = attributes
+	const translatedLegend = __('Payment provider', 'fame_lahjoitukset')
+	const legend = localizedDefault(
+		localizedDefault(savedLegend, 'Provider type', translatedLegend),
+		'Payment provider',
+		translatedLegend
+	)
 
 	const donationTypes: string[] = useMemo(
 		() => context['famehelsinki/donation-types'] || [],
@@ -63,8 +78,45 @@ export default function Edit({
 
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
+	const termsPlaceholder = __('Add privacy policy and terms text here…', 'fame_lahjoitukset')
+	const innerBlocks = useSelect(
+		select => {
+			const blockEditor = select('core/block-editor') as any
+			return blockEditor.getBlocks(clientId) as any[]
+		},
+		[clientId]
+	)
+	const { updateBlockAttributes } = useDispatch('core/block-editor') as any
 
-	const [available, loading, error] = useProviders()
+	useEffect(() => {
+		for (const innerBlock of innerBlocks) {
+			if (innerBlock.name !== 'core/paragraph') continue
+			if (!String(innerBlock.attributes?.className ?? '').includes('fame-form__terms')) {
+				continue
+			}
+
+			const savedPlaceholder = String(innerBlock.attributes?.placeholder ?? '')
+			if (
+				DEFAULT_TERMS_PLACEHOLDERS.has(savedPlaceholder) &&
+				savedPlaceholder !== termsPlaceholder
+			) {
+				updateBlockAttributes(innerBlock.clientId, { placeholder: termsPlaceholder })
+			}
+		}
+	}, [innerBlocks, termsPlaceholder, updateBlockAttributes])
+
+	const [rawAvailable, loading, error] = useProviders()
+	const available = useMemo(() => {
+		const paytrail = rawAvailable.find(p => p.value.toLowerCase() === 'paytrail')
+		if (!paytrail) return rawAvailable
+
+		return rawAvailable.flatMap(provider => {
+			if (provider.value.toLowerCase() !== 'checkout') return [provider]
+
+			const remainingTypes = provider.types.filter(type => !paytrail.types.includes(type))
+			return remainingTypes.length ? [{ ...provider, types: remainingTypes }] : []
+		})
+	}, [rawAvailable])
 
 	const isLegendShownForType = (type: string) => {
 		if (type === 'single') return showLegendSingle ?? showLegend ?? true
@@ -103,9 +155,39 @@ export default function Edit({
 	}, [donationTypes, providers, available, setAttributes])
 
 	useEffect(() => {
-		const cleaned = providers.filter(p => donationTypes.includes(p.type))
-		if (cleaned.length !== providers.length) setAttributes({ providers: cleaned })
-	}, [donationTypes, providers, setAttributes])
+		const paytrail = available.find(p => p.value.toLowerCase() === 'paytrail')
+		const normalized: FlatProvider[] = []
+
+		for (const provider of providers.filter(p => donationTypes.includes(p.type))) {
+			const isNativePaytrail = provider.value.toLowerCase() === 'paytrail'
+			const shouldMigrate =
+				provider.value.toLowerCase() === 'checkout' &&
+				paytrail !== undefined &&
+				paytrail.types.includes(provider.type)
+			const next =
+				shouldMigrate && paytrail
+					? {
+							...provider,
+							value: paytrail.value,
+							label: providerDisplayLabel(paytrail.value, provider.label),
+						}
+					: provider
+			const duplicateIndex = normalized.findIndex(
+				item =>
+					item.type === next.type && item.value.toLowerCase() === next.value.toLowerCase()
+			)
+
+			if (duplicateIndex === -1) {
+				normalized.push(next)
+			} else if (isNativePaytrail) {
+				normalized[duplicateIndex] = next
+			}
+		}
+
+		if (JSON.stringify(normalized) !== JSON.stringify(providers)) {
+			setAttributes({ providers: normalized })
+		}
+	}, [available, donationTypes, providers, setAttributes])
 
 	const grouped = providers.reduce<Record<string, FlatProvider[]>>((acc, p) => {
 		if (!acc[p.type]) acc[p.type] = []
@@ -216,7 +298,7 @@ export default function Edit({
 									.map(p => (
 										<CheckboxControl
 											key={p.value}
-											label={p.label}
+											label={providerDisplayLabel(p.value, p.label)}
 											checked={selected.has(p.value)}
 											onChange={checked =>
 												updateProvider(type, p.value, checked)
@@ -227,8 +309,8 @@ export default function Edit({
 								{(grouped[type] ?? []).map(p => (
 									<TextControl
 										key={p.value}
-										label={`${p.label} ${__('label', 'fame_lahjoitukset')}`}
-										value={p.label}
+										label={`${providerDisplayLabel(p.value, p.label)} ${__('label', 'fame_lahjoitukset')}`}
+										value={providerDisplayLabel(p.value, p.label)}
 										onChange={val => updateLabel(type, p.value, val)}
 									/>
 								))}
@@ -260,7 +342,7 @@ export default function Edit({
 									aria-label={__('Legend', 'fame_lahjoitukset')}
 									placeholder={__('Donation provider', 'fame_lahjoitukset')}
 									allowedFormats={[]}
-									value={attributes.legend ?? ''}
+									value={legend}
 									onChange={le => setAttributes({ legend: le })}
 									style={{
 										textAlign: legendAlign as CSSProperties['textAlign'],
@@ -269,48 +351,53 @@ export default function Edit({
 								/>
 							)}
 
-							{isSingle
-								? showForType && (
-										<div className="fame-form__group" data-type={type}>
+							{isSingle ? (
+								<div>
+									<div className="fame-form__label">
+										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
+										{providerDisplayLabel(list[0].value, list[0].label)} (
+										{__('hidden', 'fame_lahjoitukset')})
+									</div>
+									<p
+										style={{
+											color: '#757575',
+											fontSize: 12,
+											margin: '4px 0 0',
+										}}
+									>
+										{__(
+											'Hidden because only one payment provider is configured.',
+											'fame_lahjoitukset'
+										)}
+									</p>
+								</div>
+							) : (
+								list.map(p => (
+									<div
+										className="fame-form__group"
+										key={`${type}-${p.value}`}
+										data-type={type}
+									>
+										<label htmlFor={`payment_method_${type}_${p.value}`}>
+											<input
+												type="radio"
+												id={`payment_method_${type}_${p.value}`}
+												name={`payment_method_${type}`}
+												value={p.value}
+												disabled
+											/>
 											<RichText
 												tagName="span"
 												className="provider-type__label"
-												value={list[0].label}
-												onChange={val =>
-													updateLabel(type, list[0].value, val)
-												}
+												value={providerDisplayLabel(p.value, p.label)}
+												onChange={val => updateLabel(type, p.value, val)}
 												allowedFormats={[]}
 												placeholder={__('Label', 'fame_lahjoitukset')}
 											/>
-										</div>
-									)
-								: list.map(p => (
-										<div
-											className="fame-form__group"
-											key={`${type}-${p.value}`}
-											data-type={type}
-										>
-											<label htmlFor={`payment_method_${type}_${p.value}`}>
-												<input
-													type="radio"
-													id={`payment_method_${type}_${p.value}`}
-													name={`payment_method_${type}`}
-													value={p.value}
-													disabled
-												/>
-												<RichText
-													tagName="span"
-													className="provider-type__label"
-													value={p.label}
-													onChange={val =>
-														updateLabel(type, p.value, val)
-													}
-													allowedFormats={[]}
-													placeholder={__('Label', 'fame_lahjoitukset')}
-												/>
-											</label>
-										</div>
-									))}
+										</label>
+									</div>
+								))
+							)}
 						</fieldset>
 					)
 				})}
@@ -321,7 +408,7 @@ export default function Edit({
 							'core/paragraph',
 							{
 								className: 'fame-form__terms',
-								placeholder: __('Terms text…', 'fame_lahjoitukset'),
+								placeholder: termsPlaceholder,
 							},
 						],
 					]}

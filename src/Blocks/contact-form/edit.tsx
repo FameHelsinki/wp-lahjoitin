@@ -11,6 +11,7 @@ import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
 import ContactInputControl from './ContactInputControl.tsx'
 import ContactInputGroup from './ContactInputGroup.tsx'
 import { EditProps } from '../common/types.ts'
+import { localizedDefault } from '../common/localized-default.ts'
 
 /**
  * The edit function describes the structure of your block in the context of the
@@ -21,6 +22,11 @@ import { EditProps } from '../common/types.ts'
 export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
 	const { contact, showAddress, showPhone, showLegend, legend, legendAlign = 'left' } = attributes
 	const { show = true } = attributes as { show?: boolean }
+	const localizedLegend = localizedDefault(
+		legend,
+		'Contacts',
+		__('Contacts', 'fame_lahjoitukset')
+	)
 
 	return (
 		<>
@@ -33,7 +39,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show contact fields', 'fame_lahjoitukset')}
+						label={__('Enable contact fields', 'fame_lahjoitukset')}
 						checked={attributes.show}
 						onChange={value => setAttributes({ show: value })}
 					/>
@@ -76,7 +82,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 									'Description for screen readers (for accessibility).',
 									'fame_lahjoitukset'
 								)}
-								value={legend}
+								value={localizedLegend}
 								onChange={value => setAttributes({ legend: value })}
 							/>
 						</>
@@ -101,7 +107,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 								aria-label={__('Legend', 'fame_lahjoitukset')}
 								placeholder={__('Contacts', 'fame_lahjoitukset')}
 								allowedFormats={[]}
-								value={legend}
+								value={localizedLegend}
 								onChange={value => setAttributes({ legend: value })}
 								style={{
 									textAlign: legendAlign as React.CSSProperties['textAlign'],
