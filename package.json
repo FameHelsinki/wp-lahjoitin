@@ -36,7 +36,7 @@
 		"@wordpress/api-fetch": "^7.21.1",
 		"@wordpress/block-editor": "^15.21.1",
 		"@wordpress/blocks": "^15.21.1",
-		"@wordpress/components": "^35.0.1",
+		"@wordpress/components": "^38.0.0",
 		"@wordpress/compose": "^8.1.1",
 		"@wordpress/data": "^10.48.1",
 		"@wordpress/dom-ready": "^4.48.1",
