@@ -33,7 +33,11 @@ export default function Edit({
 		'Charge day',
 		__('Charge day', 'fame_lahjoitukset')
 	)
-	const defaultDay = Math.min(28, Math.max(1, attributes.defaultDay ?? 5))
+	const savedDefaultDay = attributes.defaultDay ?? 5
+	const defaultDay = Number.isFinite(savedDefaultDay)
+		? Math.min(28, Math.max(1, savedDefaultDay))
+		: 5
+	const showLabel = attributes.showLabel ?? true
 	const selectId = `recurring-due-date-preview-${clientId}`
 
 	return (
@@ -42,8 +46,8 @@ export default function Edit({
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
 						label={__('Show label', 'fame_lahjoitukset')}
-						checked={attributes.showLabel ?? true}
-						onChange={showLabel => setAttributes({ showLabel })}
+						checked={showLabel}
+						onChange={nextShowLabel => setAttributes({ showLabel: nextShowLabel })}
 					/>
 					<SelectControl
 						label={__('Default charge day', 'fame_lahjoitukset')}
@@ -61,7 +65,7 @@ export default function Edit({
 			<div {...useBlockProps({ className: 'recurring-due-date' })}>
 				{recurringEnabled ? (
 					<>
-						{(attributes.showLabel ?? true) && (
+						{showLabel && (
 							<RichText
 								tagName="label"
 								className="fame-form__label"
@@ -74,6 +78,7 @@ export default function Edit({
 						<select
 							id={selectId}
 							className="fame-form__input"
+							aria-label={showLabel ? undefined : label}
 							value={defaultDay}
 							onChange={event =>
 								setAttributes({ defaultDay: Number(event.target.value) })
