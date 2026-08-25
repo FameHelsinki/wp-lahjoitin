@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-21T08:36:02+00:00\n"
+"POT-Creation-Date: 2026-08-25T07:07:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -31,32 +31,31 @@ msgstr ""
 
 #: build/Blocks/contact-form/render.php:26
 #: src/Blocks/contact-form/render.php:26
-#: build/Blocks/contact-form/index.js:305
-#: build/Blocks/contact-form/index.js:373
+#: build/Blocks/contact-form/index.js:1
 msgid "Contacts"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:38
 #: src/Blocks/contact-form/render.php:38
-#: build/Blocks/contact-form/index.js:54
+#: build/Blocks/contact-form/index.js:1
 msgid "First name"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:39
 #: src/Blocks/contact-form/render.php:39
-#: build/Blocks/contact-form/index.js:58
+#: build/Blocks/contact-form/index.js:1
 msgid "Last name"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:40
 #: src/Blocks/contact-form/render.php:40
-#: build/Blocks/contact-form/index.js:62
+#: build/Blocks/contact-form/index.js:1
 msgid "Email"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:41
 #: src/Blocks/contact-form/render.php:41
-#: build/Blocks/contact-form/index.js:66
+#: build/Blocks/contact-form/index.js:1
 msgid "Address"
 msgstr ""
 
@@ -64,20 +63,19 @@ msgstr ""
 #: build/Blocks/contact-form/render.php:45
 #: src/Blocks/contact-form/render.php:42
 #: src/Blocks/contact-form/render.php:45
-#: build/Blocks/contact-form/index.js:70
-#: build/Blocks/contact-form/index.js:202
+#: build/Blocks/contact-form/index.js:1
 msgid "City"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:43
 #: src/Blocks/contact-form/render.php:43
-#: build/Blocks/contact-form/index.js:74
+#: build/Blocks/contact-form/index.js:1
 msgid "Postal code"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:44
 #: src/Blocks/contact-form/render.php:44
-#: build/Blocks/contact-form/index.js:78
+#: build/Blocks/contact-form/index.js:1
 msgid "Phone"
 msgstr ""
 
@@ -85,8 +83,7 @@ msgstr ""
 #: build/Blocks/donation-amounts/render.php:38
 #: src/Blocks/donation-amounts/render.php:36
 #: src/Blocks/donation-amounts/render.php:38
-#: build/Blocks/donation-amounts/index.js:340
-#: build/Blocks/donation-amounts/index.js:371
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Other amount"
 msgstr ""
 
@@ -94,25 +91,25 @@ msgstr ""
 #: build/Blocks/donation-amounts/render.php:43
 #: src/Blocks/donation-amounts/render.php:41
 #: src/Blocks/donation-amounts/render.php:43
-#: build/Blocks/donation-amounts/index.js:28
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Donation amount"
 msgstr ""
 
 #: build/Blocks/donation-amounts/render.php:240
 #: src/Blocks/donation-amounts/render.php:240
-#: build/Blocks/donation-amounts/index.js:379
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Min"
 msgstr ""
 
 #: build/Blocks/donation-amounts/render.php:246
 #: src/Blocks/donation-amounts/render.php:246
-#: build/Blocks/donation-amounts/index.js:380
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Max"
 msgstr ""
 
 #: build/Blocks/donation-campaigns/render.php:42
 #: src/Blocks/donation-campaigns/render.php:42
-#: build/Blocks/donation-campaigns/index.js:73
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr ""
 
@@ -128,8 +125,7 @@ msgstr ""
 
 #: build/Blocks/donation-providers/render.php:26
 #: src/Blocks/donation-providers/render.php:26
-#: build/Blocks/donation-providers/index.js:329
-#: build/Blocks/donation-providers/index.js:561
+#: build/Blocks/donation-providers/index.js:1
 msgid "Payment provider"
 msgstr ""
 
@@ -140,11 +136,7 @@ msgstr ""
 
 #: build/Blocks/donation-type/render.php:27
 #: src/Blocks/donation-type/render.php:27
-#: build/Blocks/donation-type/index.js:151
-#: build/Blocks/donation-type/index.js:243
-#: build/Blocks/donation-type/index.js:339
-#: build/Blocks/donation-type/index.js:358
-#: build/Blocks/donation-type/index.js:368
+#: build/Blocks/donation-type/index.js:1
 msgid "Donation type"
 msgstr ""
 
@@ -154,11 +146,11 @@ msgstr ""
 #: src/Blocks/donation-type/render.php:62
 #: src/Blocks/donation-type/render.php:75
 #: src/Blocks/donation-type/render.php:92
-#: build/Blocks/donation-amounts/index.js:70
+#: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-providers/index.js:81
-#: build/Blocks/donation-type/index.js:25
-#: build/Blocks/form-controls/index.js:25
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/form-controls/index.js:1
 msgid "Single"
 msgstr ""
 
@@ -166,18 +158,17 @@ msgstr ""
 #: build/Blocks/donation-type/render.php:77
 #: src/Blocks/donation-type/render.php:63
 #: src/Blocks/donation-type/render.php:77
-#: build/Blocks/donation-amounts/index.js:71
+#: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-providers/index.js:82
-#: build/Blocks/donation-type/index.js:26
-#: build/Blocks/form-controls/index.js:26
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/form-controls/index.js:1
 msgid "Recurring"
 msgstr ""
 
 #: build/Blocks/form-controls/render.php:12
 #: src/Blocks/form-controls/render.php:12
-#: build/Blocks/form-controls/index.js:153
-#: build/Blocks/form-controls/index.js:210
+#: build/Blocks/form-controls/index.js:1
 msgid "Donate"
 msgstr ""
 
@@ -186,12 +177,25 @@ msgstr ""
 msgid "Please enable JavaScript to use this form."
 msgstr ""
 
+#: build/Blocks/recurring-due-date/render.php:19
+#: src/Blocks/recurring-due-date/render.php:19
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Charge day"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/render.php:52
+#: src/Blocks/recurring-due-date/render.php:52
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "The donation will be charged on this day each month."
+msgstr ""
+
 #: fame-lahjoitukset.php:48
-#: build/Blocks/contact-form/index.js:317
-#: build/Blocks/donation-amounts/index.js:586
-#: build/Blocks/donation-campaigns/index.js:91
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/donation-form/index.js:1
-#: build/Blocks/donation-type/index.js:304
+#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Settings"
 msgstr ""
 
@@ -231,210 +235,202 @@ msgstr ""
 msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:103
-#: build/Blocks/donation-campaigns/index.js:106
-#: build/Blocks/donation-providers/index.js:587
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-providers/index.js:1
 msgid "Label"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:117
-#: build/Blocks/contact-form/index.js:203
+#: build/Blocks/contact-form/index.js:1
 msgid "Help text"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:319
+#: build/Blocks/contact-form/index.js:1
 msgid "Enable contact fields"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:326
+#: build/Blocks/contact-form/index.js:1
 msgid "Require contact"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:327
+#: build/Blocks/contact-form/index.js:1
 msgid "Contact details are required if enabled"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:333
+#: build/Blocks/contact-form/index.js:1
 msgid "Show address"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:334
+#: build/Blocks/contact-form/index.js:1
 msgid "Show address fields"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:340
+#: build/Blocks/contact-form/index.js:1
 msgid "Show phone"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:341
+#: build/Blocks/contact-form/index.js:1
 msgid "Show phone number fields"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:347
-#: build/Blocks/donation-amounts/index.js:595
-#: build/Blocks/donation-providers/index.js:514
-#: build/Blocks/donation-type/index.js:314
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
 msgid "Show legend"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:352
-#: build/Blocks/donation-amounts/index.js:596
-#: build/Blocks/donation-type/index.js:315
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-type/index.js:1
 msgid "If disabled, the legend is marked visually hidden."
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:354
-#: build/Blocks/contact-form/index.js:372
-#: build/Blocks/donation-amounts/index.js:603
-#: build/Blocks/donation-amounts/index.js:667
-#: build/Blocks/donation-providers/index.js:477
-#: build/Blocks/donation-providers/index.js:547
-#: build/Blocks/donation-type/index.js:321
-#: build/Blocks/donation-type/index.js:338
-#: build/Blocks/donation-type/index.js:357
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
 msgid "Legend"
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:355
-#: build/Blocks/donation-amounts/index.js:604
-#: build/Blocks/donation-providers/index.js:482
-#: build/Blocks/donation-type/index.js:322
+#: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
 msgid "Description for screen readers (for accessibility)."
 msgstr ""
 
-#: build/Blocks/contact-form/index.js:424
+#: build/Blocks/contact-form/index.js:1
 msgid "The contact form is not in use. Use the toggle in the sidebar to enable it."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:182
-#: build/Blocks/donation-amounts/index.js:338
-#: build/Blocks/donation-amounts/index.js:668
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:236
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Currency label"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:237
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Label that is shown next to amounts. This does not control actual donation currency. Currently only euros are supported."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:245
-#: build/Blocks/donation-amounts/index.js:280
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Default amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:246
-#: build/Blocks/donation-amounts/index.js:281
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Amount that is preselected."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:254
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Min Amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:255
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Minimum amount for other amount field."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:262
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Max Amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:263
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Maximum amount for other amount field."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:270
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Show maximum amount to donor"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:271
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Show the maximum amount in the helper text under the other amount field."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:338
-#: build/Blocks/donation-campaigns/index.js:185
-#: build/Blocks/donation-providers/index.js:561
-#: build/Blocks/donation-type/index.js:368
+#: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/donation-type/index.js:1
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "hidden"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:366
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Other amount text"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:588
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Show other amount"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:589
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Show other amount input field"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:612
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Amount columns"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:613
+#: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-form/index.js:1
 msgid "Choose 1–3 columns for the form layout."
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:627
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Add button"
 msgstr ""
 
-#: build/Blocks/donation-amounts/index.js:636
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Remove button"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:93
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Enable campaign selector"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:100
+#: build/Blocks/donation-campaigns/index.js:1
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Show label"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:116
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaigns"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:133
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Remove campaign"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:134
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Remove"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:148
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "New campaign"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:165
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Add"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:173
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Maximum of 10 campaigns reached."
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:192
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Hidden because only one campaign is configured."
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:192
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "No campaigns added yet."
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:208
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "No campaigns added yet"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/index.js:218
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "The campaign selector is not in use. Use the toggle in the sidebar to enable it."
 msgstr ""
 
@@ -582,6 +578,10 @@ msgstr ""
 msgid "Invalid phone number"
 msgstr ""
 
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid charge day"
+msgstr ""
+
 #. translators: %1$s: minimum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:2
 #, js-format
@@ -594,60 +594,72 @@ msgstr ""
 msgid "The maximum donation amount is %1$s%2$s."
 msgstr ""
 
-#: build/Blocks/donation-providers/index.js:475
-msgid "General settings"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:489
-msgid "Loading providers…"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:496
-msgid "Could not load payment providers from lahjoitin.fi. Existing selections are kept; the live list will be used when the connection is restored."
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:502
-msgid "No payment providers are enabled for this organization. Check the slug in the Lahjoitukset settings."
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:522
-msgid "label"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:548
-msgid "Donation provider"
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:568
-msgid "Hidden because only one payment provider is configured."
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:596
+#: build/Blocks/donation-providers/index.js:1
 msgid "Add privacy policy and terms text here…"
 msgstr ""
 
-#: build/Blocks/donation-type/index.js:306
+#: build/Blocks/donation-providers/index.js:1
+msgid "General settings"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Loading providers…"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Could not load payment providers from lahjoitin.fi. Existing selections are kept; the live list will be used when the connection is restored."
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "No payment providers are enabled for this organization. Check the slug in the Lahjoitukset settings."
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "label"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Donation provider"
+msgstr ""
+
+#: build/Blocks/donation-providers/index.js:1
+msgid "Hidden because only one payment provider is configured."
+msgstr ""
+
+#: build/Blocks/donation-type/index.js:1
 msgid "Default donation type"
 msgstr ""
 
-#: build/Blocks/donation-type/index.js:307
+#: build/Blocks/donation-type/index.js:1
 msgid "Select donation type that will be used by default."
 msgstr ""
 
-#: build/Blocks/donation-type/index.js:375
+#: build/Blocks/donation-type/index.js:1
 msgid "Hidden because only one donation type is enabled."
 msgstr ""
 
-#: build/Blocks/form-controls/index.js:185
+#: build/Blocks/form-controls/index.js:1
 msgid "Button labels"
 msgstr ""
 
-#: build/Blocks/form-controls/index.js:187
+#: build/Blocks/form-controls/index.js:1
 msgid "Single button text"
 msgstr ""
 
-#: build/Blocks/form-controls/index.js:193
+#: build/Blocks/form-controls/index.js:1
 msgid "Recurring button text"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Default charge day"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Donors can change this day when making a recurring donation."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Hidden because recurring donations are not enabled."
 msgstr ""
 
 #: build/Blocks/contact-form/block.json
@@ -734,33 +746,13 @@ msgctxt "block description"
 msgid "Adds form controls."
 msgstr ""
 
-#: src/Blocks/recurring-due-date/edit.tsx
-#: src/Blocks/recurring-due-date/render.php
-msgid "Charge day"
-msgstr ""
-
-#: src/Blocks/recurring-due-date/edit.tsx
-msgid "Default charge day"
-msgstr ""
-
-#: src/Blocks/recurring-due-date/edit.tsx
-msgid "Donors can change this day when making a recurring donation."
-msgstr ""
-
-#: src/Blocks/recurring-due-date/edit.tsx
-#: src/Blocks/recurring-due-date/render.php
-msgid "The donation will be charged on this day each month."
-msgstr ""
-
-#: src/Blocks/recurring-due-date/edit.tsx
-msgid "Hidden because recurring donations are not enabled."
-msgstr ""
-
+#: build/Blocks/recurring-due-date/block.json
 #: src/Blocks/recurring-due-date/block.json
 msgctxt "block title"
 msgid "Recurring charge day"
 msgstr ""
 
+#: build/Blocks/recurring-due-date/block.json
 #: src/Blocks/recurring-due-date/block.json
 msgctxt "block description"
 msgid "Allows donors to choose the monthly recurring charge day."
