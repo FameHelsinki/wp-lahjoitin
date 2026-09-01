@@ -1,12 +1,14 @@
-<!-- wp:famehelsinki/donation-form {"types":["single"]} -->
+<!-- wp:famehelsinki/donation-form {"types":["single","recurring"]} -->
 <!-- wp:columns -->
 <div class="wp-block-columns"><!-- wp:column -->
 <div class="wp-block-column"><!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":""}]} /-->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":""},{"value":"recurring","label":""}]} /-->
 
 <!-- wp:famehelsinki/donation-campaigns /-->
 
-<!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"showMaxAmount":false,"unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]}]} /--></div>
+<!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"showMaxAmount":false,"unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]},{"type":"recurring","amounts":[{"value":10},{"value":20},{"value":30}],"default":false,"defaultAmount":10,"unit":"€","minAmount":10,"maxAmount":10000,"showMaxAmount":false}]} /-->
+
+<!-- wp:famehelsinki/recurring-due-date /--></div>
 <!-- /wp:group -->
 
 <!-- wp:group -->
@@ -14,7 +16,7 @@
 <!-- /wp:group -->
 
 <!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"}]} -->
+<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"},{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"recurring"}]} -->
 <!-- wp:paragraph {"placeholder":"Add privacy policy and terms text here…","className":"fame-form__terms"} -->
 <p class="fame-form__terms"></p>
 <!-- /wp:paragraph -->

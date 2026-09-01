@@ -36,6 +36,9 @@ domReady(() => {
 			phone: {
 				unknown: __('Invalid phone number', 'fame_lahjoitukset'),
 			},
+			due_date: {
+				unknown: __('Invalid charge day', 'fame_lahjoitukset'),
+			},
 		},
 		amount: {
 			min: (min: number, unit: string) =>

@@ -40,6 +40,8 @@ export default class FormHandler {
 	#providerHiddens: NodeListOf<HTMLInputElement>
 	#providerSections: NodeListOf<HTMLElement>
 	#typeRadios: NodeListOf<HTMLInputElement>
+	#dueDateSections: NodeListOf<HTMLElement>
+	#dueDateInputs: NodeListOf<HTMLSelectElement>
 
 	get form() {
 		return this.#form
@@ -72,6 +74,12 @@ export default class FormHandler {
 			'fieldset.payment-method-selector[data-type]'
 		)
 		this.#typeRadios = this.#form.querySelectorAll<HTMLInputElement>('input[name="type"]')
+		this.#dueDateSections = this.#form.querySelectorAll<HTMLElement>(
+			'[data-recurring-due-date]'
+		)
+		this.#dueDateInputs = this.#form.querySelectorAll<HTMLSelectElement>(
+			'[data-recurring-due-date-input]'
+		)
 
 		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
 		this.#form.addEventListener('fame-lahjoitukset-amount-validity', () => {
@@ -106,6 +114,7 @@ export default class FormHandler {
 	 */
 	#bindProviderEvents() {
 		this.#filterProvidersByType()
+		this.#filterDueDateByType()
 		this.#updateProvider()
 		this.#updateSubmitLabel()
 
@@ -119,11 +128,32 @@ export default class FormHandler {
 		this.#typeRadios.forEach(r =>
 			r.addEventListener('change', () => {
 				this.#filterProvidersByType()
+				this.#filterDueDateByType()
 				this.#updateProvider()
 				this.#updateSubmitLabel()
 				this.#allowSubmit(this.#canSubmit())
 			})
 		)
+	}
+
+	/**
+	 * Only recurring donations submit a due_date. Disabled controls are omitted
+	 * from FormData and ignored by native constraint validation.
+	 */
+	#filterDueDateByType() {
+		let selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
+		if (!selectedType && this.#typeRadios.length === 1) {
+			selectedType = this.#typeRadios[0].value
+		}
+
+		const active = selectedType === 'recurring'
+		this.#dueDateSections.forEach(section => {
+			section.hidden = !active
+			section.setAttribute('aria-hidden', String(!active))
+		})
+		this.#dueDateInputs.forEach(input => {
+			input.disabled = !active
+		})
 	}
 
 	/**
@@ -242,6 +272,7 @@ export default class FormHandler {
 		event.preventDefault()
 
 		this.#filterProvidersByType()
+		this.#filterDueDateByType()
 		this.#updateProvider()
 
 		// Checks provider field value.

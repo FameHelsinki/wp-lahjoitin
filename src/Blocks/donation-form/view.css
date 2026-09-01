@@ -173,6 +173,14 @@
 	margin-block-start: 1.2rem !important;
 }
 
+/* The recurring charge day continues the amount fields rather
+ *than starting a new section.
+ */
+.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-recurring-due-date {
+	margin-block-start: var(--fame-field-gap, 0.25rem) !important;
+	margin-inline: 2px;
+}
+
 .wp-block-famehelsinki-donation-form .fame-form__legend {
 	padding: 0 0 3px 0;
 	margin: 0 0 0.5em 0;
@@ -255,7 +263,7 @@
 .donation-amounts__other {
 	position: relative;
 	width: 100%;
-	padding-top: 5px;
+	padding-top: var(--fame-field-gap, 0.25rem);
 }
 
 .wp-block-famehelsinki-donation-form

@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/recurring-due-date",
+	"version": "0.1.0",
+	"title": "Recurring charge day",
+	"category": "widgets",
+	"description": "Allows donors to choose the monthly recurring charge day.",
+	"parent": ["famehelsinki/donation-form"],
+	"attributes": {
+		"label": { "type": "string", "default": "" },
+		"showLabel": { "type": "boolean", "default": true },
+		"defaultDay": { "type": "number", "default": 5 }
+	},
+	"usesContext": ["famehelsinki/donation-types"],
+	"supports": {
+		"multiple": false,
+		"color": { "background": false, "text": true },
+		"html": false,
+		"typography": { "fontSize": true }
+	},
+	"icon": "calendar-alt",
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}

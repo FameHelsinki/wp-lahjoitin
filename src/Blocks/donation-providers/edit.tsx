@@ -155,6 +155,12 @@ export default function Edit({
 	}, [donationTypes, providers, available, setAttributes])
 
 	useEffect(() => {
+		// Keep saved selections while the provider request is pending or has
+		// failed. Once the request succeeds, the backend list is authoritative:
+		// providers disabled for the organization must not remain visible in the
+		// preview without a corresponding checkbox in the inspector.
+		if (loading || error) return
+
 		const paytrail = available.find(p => p.value.toLowerCase() === 'paytrail')
 		const normalized: FlatProvider[] = []
 
@@ -172,6 +178,14 @@ export default function Edit({
 							label: providerDisplayLabel(paytrail.value, provider.label),
 						}
 					: provider
+			const isAvailable = available.some(
+				item =>
+					item.value.toLowerCase() === next.value.toLowerCase() &&
+					item.types.includes(next.type)
+			)
+
+			if (!isAvailable) continue
+
 			const duplicateIndex = normalized.findIndex(
 				item =>
 					item.type === next.type && item.value.toLowerCase() === next.value.toLowerCase()
@@ -187,7 +201,7 @@ export default function Edit({
 		if (JSON.stringify(normalized) !== JSON.stringify(providers)) {
 			setAttributes({ providers: normalized })
 		}
-	}, [available, donationTypes, providers, setAttributes])
+	}, [available, donationTypes, error, loading, providers, setAttributes])
 
 	const grouped = providers.reduce<Record<string, FlatProvider[]>>((acc, p) => {
 		if (!acc[p.type]) acc[p.type] = []

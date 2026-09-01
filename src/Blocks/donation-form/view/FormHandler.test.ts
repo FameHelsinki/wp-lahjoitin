@@ -126,7 +126,8 @@ describe('FormHandler events', () => {
 		document.body.innerHTML = `
             <form class="fame-form fame-form--donations" novalidate>
                 <input type="hidden" name="amount" value="1000" />
-                <input type="radio" name="type" value="single" />
+				<input type="radio" name="type" value="single" checked />
+				<input type="radio" name="type" value="recurring" />
                 <fieldset class="payment-method-selector fame-form__fieldset" data-type="single">
                     <div class="fame-form__group" data-type="single">
                         <label>
@@ -134,6 +135,14 @@ describe('FormHandler events', () => {
                         </label>
                     </div>
                 </fieldset>
+				<fieldset class="payment-method-selector fame-form__fieldset" data-type="recurring">
+					<input type="hidden" name="provider" value="mobilepay" data-type="recurring" disabled />
+				</fieldset>
+				<div data-recurring-due-date hidden aria-hidden="true">
+					<select name="due_date" data-recurring-due-date-input required disabled>
+						<option value="21" selected>21</option>
+					</select>
+				</div>
                 <div class="fame-form__fieldset">
                     <input type="text" name="email" />
                 </div>
@@ -175,6 +184,33 @@ describe('FormHandler events', () => {
 		expect(captured!.detail.errors).toEqual({})
 		expect(captured!.detail.url).toBeInstanceOf(URL)
 		expect(captured!.detail.url.toString()).toBe('https://api.lahjoitin.fi/donation/my-org')
+	})
+
+	test('submits due_date only when recurring donation is selected', () => {
+		let captured: FormSubmitEvent | undefined
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			captured = event as FormSubmitEvent
+			event.preventDefault()
+		})
+
+		const recurring = form.querySelector<HTMLInputElement>(
+			'input[name="type"][value="recurring"]'
+		)!
+		recurring.checked = true
+		recurring.dispatchEvent(new Event('change', { bubbles: true }))
+
+		const section = form.querySelector<HTMLElement>('[data-recurring-due-date]')!
+		const dueDate = form.querySelector<HTMLSelectElement>('[name="due_date"]')!
+		expect(section.hidden).toBe(false)
+		expect(dueDate.disabled).toBe(false)
+
+		submit()
+
+		expect(captured?.detail.data).toMatchObject({
+			type: 'recurring',
+			provider: 'mobilepay',
+			due_date: '21',
+		})
 	})
 
 	test('preventDefault() on the submit event cancels submission', async () => {
