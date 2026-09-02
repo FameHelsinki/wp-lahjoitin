@@ -34,7 +34,7 @@
 		"@testing-library/react": "^16.3.0",
 		"@types/wordpress__block-editor": "^15.0.6",
 		"@wordpress/api-fetch": "^7.21.1",
-		"@wordpress/block-editor": "^15.21.1",
+		"@wordpress/block-editor": "^17.0.0",
 		"@wordpress/blocks": "^15.21.1",
 		"@wordpress/components": "^38.0.0",
 		"@wordpress/compose": "^8.7.0",
