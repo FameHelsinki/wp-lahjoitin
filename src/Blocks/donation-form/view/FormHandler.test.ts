@@ -213,6 +213,74 @@ describe('FormHandler events', () => {
 		})
 	})
 
+	test('submits a fixed due_date without showing its field', () => {
+		form = form.cloneNode(true) as HTMLFormElement
+		document.body.replaceChildren(form)
+		const section = form.querySelector<HTMLElement>('[data-recurring-due-date]')!
+		section.dataset.showSelector = '0'
+		section.innerHTML =
+			'<input type="hidden" name="due_date" value="14" data-recurring-due-date-input disabled>'
+
+		// Reinitialize after changing the server-rendered field variant.
+		handler = new FormHandler('https://api.lahjoitin.fi', 'my-org', form)
+
+		let captured: FormSubmitEvent | undefined
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			captured = event as FormSubmitEvent
+			event.preventDefault()
+		})
+
+		const recurring = form.querySelector<HTMLInputElement>(
+			'input[name="type"][value="recurring"]'
+		)!
+		recurring.checked = true
+		recurring.dispatchEvent(new Event('change', { bubbles: true }))
+
+		const dueDate = form.querySelector<HTMLInputElement>('[name="due_date"]')!
+		expect(section.hidden).toBe(true)
+		expect(section.getAttribute('aria-hidden')).toBe('true')
+		expect(dueDate.disabled).toBe(false)
+
+		submit()
+
+		expect(captured?.detail.data).toMatchObject({
+			type: 'recurring',
+			due_date: '14',
+		})
+	})
+
+	test('shows a fixed due_date error without leaving the form submitting', async () => {
+		form = form.cloneNode(true) as HTMLFormElement
+		document.body.replaceChildren(form)
+		const section = form.querySelector<HTMLElement>('[data-recurring-due-date]')!
+		section.dataset.showSelector = '0'
+		section.innerHTML =
+			'<input type="hidden" name="due_date" value="14" data-recurring-due-date-input disabled>'
+		handler = new FormHandler('https://api.lahjoitin.fi', 'my-org', form)
+
+		const fetchMock = jest.fn()
+		;(globalThis as any).fetch = fetchMock
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			;(event as FormSubmitEvent).detail.errors.due_date = 'Invalid charge day'
+		})
+
+		const recurring = form.querySelector<HTMLInputElement>(
+			'input[name="type"][value="recurring"]'
+		)!
+		recurring.checked = true
+		recurring.dispatchEvent(new Event('change', { bubbles: true }))
+
+		submit()
+		await flush()
+
+		expect(fetchMock).not.toHaveBeenCalled()
+		expect(form.classList.contains('fame-form--submitting')).toBe(false)
+		expect(form.querySelector<HTMLButtonElement>('[type="submit"]')!.disabled).toBe(false)
+		const feedback = form.querySelector<HTMLElement>('[data-non-field-error="due_date"]')
+		expect(feedback?.textContent).toBe('Invalid charge day')
+		expect(feedback).not.toBeNull()
+	})
+
 	test('preventDefault() on the submit event cancels submission', async () => {
 		const fetchMock = jest.fn()
 		;(globalThis as any).fetch = fetchMock

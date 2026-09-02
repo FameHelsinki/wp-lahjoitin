@@ -83,6 +83,10 @@
 	color: var(--fame-clr-danger);
 }
 
+.fame-form__feedback--non-field {
+	display: block;
+}
+
 .fame-form.was-validated :invalid {
 	border-color: var(--fame-clr-danger);
 	outline: 0;

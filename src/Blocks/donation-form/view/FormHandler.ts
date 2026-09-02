@@ -41,7 +41,8 @@ export default class FormHandler {
 	#providerSections: NodeListOf<HTMLElement>
 	#typeRadios: NodeListOf<HTMLInputElement>
 	#dueDateSections: NodeListOf<HTMLElement>
-	#dueDateInputs: NodeListOf<HTMLSelectElement>
+	#dueDateInputs: NodeListOf<HTMLInputElement | HTMLSelectElement>
+	#nonFieldErrors = new Map<string, string>()
 
 	get form() {
 		return this.#form
@@ -77,7 +78,7 @@ export default class FormHandler {
 		this.#dueDateSections = this.#form.querySelectorAll<HTMLElement>(
 			'[data-recurring-due-date]'
 		)
-		this.#dueDateInputs = this.#form.querySelectorAll<HTMLSelectElement>(
+		this.#dueDateInputs = this.#form.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
 			'[data-recurring-due-date-input]'
 		)
 
@@ -137,8 +138,9 @@ export default class FormHandler {
 	}
 
 	/**
-	 * Only recurring donations submit a due_date. Disabled controls are omitted
-	 * from FormData and ignored by native constraint validation.
+	 * Only recurring donations submit a due_date. The fixed-date variant stays
+	 * hidden while its input is enabled; the selectable variant is also shown.
+	 * Missing data-show-selector defaults to visible for published legacy blocks.
 	 */
 	#filterDueDateByType() {
 		let selectedType = Array.from(this.#typeRadios).find(r => r.checked)?.value
@@ -148,8 +150,9 @@ export default class FormHandler {
 
 		const active = selectedType === 'recurring'
 		this.#dueDateSections.forEach(section => {
-			section.hidden = !active
-			section.setAttribute('aria-hidden', String(!active))
+			const visible = active && section.dataset.showSelector !== '0'
+			section.hidden = !visible
+			section.setAttribute('aria-hidden', String(!visible))
 		})
 		this.#dueDateInputs.forEach(input => {
 			input.disabled = !active
@@ -304,11 +307,12 @@ export default class FormHandler {
 
 		window.dispatchEvent(alterFormDataEvent)
 
-		Object.entries(alterFormDataEvent.detail.errors).forEach(([key, error]) => {
-			this.addError(key, error)
-		})
-
 		try {
+			this.#clearNonFieldErrors()
+			Object.entries(alterFormDataEvent.detail.errors).forEach(([key, error]) => {
+				this.addError(key, error)
+			})
+
 			// Run built-in validators. This should fail if
 			// any validation errors were added by the event.
 			if (!this.validate()) {
@@ -399,7 +403,7 @@ export default class FormHandler {
 		// validated normally.
 		const hasValidProvider = this.#hasAvailableProvider()
 
-		let valid = true
+		let valid = this.#nonFieldErrors.size === 0
 
 		Array.prototype.forEach.call(this.#form.elements, element => {
 			if (element.validity.valid) {
@@ -450,6 +454,11 @@ export default class FormHandler {
 			})
 		} else if (isFormControl(element)) {
 			if (element.type === 'hidden') {
+				if (element.dataset.recurringDueDateInput !== undefined) {
+					this.#nonFieldErrors.set(name, error)
+					this.#addNonFieldError(name, error)
+					return
+				}
 				throw new Error(`Trying to set validation message to hidden element ${name}`)
 			}
 
@@ -459,6 +468,23 @@ export default class FormHandler {
 		} else {
 			throw new Error(`Trying to set validation message to unknown element ${name}`)
 		}
+	}
+
+	#addNonFieldError(name: string, message: string) {
+		const existing = Array.from(
+			this.#form.querySelectorAll<HTMLElement>('[data-non-field-error]')
+		).find(feedback => feedback.dataset.nonFieldError === name)
+		const feedback = existing ?? this.#form.appendChild(document.createElement('span'))
+		feedback.className =
+			'fame-form__feedback fame-form__feedback--invalid fame-form__feedback--non-field'
+		feedback.dataset.nonFieldError = name
+		feedback.setAttribute('aria-live', 'polite')
+		feedback.textContent = message
+	}
+
+	#clearNonFieldErrors() {
+		this.#nonFieldErrors.clear()
+		this.#form.querySelectorAll('[data-non-field-error]').forEach(feedback => feedback.remove())
 	}
 
 	#addErrorToElement(element: FormControlElement, message: string) {
