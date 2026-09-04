@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-25T07:07:16+00:00\n"
+"POT-Creation-Date: 2026-09-02T12:00:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -183,8 +183,8 @@ msgstr ""
 msgid "Charge day"
 msgstr ""
 
-#: build/Blocks/recurring-due-date/render.php:52
-#: src/Blocks/recurring-due-date/render.php:52
+#: build/Blocks/recurring-due-date/render.php:57
+#: src/Blocks/recurring-due-date/render.php:57
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "The donation will be charged on this day each month."
 msgstr ""
@@ -651,11 +651,35 @@ msgid "Recurring button text"
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Show charge date select"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Allow donors to choose the monthly charge date."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Default charge day"
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Set charge date"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Donors can change this day when making a recurring donation."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "This date is used for monthly donations."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Charge date"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Hidden because the charge date is set in the block settings."
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1

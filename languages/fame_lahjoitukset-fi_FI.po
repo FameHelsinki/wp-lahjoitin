@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
-"POT-Creation-Date: 2026-08-25T07:07:16+00:00\n"
+"POT-Creation-Date: 2026-09-02T12:00:02+00:00\n"
 "PO-Revision-Date: 2026-03-12 00:00+0000\n"
 "Last-Translator: Fame Helsinki\n"
 "Language-Team: Finnish\n"
@@ -174,8 +174,8 @@ msgstr "Ota JavaScript käyttöön käyttääksesi tätä lomaketta."
 msgid "Charge day"
 msgstr "Veloituspäivä"
 
-#: build/Blocks/recurring-due-date/render.php:52
-#: src/Blocks/recurring-due-date/render.php:52
+#: build/Blocks/recurring-due-date/render.php:57
+#: src/Blocks/recurring-due-date/render.php:57
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "The donation will be charged on this day each month."
 msgstr "Lahjoitus veloitetaan kuukausittain valittuna päivänä."
@@ -674,12 +674,36 @@ msgid "Recurring button text"
 msgstr "Toistuva-painikkeen teksti"
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Show charge date select"
+msgstr "Näytä veloituspäivän valitsin"
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Allow donors to choose the monthly charge date."
+msgstr "Salli lahjoittajan valita kuukausilahjoituksen veloituspäivä."
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Default charge day"
 msgstr "Oletusveloituspäivä"
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Set charge date"
+msgstr "Aseta veloituspäivä"
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Donors can change this day when making a recurring donation."
 msgstr "Lahjoittaja voi muuttaa päivää tehdessään kuukausilahjoituksen."
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "This date is used for monthly donations."
+msgstr "Tätä päivää käytetään kuukausilahjoituksissa."
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Charge date"
+msgstr "Veloituspäivä"
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Hidden because the charge date is set in the block settings."
+msgstr "Piilotettu, koska veloituspäivä on asetettu lohkon asetuksissa."
 
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Hidden because recurring donations are not enabled."

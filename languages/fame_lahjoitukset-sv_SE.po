@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
-"POT-Creation-Date: 2026-08-25T07:07:16+00:00\n"
+"POT-Creation-Date: 2026-09-02T12:00:02+00:00\n"
 "PO-Revision-Date: 2026-03-12 00:00+0000\n"
 "Last-Translator: Fame Helsinki\n"
 "Language-Team: Swedish\n"
@@ -174,8 +174,8 @@ msgstr "Aktivera JavaScript för att använda detta formulär."
 msgid "Charge day"
 msgstr "Debiteringsdag"
 
-#: build/Blocks/recurring-due-date/render.php:52
-#: src/Blocks/recurring-due-date/render.php:52
+#: build/Blocks/recurring-due-date/render.php:57
+#: src/Blocks/recurring-due-date/render.php:57
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "The donation will be charged on this day each month."
 msgstr "Donationen debiteras den valda dagen varje månad."
@@ -677,12 +677,36 @@ msgid "Recurring button text"
 msgstr "Knapptext för återkommande"
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Show charge date select"
+msgstr "Visa väljaren för debiteringsdag"
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Allow donors to choose the monthly charge date."
+msgstr "Tillåt givaren att välja debiteringsdag för månatliga donationer."
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Default charge day"
 msgstr "Förvald debiteringsdag"
 
 #: build/Blocks/recurring-due-date/index.js:1
+msgid "Set charge date"
+msgstr "Ange debiteringsdag"
+
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Donors can change this day when making a recurring donation."
 msgstr "Givaren kan ändra dagen när en månatlig donation görs."
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "This date is used for monthly donations."
+msgstr "Den här dagen används för månatliga donationer."
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Charge date"
+msgstr "Debiteringsdag"
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Hidden because the charge date is set in the block settings."
+msgstr "Dold eftersom debiteringsdagen anges i blockinställningarna."
 
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Hidden because recurring donations are not enabled."
