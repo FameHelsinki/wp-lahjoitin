@@ -210,21 +210,8 @@
 	gap: 10px;
 }
 
-.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label {
-	display: flex;
-	width: 100%;
-	justify-content: center;
-	align-items: center;
-	padding: 8px;
-	border: var(--border-width) solid var(--button-border-color, var(--primary-color));
-	border-radius: var(--border-radius);
-	cursor: pointer;
-	margin-right: 0.5rem;
-	user-select: none;
-}
-
 /* Shared “button-like” labels for tabs + amount buttons */
-.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-amounts .fame-form__label,
+.wp-block-famehelsinki-donation-form .donation-amounts .fame-form__label,
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label {
 	display: flex;
 	width: 100%;
@@ -240,11 +227,6 @@
 		background 0.15s ease,
 		color 0.15s ease,
 		border-color 0.15s ease;
-}
-
-/* Donation type hover (now after base label rules) */
-.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label:hover {
-	background: color-mix(in srgb, var(--primary-color) 12%, #fff 10%);
 }
 
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__check-input {
@@ -317,20 +299,14 @@ input {
 }
 
 /* Hover before checked (order for no-descending-specificity) */
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-amounts
-.fame-form__label:hover,
+.wp-block-famehelsinki-donation-form .donation-amounts .fame-form__label:hover,
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label:hover {
 	background: color-mix(in srgb, var(--primary-color) var(--hover-lighten), transparent calc(100% - var(--hover-lighten)));
 }
 
 /* Checked state (kept after hover) */
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-amounts
-.fame-form__label:has(.fame-form__check-input:checked),
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-type
-.fame-form__label:has(.fame-form__check-input:checked) {
+.wp-block-famehelsinki-donation-form .donation-amounts .fame-form__label:has(.fame-form__check-input:checked),
+.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label:has(.fame-form__check-input:checked) {
 	background: var(--primary-color);
 	color: var(--secondary-color);
 	border-color: var(--button-border-color, var(--primary-color));
