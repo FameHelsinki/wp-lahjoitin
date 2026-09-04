@@ -36,11 +36,7 @@ const DEFAULT_TERMS_PLACEHOLDERS = new Set([
 export type Attributes = {
 	legend?: string
 	providers?: FlatProvider[]
-
-	// old (fallback)
 	showLegend?: boolean
-	showLegendSingle?: boolean
-	showLegendRecurring?: boolean
 	legendAlign?: string
 }
 
@@ -60,8 +56,6 @@ export default function Edit({
 		providers = [],
 		legend: savedLegend,
 		showLegend = true,
-		showLegendSingle,
-		showLegendRecurring,
 		legendAlign = 'left',
 	} = attributes
 	const translatedLegend = __('Payment provider', 'fame_lahjoitukset')
@@ -117,24 +111,6 @@ export default function Edit({
 			return remainingTypes.length ? [{ ...provider, types: remainingTypes }] : []
 		})
 	}, [rawAvailable])
-
-	const isLegendShownForType = (type: string) => {
-		if (type === 'single') return showLegendSingle ?? showLegend ?? true
-		if (type === 'recurring') return showLegendRecurring ?? showLegend ?? true
-		return showLegend ?? true
-	}
-
-	const setLegendShownForType = (type: string, checked: boolean) => {
-		if (type === 'single') {
-			setAttributes({ showLegendSingle: checked })
-			return
-		}
-		if (type === 'recurring') {
-			setAttributes({ showLegendRecurring: checked })
-			return
-		}
-		setAttributes({ showLegend: checked })
-	}
 
 	useEffect(() => {
 		// Wait until the available providers have loaded so we don't seed
@@ -256,6 +232,15 @@ export default function Edit({
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('General settings', 'fame_lahjoitukset')}>
+					<ToggleControl
+						label={__('Show legend', 'fame_lahjoitukset')}
+						help={__(
+							'If disabled, the legend is marked visually hidden.',
+							'fame_lahjoitukset'
+						)}
+						checked={showLegend}
+						onChange={value => setAttributes({ showLegend: value })}
+					/>
 					<TextControl
 						label={__('Legend', 'fame_lahjoitukset')}
 						value={legend}
@@ -296,17 +281,10 @@ export default function Edit({
 				)}
 				{donationTypes.map(type => {
 					const selected = new Set((grouped[type] ?? []).map(p => p.value))
-					const showForType = isLegendShownForType(type)
 
 					return (
 						<PanelBody title={getDonationLabel(type)} key={type}>
 							<Flex direction="column" gap={2}>
-								<ToggleControl
-									label={__('Show legend', 'fame_lahjoitukset')}
-									checked={showForType}
-									onChange={checked => setLegendShownForType(type, checked)}
-								/>
-
 								{available
 									.filter(p => p.types.includes(type))
 									.map(p => (
@@ -339,7 +317,6 @@ export default function Edit({
 					if (currentType && type !== currentType) return null
 
 					const isSingle = list.length === 1
-					const showForType = isLegendShownForType(type)
 
 					return (
 						<fieldset
@@ -348,7 +325,7 @@ export default function Edit({
 							style={{ width: '100%', boxSizing: 'border-box' }}
 							data-type={type}
 						>
-							{showForType && (
+							{showLegend && !isSingle && (
 								<RichText
 									tagName="legend"
 									multiline={false}
@@ -367,8 +344,8 @@ export default function Edit({
 
 							{isSingle ? (
 								<div>
-									<div className="fame-form__label">
-										{__('Payment provider', 'fame_lahjoitukset')}:{' '}
+									<div>
+										{legend}:{' '}
 										{providerDisplayLabel(list[0].value, list[0].label)} (
 										{__('hidden', 'fame_lahjoitukset')})
 									</div>
@@ -392,8 +369,12 @@ export default function Edit({
 										key={`${type}-${p.value}`}
 										data-type={type}
 									>
-										<label htmlFor={`payment_method_${type}_${p.value}`}>
+										<label
+											htmlFor={`payment_method_${type}_${p.value}`}
+											className="fame-form__label"
+										>
 											<input
+												className="fame-form__check-input"
 												type="radio"
 												id={`payment_method_${type}_${p.value}`}
 												name={`payment_method_${type}`}
@@ -402,7 +383,6 @@ export default function Edit({
 											/>
 											<RichText
 												tagName="span"
-												className="provider-type__label"
 												value={providerDisplayLabel(p.value, p.label)}
 												onChange={val => updateLabel(type, p.value, val)}
 												allowedFormats={[]}
