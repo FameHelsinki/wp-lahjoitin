@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-04T21:56:56+00:00\n"
+"POT-Creation-Date: 2026-09-04T22:23:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -95,14 +95,14 @@ msgstr ""
 msgid "Donation amount"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/render.php:42
-#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/render.php:41
+#: src/Blocks/donation-campaigns/render.php:41
 #: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/render.php:59
-#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/render.php:58
+#: src/Blocks/donation-campaigns/render.php:58
 msgid "Select campaign"
 msgstr ""
 
@@ -367,10 +367,6 @@ msgid "Remove button"
 msgstr ""
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "Enable campaign selector"
-msgstr ""
-
-#: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Show label"
 msgstr ""
@@ -404,15 +400,7 @@ msgid "Hidden because only one campaign is configured."
 msgstr ""
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet."
-msgstr ""
-
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet"
-msgstr ""
-
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "The campaign selector is not in use. Use the toggle in the sidebar to enable it."
+msgid "Hidden because no campaigns are configured."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1

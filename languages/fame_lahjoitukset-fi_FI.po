@@ -90,14 +90,14 @@ msgstr "Muu summa"
 msgid "Donation amount"
 msgstr "Lahjoitussumma"
 
-#: build/Blocks/donation-campaigns/render.php:42
-#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/render.php:41
+#: src/Blocks/donation-campaigns/render.php:41
 #: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr "Kampanja"
 
-#: build/Blocks/donation-campaigns/render.php:59
-#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/render.php:58
+#: src/Blocks/donation-campaigns/render.php:58
 msgid "Select campaign"
 msgstr "Valitse kampanja"
 
@@ -365,10 +365,6 @@ msgid "Remove button"
 msgstr "Poista painike"
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "Enable campaign selector"
-msgstr "Ota kampanjavalitsin käyttöön"
-
-#: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Show label"
 msgstr "Näytä otsikko"
@@ -402,12 +398,8 @@ msgid "Hidden because only one campaign is configured."
 msgstr "Piilotettu, koska vain yksi kampanja on määritetty."
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet."
-msgstr "Kampanjoja ei ole vielä lisätty."
-
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet"
-msgstr "Kampanjoja ei ole vielä lisätty"
+msgid "Hidden because no campaigns are configured."
+msgstr "Piilotettu, koska kampanjoita ei ole määritetty."
 
 #: build/Blocks/donation-campaigns/index.js:1
 msgid ""

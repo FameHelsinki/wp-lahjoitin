@@ -73,4 +73,28 @@ final class BlocksTest extends WP_UnitTestCase
         $this->assertStringContainsString('Vähintään 10€', $rendered);
         $this->assertStringContainsString('aria-describedby="single-amount-help"', $rendered);
     }
+
+    public function testCampaignSelectorIsNotRenderedWithoutCampaigns(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/donation-campaigns ' . wp_json_encode(['campaigns' => []]) . ' /-->');
+
+        $this->assertStringNotContainsString('name="campaign"', $rendered);
+    }
+
+    public function testSingleCampaignIsRenderedAsHiddenInput(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/donation-campaigns ' . wp_json_encode(['campaigns' => ['Spring']]) . ' /-->');
+
+        $this->assertStringContainsString('<input type="hidden" name="campaign" value="Spring"', $rendered);
+        $this->assertStringNotContainsString('<select', $rendered);
+    }
+
+    public function testMultipleCampaignsAreRenderedAsSelect(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/donation-campaigns ' . wp_json_encode(['campaigns' => ['Spring', 'Autumn']]) . ' /-->');
+
+        $this->assertStringContainsString('<select name="campaign"', $rendered);
+        $this->assertStringContainsString('<option value="Spring">', $rendered);
+        $this->assertStringContainsString('<option value="Autumn">', $rendered);
+    }
 }

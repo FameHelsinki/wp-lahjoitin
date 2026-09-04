@@ -90,14 +90,14 @@ msgstr "Annat belopp"
 msgid "Donation amount"
 msgstr "Donationsbelopp"
 
-#: build/Blocks/donation-campaigns/render.php:42
-#: src/Blocks/donation-campaigns/render.php:42
+#: build/Blocks/donation-campaigns/render.php:41
+#: src/Blocks/donation-campaigns/render.php:41
 #: build/Blocks/donation-campaigns/index.js:1
 msgid "Campaign"
 msgstr "Kampanj"
 
-#: build/Blocks/donation-campaigns/render.php:59
-#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/render.php:58
+#: src/Blocks/donation-campaigns/render.php:58
 msgid "Select campaign"
 msgstr "Välj kampanj"
 
@@ -367,10 +367,6 @@ msgid "Remove button"
 msgstr "Ta bort knapp"
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "Enable campaign selector"
-msgstr "Aktivera kampanjväljare"
-
-#: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Show label"
 msgstr "Visa etikett"
@@ -404,12 +400,8 @@ msgid "Hidden because only one campaign is configured."
 msgstr "Dold eftersom endast en kampanj är konfigurerad."
 
 #: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet."
-msgstr "Inga kampanjer har lagts till ännu."
-
-#: build/Blocks/donation-campaigns/index.js:1
-msgid "No campaigns added yet"
-msgstr "Inga kampanjer har lagts till ännu"
+msgid "Hidden because no campaigns are configured."
+msgstr "Dold eftersom inga kampanjer har konfigurerats."
 
 #: build/Blocks/donation-campaigns/index.js:1
 msgid ""

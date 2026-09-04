@@ -15,7 +15,6 @@ defined('ABSPATH') || exit;
 /** @var array<string, mixed>|null $attributes */
 $attributes = $attributes ?? [];
 
-$show      = array_key_exists('show', $attributes) ? (bool) $attributes['show'] : false;
 $campaigns = isset($attributes['campaigns']) && is_array($attributes['campaigns'])
   ? $attributes['campaigns']
   : [];
@@ -26,7 +25,7 @@ $campaigns = array_values(array_filter(array_map(static function ($campaign): st
   return $campaign !== '';
 }));
 
-if (!$show || count($campaigns) === 0) {
+if (count($campaigns) === 0) {
   return;
 }
 
