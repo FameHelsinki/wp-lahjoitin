@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Fame\WordPress\Lahjoitukset;
 
 use Fame\WordPress\Lahjoitukset\Attributes\Action;
+use Fame\WordPress\Lahjoitukset\Attributes\Filter;
 use Fame\WordPress\Lahjoitukset\Settings\CheckboxField;
 use Fame\WordPress\Lahjoitukset\Settings\TextField;
 use Fame\WordPress\Lahjoitukset\Settings\Section;
@@ -141,13 +142,12 @@ class Settings implements ComponentInterface
      */
     public function getEnabledProviders(): ?array
     {
-        $slug = $this->getSlug();
-        if ($slug === '') {
+        $url = $this->getProvidersUrl();
+        if ($url === null) {
             return null;
         }
 
-        $url = $this->getBackendUrl() . '/providers/' . rawurlencode($slug);
-        $cacheKey = 'fame_lahjoitukset_providers_' . md5($url);
+        $cacheKey = self::getProvidersCacheKey($url);
 
         $cached = get_transient($cacheKey);
         if (is_array($cached)) {
@@ -164,21 +164,56 @@ class Settings implements ComponentInterface
             return null;
         }
 
-		try {
-			$raw = [];
-			foreach ($decoded as $entry) {
-				$provider = Provider::fromApi($entry);
-				$raw[$provider->name] = $provider;
-			}
+        try {
+            $raw = [];
+            foreach ($decoded as $entry) {
+                $provider = Provider::fromApi($entry);
+                $raw[$provider->name] = $provider;
+            }
 
-			set_transient($cacheKey, $raw, DAY_IN_SECONDS);
+            set_transient($cacheKey, $raw, DAY_IN_SECONDS);
 
-			return $raw;
-		}
-		catch (\InvalidArgumentException)
-		{
-			return null;
-		}
+            return $raw;
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
     }
 
+    /**
+     * Clears the cached provider list when the settings form is saved.
+     *
+     * @param mixed $value
+     *   The new option value, passed through untouched.
+     */
+    #[Filter('pre_update_option_slug')]
+    public function clearProvidersCacheOnSave(mixed $value): mixed
+    {
+		$url = $this->getProvidersUrl();
+		if ($url !== null) {
+			delete_transient(self::getProvidersCacheKey($url));
+		}
+
+        return $value;
+    }
+
+    /**
+     * Builds the `/providers/{slug}` endpoint URL, or null when no slug is set.
+     */
+    private function getProvidersUrl(): ?string
+    {
+        $slug = $this->getSlug();
+        if ($slug === '') {
+            return null;
+        }
+
+        return $this->getBackendUrl() . '/providers/' . rawurlencode($slug);
+    }
+
+    /**
+     * Transient key for the provider list fetched from the given URL.
+     */
+    private static function getProvidersCacheKey(string $url): string
+    {
+        return 'fame_lahjoitukset_providers_' . md5($url);
+    }
 }

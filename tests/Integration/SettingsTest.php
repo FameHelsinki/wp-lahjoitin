@@ -71,4 +71,25 @@ final class SettingsTest extends WP_UnitTestCase
 
         $this->assertSame('my-organization', $settings->getSlug());
     }
+
+    public function testSavingSettingsClearsProvidersCache(): void
+    {
+        update_option('slug', 'my-organization');
+
+        $settings = $this->registerSettings();
+        $cacheKey = 'fame_lahjoitukset_providers_'
+            . md5(Settings::PRODUCTION_URL . '/providers/my-organization');
+        set_transient($cacheKey, ['checkout' => 'cached'], DAY_IN_SECONDS);
+
+        // The plugin wires this to pre_update_option_slug, which options.php
+        // triggers on every save of the settings form.
+        add_filter('pre_update_option_slug', [$settings, 'clearProvidersCacheOnSave']);
+
+        // Re-saving an unchanged value must still clear the cache so admins can
+        // force a refresh after enabling/disabling providers in the API.
+        update_option('slug', 'my-organization');
+
+        $this->assertFalse(get_transient($cacheKey));
+        $this->assertSame('my-organization', get_option('slug'));
+    }
 }
