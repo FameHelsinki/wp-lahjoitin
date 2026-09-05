@@ -38,7 +38,7 @@ export default function Edit({
 		? Math.min(28, Math.max(1, savedDefaultDay))
 		: 5
 	const showLabel = attributes.showLabel ?? true
-	const selectId = `recurring-due-date-preview-${clientId}`
+	const helpId = `recurring-due-date-help-${clientId}`
 
 	return (
 		<>
@@ -69,28 +69,18 @@ export default function Edit({
 							<RichText
 								tagName="label"
 								className="fame-form__label"
-								htmlFor={selectId}
 								value={label}
 								allowedFormats={[]}
 								onChange={nextLabel => setAttributes({ label: nextLabel })}
 							/>
 						)}
-						<select
-							id={selectId}
-							className="fame-form__input"
-							aria-label={showLabel ? undefined : label}
-							value={defaultDay}
-							onChange={event =>
-								setAttributes({ defaultDay: Number(event.target.value) })
-							}
+						<div
+							className="fame-form__fake-input"
+							aria-describedby={helpId}
 						>
-							{dayOptions.map(option => (
-								<option key={option.value} value={option.value}>
-									{option.label}
-								</option>
-							))}
-						</select>
-						<p className="fame-form__help">
+							{defaultDay}
+						</div>
+						<p className="fame-form__help" id={helpId}>
 							{__(
 								'The donation will be charged on this day each month.',
 								'fame_lahjoitukset'

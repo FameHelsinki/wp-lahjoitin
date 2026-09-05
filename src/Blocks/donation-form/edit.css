@@ -183,13 +183,13 @@
 	font-weight: 400;
 }
 
-/* Editor uses fake input wrappers */
-.editor-styles-wrapper
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-contact-form
-.fame-form__fake-input {
+/* Editor uses fake input wrappers in place of real inputs. */
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__fake-input {
 	border: var(--border-width, 1px) solid var(--third-color, #000);
 	border-radius: var(--text-field-border-radius, 0);
+	padding: 0.6rem 0.75rem;
+	min-height: 1.7em;
+	box-sizing: border-box;
 }
 
 /* Other amount (editor): label + input */
@@ -306,16 +306,6 @@ input {
 		var(--primary-color, var(--wp--preset--color--primary, #000));
 	outline-offset: 2px;
 	color: var(--secondary-color, #fff);
-}
-
-.editor-styles-wrapper
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-amounts
-.donation-amounts__other__placeholder {
-	border: var(--border-width, 1px) solid var(--third-color, #000);
-	border-radius: var(--border-radius, 0);
-	padding: 0.6rem 0.75rem;
-	box-sizing: border-box;
 }
 
 .editor-styles-wrapper

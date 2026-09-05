@@ -63,7 +63,7 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes, onC
 						className="donation-amounts__other-label"
 					/>
 					{/* Placeholder mimics input field in Gutenberg UI. */}
-					<div className="donation-amounts__other__placeholder">
+					<div className="fame-form__fake-input">
 						{current.defaultAmount} {current.unit}
 					</div>
 					<RichText
