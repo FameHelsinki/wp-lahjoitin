@@ -74,10 +74,7 @@ export default function Edit({
 								onChange={nextLabel => setAttributes({ label: nextLabel })}
 							/>
 						)}
-						<div
-							className="fame-form__fake-input"
-							aria-describedby={helpId}
-						>
+						<div className="fame-form__fake-input" aria-describedby={helpId}>
 							{defaultDay}
 						</div>
 						<p className="fame-form__help" id={helpId}>

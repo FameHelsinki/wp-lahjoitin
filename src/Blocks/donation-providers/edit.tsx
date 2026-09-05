@@ -369,18 +369,8 @@ export default function Edit({
 										key={`${type}-${p.value}`}
 										data-type={type}
 									>
-										<label
-											htmlFor={`payment_method_${type}_${p.value}`}
-											className="fame-form__label"
-										>
-											<input
-												className="fame-form__check-input"
-												type="radio"
-												id={`payment_method_${type}_${p.value}`}
-												name={`payment_method_${type}`}
-												value={p.value}
-												disabled
-											/>
+										{/* Placeholder mimics the radio button in Gutenberg UI. */}
+										<div className="fame-form__label">
 											<RichText
 												tagName="span"
 												value={providerDisplayLabel(p.value, p.label)}
@@ -388,7 +378,7 @@ export default function Edit({
 												allowedFormats={[]}
 												placeholder={__('Label', 'fame_lahjoitukset')}
 											/>
-										</label>
+										</div>
 									</div>
 								))
 							)}
