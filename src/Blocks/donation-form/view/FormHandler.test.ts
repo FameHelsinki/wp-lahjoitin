@@ -78,9 +78,9 @@ describe('FormHandler', () => {
 		expect(url.pathname).toBe('/donation/my%20org%2Fx')
 	})
 
-	test('getSubmitUrl appends contact and token query params', () => {
+	test('getSubmitUrl appends contact query param', () => {
 		document.body.innerHTML = `
-            <form action="/submit" data-token="1">
+            <form action="/submit">
                 <input type="hidden" name="amount" value="1000">
                 <div data-contact="1"></div>
                 <button type="submit">Submit</button>
@@ -98,7 +98,6 @@ describe('FormHandler', () => {
 
 		expect(url.pathname).toBe('/donation/my-org')
 		expect(url.searchParams.get('contact')).toBe('1')
-		expect(url.searchParams.get('token')).toBe('1')
 	})
 })
 

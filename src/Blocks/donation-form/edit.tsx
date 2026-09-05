@@ -9,7 +9,6 @@ import {
 import {
 	PanelBody,
 	TextControl,
-	ToggleControl,
 	CheckboxControl,
 	ColorPicker,
 	BaseControl,
@@ -102,7 +101,6 @@ export default function Edit({
 	const {
 		types,
 		returnAddress,
-		token,
 		primaryColor,
 		secondaryColor,
 		buttonBorderColor,
@@ -124,7 +122,6 @@ export default function Edit({
 		borderRadius?: string
 		borderWidth?: string
 		textFieldBorderRadius?: string
-		token?: boolean
 		colsDesktop?: number
 		dangerColor?: string
 		sectionLabelColor?: string
@@ -326,16 +323,6 @@ export default function Edit({
 						onChange={newReturnAddress =>
 							setAttributes({ returnAddress: newReturnAddress })
 						}
-					/>
-
-					<ToggleControl
-						label={__('Return userinfo token', 'fame_lahjoitukset')}
-						help={__(
-							'This option includes userinfo token in the return address. This is not generally useful and requires custom logic to handle the token.',
-							'fame_lahjoitukset'
-						)}
-						checked={!!token}
-						onChange={newToken => setAttributes({ token: newToken })}
 					/>
 				</PanelBody>
 			</InspectorControls>

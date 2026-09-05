@@ -432,19 +432,6 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sida som visas efter att donationen skickats."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Return userinfo token"
-msgstr "Returnera användarinformationstoken"
-
-#: build/Blocks/donation-form/index.js:1
-msgid ""
-"This option includes userinfo token in the return address. This is not "
-"generally useful and requires custom logic to handle the token."
-msgstr ""
-"Det här alternativet inkluderar användarinformationstoken i returadressen. "
-"Det är i allmänhet inte användbart och kräver anpassad logik för att hantera "
-"token."
-
-#: build/Blocks/donation-form/index.js:1
 msgid "Styles"
 msgstr "Stilar"
 

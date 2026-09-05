@@ -429,19 +429,6 @@ msgid "Page that is displayed after donation is submitted."
 msgstr "Sivu, joka näytetään lahjoituksen lähettämisen jälkeen."
 
 #: build/Blocks/donation-form/index.js:1
-msgid "Return userinfo token"
-msgstr "Palauta käyttäjätietotunnus"
-
-#: build/Blocks/donation-form/index.js:1
-msgid ""
-"This option includes userinfo token in the return address. This is not "
-"generally useful and requires custom logic to handle the token."
-msgstr ""
-"Tämä asetus sisällyttää käyttäjätietotunnuksen paluuosoitteeseen. Tämä ei "
-"ole yleensä hyödyllistä ja vaatii mukautetun logiikan tunnuksen "
-"käsittelemiseen."
-
-#: build/Blocks/donation-form/index.js:1
 msgid "Styles"
 msgstr "Tyylit"
 

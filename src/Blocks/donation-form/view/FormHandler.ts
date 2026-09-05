@@ -509,11 +509,6 @@ export default class FormHandler {
 			url.searchParams.append('contact', '1')
 		}
 
-		// Request token.
-		if (!!this.#form.dataset.token) {
-			url.searchParams.append('token', '1')
-		}
-
 		return url
 	}
 }
