@@ -145,7 +145,12 @@ export default function Edit({
 									{localizedLabel}
 								</label>
 							)}
-							<select id="campaigns-preview" className="fame-form__input" disabled>
+							<select
+								id="campaigns-preview"
+								className="fame-form__input"
+								aria-label={showLabel ? undefined : localizedLabel}
+								disabled
+							>
 								{campaigns.map((campaign, index) => (
 									<option key={index} value={campaign}>
 										{campaign}
