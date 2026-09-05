@@ -17,10 +17,20 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes, onC
 	if (!current) return null
 
 	if (!other && !current?.amounts?.length) {
-		return `${__('Amount', 'fame_lahjoitukset')}: ${current?.defaultAmount} (${__(
-			'hidden',
-			'fame_lahjoitukset'
-		)})`
+		return (
+			<div>
+				<div>
+					{__('Amount', 'fame_lahjoitukset')}: {current?.defaultAmount} (
+					{__('hidden', 'fame_lahjoitukset')})
+				</div>
+				<p className="fame-form__hidden-help">
+					{__(
+						'Hidden because no amount buttons are configured and the other amount field is disabled.',
+						'fame_lahjoitukset'
+					)}
+				</p>
+			</div>
+		)
 	}
 
 	const localizedOtherLabel = localizedDefault(

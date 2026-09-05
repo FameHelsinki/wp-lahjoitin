@@ -11,6 +11,7 @@ import { __, sprintf } from '@wordpress/i18n'
 import { EditProps } from '../common/types.ts'
 import { useEnabledDonationTypes } from '../common/donation-type.ts'
 import { localizedDefault } from '../common/localized-default.ts'
+import { captionStrings } from '../common/strings.ts'
 import { DEFAULT_DUE_DATE_DAY, DUE_DATE_DAYS, normalizeDueDateDays } from '../common/due-date.ts'
 import './edit.css'
 
@@ -28,11 +29,9 @@ export default function Edit({
 	const enabledTypes = useEnabledDonationTypes(clientId)
 	// Keep the block visible while the enabled types are still unknown.
 	const recurringEnabled = enabledTypes === null || enabledTypes.includes('recurring')
-	const label = localizedDefault(
-		attributes.label,
-		'Charge day',
-		__('Charge day', 'fame_lahjoitukset')
-	)
+	const strings = captionStrings('label')
+	const translatedLabel = __('Charge day', 'fame_lahjoitukset')
+	const label = localizedDefault(attributes.label, 'Charge day', translatedLabel)
 	const days = normalizeDueDateDays(attributes.days)
 
 	// Donors only get to choose when there is something to choose from.
@@ -55,7 +54,7 @@ export default function Edit({
 				<div>
 					{label} ({__('hidden', 'fame_lahjoitukset')})
 				</div>
-				<p className="recurring-due-date__hidden-help">
+				<p className="fame-form__hidden-help">
 					{__('Hidden because recurring donations are not enabled.', 'fame_lahjoitukset')}
 				</p>
 			</div>
@@ -67,6 +66,8 @@ export default function Edit({
 					<RichText
 						tagName="label"
 						className="fame-form__label"
+						aria-label={strings.captionLabel}
+						placeholder={translatedLabel}
 						value={label}
 						allowedFormats={[]}
 						onChange={nextLabel => setAttributes({ label: nextLabel })}
@@ -100,7 +101,7 @@ export default function Edit({
 				<div>
 					{label}: {submittedDay} ({__('hidden', 'fame_lahjoitukset')})
 				</div>
-				<p className="recurring-due-date__hidden-help">
+				<p className="fame-form__hidden-help">
 					{days.length === 1
 						? __(
 								'Hidden because only one charge day is configured.',
@@ -117,22 +118,16 @@ export default function Edit({
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show label', 'fame_lahjoitukset')}
-						help={__(
-							'If disabled, the label is marked visually hidden.',
-							'fame_lahjoitukset'
-						)}
+						label={strings.visibilityLabel}
+						help={strings.visibilityHelp}
 						checked={showLabel}
 						disabled={!visible}
 						onChange={nextShowLabel => setAttributes({ showLabel: nextShowLabel })}
 					/>
 
 					<TextControl
-						label={__('Label', 'fame_lahjoitukset')}
-						help={__(
-							'Description for screen readers (for accessibility).',
-							'fame_lahjoitukset'
-						)}
+						label={strings.captionLabel}
+						help={strings.captionHelp}
 						value={label}
 						disabled={!visible}
 						onChange={nextLabel => setAttributes({ label: nextLabel })}

@@ -4,6 +4,7 @@ import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
 import { PanelBody, TextControl, ToggleControl, Button } from '@wordpress/components'
 import { EditProps } from '../common/types.ts'
 import { localizedDefault } from '../common/localized-default.ts'
+import { captionStrings } from '../common/strings.ts'
 
 const MAX_CAMPAIGNS = 10
 
@@ -18,8 +19,12 @@ export default function Edit({
 	setAttributes,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { campaigns, label, showLabel } = attributes
-	const localizedLabel = localizedDefault(label, 'Campaign', __('Campaign', 'fame_lahjoitukset'))
-	const hasCampaigns = campaigns.length > 0
+	const strings = captionStrings('label')
+	const translatedLabel = __('Campaign', 'fame_lahjoitukset')
+	const localizedLabel = localizedDefault(label, 'Campaign', translatedLabel)
+	// Fewer than two campaigns means there is nothing to choose from: the value
+	// is submitted with a hidden input and no label is rendered at all.
+	const visible = campaigns.length > 1
 
 	const [newCampaign, setNewCampaign] = useState('')
 
@@ -39,15 +44,17 @@ export default function Edit({
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show label', 'fame_lahjoitukset')}
+						label={strings.visibilityLabel}
+						help={strings.visibilityHelp}
 						checked={showLabel}
-						disabled={!hasCampaigns}
+						disabled={!visible}
 						onChange={value => setAttributes({ showLabel: value })}
 					/>
 					<TextControl
-						label={__('Label', 'fame_lahjoitukset')}
+						label={strings.captionLabel}
+						help={strings.captionHelp}
 						value={localizedLabel}
-						disabled={!hasCampaigns}
+						disabled={!visible}
 						onChange={value => setAttributes({ label: value })}
 					/>
 
@@ -119,14 +126,14 @@ export default function Edit({
 
 			<div {...useBlockProps()}>
 				<div className="fame-form__group">
-					{campaigns.length <= 1 ? (
+					{!visible ? (
 						<div>
 							<div className="fame-form__label">
 								{localizedLabel}
 								{campaigns.length === 1 ? `: ${campaigns[0]}` : ''} (
 								{__('hidden', 'fame_lahjoitukset')})
 							</div>
-							<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
+							<p className="fame-form__hidden-help">
 								{campaigns.length === 1
 									? __(
 											'Hidden because only one campaign is configured.',

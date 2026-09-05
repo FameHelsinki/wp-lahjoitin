@@ -39,7 +39,6 @@ if (!$show_legend) {
 
 $legend_classes[] = 'has-text-align-' . $legend_align;
 
-// Ensures alignment works even when legend is rendered as a <div> in the hidden branch.
 $legend_style = 'text-align:' . $legend_align . ';';
 
 $saved_types = (isset($attributes['types']) && is_array($attributes['types'])) ? $attributes['types'] : [];
@@ -95,12 +94,6 @@ $wrapper_attrs = get_block_wrapper_attributes(['class' => $classes]);
   $val = (string) ($types[0]['value'] ?? $default_value);
 ?>
   <div <?php echo $wrapper_attrs; ?>>
-    <div
-      class="<?php echo esc_attr(implode(' ', $legend_classes)); ?>"
-      style="<?php echo esc_attr($legend_style); ?>">
-      <?php echo esc_html($legend); ?>
-    </div>
-
     <input type="hidden" name="type" value="<?php echo esc_attr($val); ?>" />
   </div>
 <?php else : ?>

@@ -27,6 +27,7 @@ import {
 	useEnabledDonationTypes,
 } from '../common/donation-type.ts'
 import { localizedDefault } from '../common/localized-default.ts'
+import { captionStrings } from '../common/strings.ts'
 
 export type FlatProvider = Provider & { type: string }
 
@@ -57,6 +58,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 		showLegend = true,
 		legendAlign = 'left',
 	} = attributes
+	const strings = captionStrings('legend')
 	const translatedLegend = __('Payment provider', 'fame_lahjoitukset')
 	const legend = localizedDefault(
 		localizedDefault(savedLegend, 'Provider type', translatedLegend),
@@ -185,6 +187,11 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 		return acc
 	}, {})
 
+	// A donation type with a single provider submits it with a hidden input and
+	// renders no legend at all.
+	const groups = Object.values(grouped)
+	const legendNeverRendered = groups.length > 0 && groups.every(list => list.length === 1)
+
 	const updateProvider = (donationType: string, value: string, checked: boolean) => {
 		const current = grouped[donationType] ?? []
 		const exists = current.find(p => p.value === value)
@@ -233,22 +240,18 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 			<InspectorControls>
 				<PanelBody title={__('General settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show legend', 'fame_lahjoitukset')}
-						help={__(
-							'If disabled, the legend is marked visually hidden.',
-							'fame_lahjoitukset'
-						)}
+						label={strings.visibilityLabel}
+						help={strings.visibilityHelp}
 						checked={showLegend}
+						disabled={legendNeverRendered}
 						onChange={value => setAttributes({ showLegend: value })}
 					/>
 					<TextControl
-						label={__('Legend', 'fame_lahjoitukset')}
+						label={strings.captionLabel}
 						value={legend}
+						disabled={legendNeverRendered}
 						onChange={value => setAttributes({ legend: value })}
-						help={__(
-							'Description for screen readers (for accessibility).',
-							'fame_lahjoitukset'
-						)}
+						help={strings.captionHelp}
 					/>
 				</PanelBody>
 				{loading && (
@@ -330,8 +333,8 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 									tagName="legend"
 									multiline={false}
 									className="fame-form__legend"
-									aria-label={__('Legend', 'fame_lahjoitukset')}
-									placeholder={__('Donation provider', 'fame_lahjoitukset')}
+									aria-label={strings.captionLabel}
+									placeholder={translatedLegend}
 									allowedFormats={[]}
 									value={legend}
 									onChange={le => setAttributes({ legend: le })}
@@ -349,13 +352,7 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 										{providerDisplayLabel(list[0].value, list[0].label)} (
 										{__('hidden', 'fame_lahjoitukset')})
 									</div>
-									<p
-										style={{
-											color: '#757575',
-											fontSize: 12,
-											margin: '4px 0 0',
-										}}
-									>
+									<p className="fame-form__hidden-help">
 										{__(
 											'Hidden because only one payment provider is configured.',
 											'fame_lahjoitukset'

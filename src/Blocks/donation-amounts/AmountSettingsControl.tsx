@@ -14,7 +14,6 @@ type Props = {
 	other?: boolean
 	visible: boolean
 	settings: AmountSetting
-	showLegend?: boolean
 	onChange: (value: AmountSetting) => void
 }
 

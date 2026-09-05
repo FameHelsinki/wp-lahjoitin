@@ -22,6 +22,7 @@ import {
 } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import { localizedDefault } from '../common/localized-default.ts'
+import { captionStrings } from '../common/strings.ts'
 import DonationTypes from './DonationTypes.tsx'
 
 export type Attributes = {
@@ -46,11 +47,9 @@ export default function Edit({
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
 	const { types, value, legendAlign = 'left' } = attributes
-	const localizedLegend = localizedDefault(
-		attributes.legend,
-		'Donation type',
-		__('Donation type', 'fame_lahjoitukset')
-	)
+	const strings = captionStrings('legend')
+	const translatedLegend = __('Donation type', 'fame_lahjoitukset')
+	const localizedLegend = localizedDefault(attributes.legend, 'Donation type', translatedLegend)
 	const legendStyle = {
 		textAlign: legendAlign as CSSProperties['textAlign'],
 		fontFamily: 'inherit',
@@ -99,7 +98,9 @@ export default function Edit({
 		})
 	}
 
-	const visible = types && types.length > 1
+	// A single donation type is submitted with a hidden input, so there is no
+	// control left for the legend to caption.
+	const visible = !!types && types.length > 1
 
 	return (
 		<>
@@ -112,22 +113,18 @@ export default function Edit({
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<ToggleControl
-						label={__('Show legend', 'fame_lahjoitukset')}
-						help={__(
-							'If disabled, the legend is marked visually hidden.',
-							'fame_lahjoitukset'
-						)}
+						label={strings.visibilityLabel}
+						help={strings.visibilityHelp}
 						checked={attributes.showLegend}
+						disabled={!visible}
 						onChange={showLegend => setAttributes({ showLegend })}
 					/>
 
 					<TextControl
-						label={__('Legend', 'fame_lahjoitukset')}
-						help={__(
-							'Description for screen readers (for accessibility).',
-							'fame_lahjoitukset'
-						)}
+						label={strings.captionLabel}
+						help={strings.captionHelp}
 						value={localizedLegend}
+						disabled={!visible}
 						onChange={legend => setAttributes({ legend })}
 					/>
 
@@ -175,8 +172,8 @@ export default function Edit({
 								multiline={false}
 								tagName="legend"
 								className="fame-form__legend"
-								aria-label={__('Legend', 'fame_lahjoitukset')}
-								placeholder={__('Donation type', 'fame_lahjoitukset')}
+								aria-label={strings.captionLabel}
+								placeholder={translatedLegend}
 								allowedFormats={[]}
 								value={localizedLegend}
 								onChange={legend => setAttributes({ legend })}
@@ -191,34 +188,19 @@ export default function Edit({
 						/>
 					</>
 				) : (
-					<>
-						{attributes.showLegend && (
-							<RichText
-								multiline={false}
-								tagName="legend"
-								className="fame-form__legend"
-								aria-label={__('Legend', 'fame_lahjoitukset')}
-								placeholder={__('Donation type', 'fame_lahjoitukset')}
-								allowedFormats={[]}
-								value={localizedLegend}
-								onChange={legend => setAttributes({ legend })}
-								style={legendStyle}
-							/>
-						)}
+					<div>
 						<div>
-							<div>
-								{__('Donation type', 'fame_lahjoitukset')}:{' '}
-								{localizedDonationTypeLabel(types?.[0] ?? DEFAULT_DONATION_TYPE)} (
-								{__('hidden', 'fame_lahjoitukset')})
-							</div>
-							<p style={{ color: '#757575', fontSize: 12, margin: '4px 0 0' }}>
-								{__(
-									'Hidden because only one donation type is enabled.',
-									'fame_lahjoitukset'
-								)}
-							</p>
+							{translatedLegend}:{' '}
+							{localizedDonationTypeLabel(types?.[0] ?? DEFAULT_DONATION_TYPE)} (
+							{__('hidden', 'fame_lahjoitukset')})
 						</div>
-					</>
+						<p className="fame-form__hidden-help">
+							{__(
+								'Hidden because only one donation type is enabled.',
+								'fame_lahjoitukset'
+							)}
+						</p>
+					</div>
 				)}
 			</div>
 		</>

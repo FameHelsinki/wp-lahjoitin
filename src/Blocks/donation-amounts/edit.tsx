@@ -22,6 +22,7 @@ import {
 } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import { localizedDefault } from '../common/localized-default.ts'
+import { captionStrings } from '../common/strings.ts'
 import {
 	AmountSetting,
 	DEFAULT_AMOUNT,
@@ -110,6 +111,7 @@ export default function Edit({
 	} = attributes
 	const currentType = useCurrentDonationType(clientId)
 	const current = settings?.find(({ type }) => type === currentType)
+	const strings = captionStrings('legend')
 	const localizedLegend = localizedDefault(
 		localizedDefault(legend, 'Amount', DEFAULT_LEGEND),
 		'Donation amount',
@@ -202,22 +204,17 @@ export default function Edit({
 						onChange={value => setAttributes({ other: value })}
 					/>
 					<ToggleControl
-						label={__('Show legend', 'fame_lahjoitukset')}
-						help={__(
-							'If disabled, the legend is marked visually hidden.',
-							'fame_lahjoitukset'
-						)}
+						label={strings.visibilityLabel}
+						help={strings.visibilityHelp}
 						disabled={!visible}
 						checked={visible && showLegend}
 						onChange={value => setAttributes({ showLegend: value })}
 					/>
 					<TextControl
-						label={__('Legend', 'fame_lahjoitukset')}
-						help={__(
-							'Description for screen readers (for accessibility).',
-							'fame_lahjoitukset'
-						)}
+						label={strings.captionLabel}
+						help={strings.captionHelp}
 						value={localizedLegend}
+						disabled={!visible}
 						onChange={value => setAttributes({ legend: value })}
 					/>
 					{settings.some(({ amounts }) => amounts?.length) && (
@@ -263,7 +260,6 @@ export default function Edit({
 							other={other}
 							visible={visible}
 							settings={type}
-							showLegend={showLegend}
 							onChange={value => {
 								setAttributes({ settings: spliceSettings(settings, value) })
 							}}
@@ -283,8 +279,8 @@ export default function Edit({
 						multiline={false}
 						tagName="legend"
 						className="fame-form__legend"
-						aria-label={__('Legend', 'fame_lahjoitukset')}
-						placeholder={__('Amount', 'fame_lahjoitukset')}
+						aria-label={strings.captionLabel}
+						placeholder={DEFAULT_LEGEND}
 						allowedFormats={[]}
 						value={localizedLegend}
 						onChange={value => setAttributes({ legend: value })}

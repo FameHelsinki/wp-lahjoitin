@@ -57,6 +57,13 @@
 	flex-basis: 100%;
 }
 
+/* Explains in the editor why a control is not rendered on the front end. */
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__hidden-help {
+	margin: 4px 0 0;
+	color: #757575;
+	font-size: 12px;
+}
+
 .editor-styles-wrapper
 .wp-block-famehelsinki-donation-form
 .fame-form__group--required
