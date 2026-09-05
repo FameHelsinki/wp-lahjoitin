@@ -21,7 +21,11 @@ import {
 import { EditProps } from '../common/types.ts'
 import { Provider, providerDisplayLabel } from '../common/Providers.ts'
 import { useProviders } from '../common/useProviders.ts'
-import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
+import {
+	getDonationLabel,
+	useCurrentDonationType,
+	useEnabledDonationTypes,
+} from '../common/donation-type.ts'
 import { localizedDefault } from '../common/localized-default.ts'
 
 export type FlatProvider = Provider & { type: string }
@@ -46,12 +50,7 @@ export type Attributes = {
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
-export default function Edit({
-	attributes,
-	setAttributes,
-	context,
-	clientId,
-}: EditProps<Attributes>) {
+export default function Edit({ attributes, setAttributes, clientId }: EditProps<Attributes>) {
 	const {
 		providers = [],
 		legend: savedLegend,
@@ -65,11 +64,7 @@ export default function Edit({
 		translatedLegend
 	)
 
-	const donationTypes: string[] = useMemo(
-		() => context['famehelsinki/donation-types'] || [],
-		[context]
-	)
-
+	const donationTypes = useEnabledDonationTypes(clientId)
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
 	const termsPlaceholder = __('Add privacy policy and terms text here…', 'fame_lahjoitukset')
@@ -116,6 +111,8 @@ export default function Edit({
 		// Wait until the available providers have loaded so we don't seed
 		// defaults from an empty list before the API responds.
 		if (!available.length) return
+		// Enabled donation types are not known yet.
+		if (!donationTypes) return
 
 		const missing = donationTypes.filter(type => !providers.some(p => p.type === type))
 		if (!missing.length) return
@@ -136,6 +133,9 @@ export default function Edit({
 		// providers disabled for the organization must not remain visible in the
 		// preview without a corresponding checkbox in the inspector.
 		if (loading || error) return
+		// Without the enabled donation types every saved provider would be
+		// filtered out below, so leave the selections alone.
+		if (!donationTypes) return
 
 		const paytrail = available.find(p => p.value.toLowerCase() === 'paytrail')
 		const normalized: FlatProvider[] = []
@@ -279,7 +279,7 @@ export default function Edit({
 						</Notice>
 					</PanelBody>
 				)}
-				{donationTypes.map(type => {
+				{(donationTypes ?? []).map(type => {
 					const selected = new Set((grouped[type] ?? []).map(p => p.value))
 
 					return (

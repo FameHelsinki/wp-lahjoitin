@@ -9,7 +9,6 @@ import {
 import {
 	PanelBody,
 	TextControl,
-	CheckboxControl,
 	ColorPicker,
 	BaseControl,
 	RangeControl,
@@ -18,7 +17,6 @@ import { useInstanceId } from '@wordpress/compose'
 import { useDispatch, useSelect } from '@wordpress/data'
 import { createBlock, type BlockInstance } from '@wordpress/blocks'
 
-import { DEFAULT_DONATION_TYPE, getDonationLabel, DONATION_TYPES } from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 
 const TOP_ALLOWED_BLOCKS = ['core/columns'] as const
@@ -99,7 +97,6 @@ export default function Edit({
 	clientId,
 }: EditProps & { clientId: string }): React.JSX.Element {
 	const {
-		types,
 		returnAddress,
 		primaryColor,
 		secondaryColor,
@@ -113,7 +110,6 @@ export default function Edit({
 		sectionLabelColor,
 		sectionLabelFontSize,
 	} = attributes as {
-		types?: string[]
 		returnAddress?: string
 		primaryColor?: string
 		secondaryColor?: string
@@ -129,15 +125,6 @@ export default function Edit({
 	}
 
 	const cols = Math.min(3, Math.max(1, colsDesktop ?? 3)) as 1 | 2 | 3
-
-	useEffect(() => {
-		if (!types || types.length === 0) {
-			setAttributes({ types: [DEFAULT_DONATION_TYPE.value] })
-		}
-	}, [types, setAttributes])
-
-	const allTypes = (DONATION_TYPES?.map(t => t.value) ?? ['single', 'recurring']) as string[]
-	const order = allTypes
 
 	type ThemeVars = Partial<
 		Record<
@@ -276,42 +263,6 @@ export default function Edit({
 						value={cols}
 						onChange={(v?: number) => setAttributes({ colsDesktop: v ?? 3 })}
 					/>
-
-					<div
-						role="group"
-						aria-label={__('Enabled donation types', 'fame_lahjoitukset')}
-					>
-						{allTypes.map(type => {
-							const selected = new Set(types ?? [])
-							const checked = selected.has(type)
-							const canUncheck = selected.size > 1
-
-							return (
-								<CheckboxControl
-									help={__(
-										'Choose the donation type to enable.',
-										'fame_lahjoitukset'
-									)}
-									key={type}
-									label={getDonationLabel(type)}
-									checked={checked}
-									onChange={(nextChecked: boolean) => {
-										let next = Array.from(selected)
-
-										if (nextChecked) {
-											if (!checked) next.push(type)
-										} else {
-											if (!canUncheck) return
-											next = next.filter(t => t !== type)
-										}
-
-										next.sort((a, b) => order.indexOf(a) - order.indexOf(b))
-										setAttributes({ types: next })
-									}}
-								/>
-							)
-						})}
-					</div>
 
 					<TextControl
 						label={__('Return address', 'fame_lahjoitukset')}

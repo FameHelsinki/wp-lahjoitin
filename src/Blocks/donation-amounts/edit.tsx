@@ -15,7 +15,11 @@ import {
 	AlignmentToolbar,
 	BlockControls,
 } from '@wordpress/block-editor'
-import { getDonationLabel, useCurrentDonationType } from '../common/donation-type.ts'
+import {
+	getDonationLabel,
+	useCurrentDonationType,
+	useEnabledDonationTypes,
+} from '../common/donation-type.ts'
 import { EditProps } from '../common/types.ts'
 import { localizedDefault } from '../common/localized-default.ts'
 import {
@@ -90,12 +94,11 @@ function removeLastAmount(setting: AmountSetting) {
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({
-	context,
 	attributes,
 	setAttributes,
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
-	const { 'famehelsinki/donation-types': types } = context
+	const types = useEnabledDonationTypes(clientId)
 	const {
 		settings,
 		other,
@@ -118,9 +121,16 @@ export default function Edit({
 			return
 		}
 
+		if (!types) {
+			return
+		}
+
+		const enabled = new Set(types)
+
 		const exists = !!settings?.find(({ type }) => type === currentType)
 		const needsUpdate = settings?.some(
-			value => !types.includes(value.type) || value.default !== (value.type === currentType)
+			value =>
+				!enabled.has(value.type ?? '') || value.default !== (value.type === currentType)
 		)
 		const missingTypes: any[] =
 			types?.filter((type: any) => !settings?.find(setting => setting.type === type)) ?? []
@@ -132,7 +142,7 @@ export default function Edit({
 		const newSettings =
 			settings
 				// Remove invalid types.
-				?.filter(({ type }) => types.includes(type))
+				?.filter(({ type }) => enabled.has(type ?? ''))
 				// Update default attribute.
 				?.map(setting => {
 					setting.default = setting.type === currentType

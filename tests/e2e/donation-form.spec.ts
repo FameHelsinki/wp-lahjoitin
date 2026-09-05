@@ -38,9 +38,7 @@ test.describe('donation form', () => {
 		await expect(canvas.locator('[data-type="famehelsinki/donation-providers"]')).toBeVisible()
 		await expect(canvas.locator('[data-type="famehelsinki/form-controls"]')).toBeVisible()
 
-		// Enable both donation types so the published form exercises the recurring
-		// charge-day selector while keeping single as the default.
-		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-type"]'))
 		await editor.openDocumentSettingsSidebar()
 		await page.getByRole('checkbox', { name: 'Recurring' }).check()
 

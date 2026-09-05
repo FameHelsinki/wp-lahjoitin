@@ -1,6 +1,12 @@
 import React, { CSSProperties, useEffect } from 'react'
 import { __ } from '@wordpress/i18n'
-import { RadioControl, PanelBody, TextControl, ToggleControl } from '@wordpress/components'
+import {
+	CheckboxControl,
+	RadioControl,
+	PanelBody,
+	TextControl,
+	ToggleControl,
+} from '@wordpress/components'
 import {
 	InspectorControls,
 	RichText,
@@ -30,15 +36,15 @@ export type Attributes = {
  * The edit function describes the structure of your block in the context of the
  * editor. This represents what the editor will render when the block is used.
  *
+ * Other form blocks read donation types from this block with useEnabledDonationTypes().
+ *
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({
-	context,
 	attributes,
 	setAttributes,
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
-	const { 'famehelsinki/donation-types': enabledTypes } = context
 	const { types, value, legendAlign = 'left' } = attributes
 	const localizedLegend = localizedDefault(
 		attributes.legend,
@@ -51,60 +57,47 @@ export default function Edit({
 	}
 
 	useEffect(() => {
-		const enabled =
-			Array.isArray(enabledTypes) && enabledTypes.length > 0
-				? enabledTypes
-				: DONATION_TYPES.map(t => t.value)
+		const current = Array.isArray(types) ? types : []
 
-		// Calculate updated types.
-		//  - enabled types might have changed.
-		//  - enabled types might have been removed.
-		const update = DONATION_TYPES
-			// Filter all enabled types.
-			.filter(({ value: typeValue }) => enabled.includes(typeValue))
-			// Use existing type from if it exists, otherwise add
-			// new with default label from DONATION_TYPES array.
-			.map(t => {
-				const existing = types?.find(({ value: typeValue }) => t.value === typeValue)
-				if (!existing) return { value: t.value, label: '' }
-
-				const legacyLabel = t.value === 'recurring' ? 'Recurring' : 'Single'
-				return {
-					...existing,
-					label:
-						!existing.label?.trim() || existing.label === legacyLabel
-							? ''
-							: existing.label,
-				}
-			})
-
-		// Calculate default value. Use existing if it exists in updated list, otherwise use first from updated list or fallback to default.
-		const defaultValue =
-			update?.find(type => type.value === value)?.value ??
-			update?.[0]?.value ??
-			DEFAULT_DONATION_TYPE.value
-
-		// Update if the list has changed. Calling setAttributes
-		// without this check leads to infinite recursion.
-		// This assumes that DONATION_TYPES and types attribute
-		// have the same order.
-		if (
-			update?.length !== types?.length ||
-			!update.every(
-				(item, idx) =>
-					item.value === types?.[idx]?.value && item.label === types?.[idx]?.label
-			)
-		) {
+		// Seed a freshly inserted block with the default donation type.
+		if (current.length === 0) {
 			setAttributes({
-				types: update,
-				value: defaultValue,
+				types: [{ value: DEFAULT_DONATION_TYPE.value, label: '' }],
+				value: DEFAULT_DONATION_TYPE.value,
 			})
-		} else if (value !== defaultValue) {
-			setAttributes({
-				value: defaultValue,
-			})
+			return
 		}
-	}, [types, value, enabledTypes, setAttributes])
+
+		// Keep the default donation type among the enabled ones.
+		if (!current.some(type => type.value === value)) {
+			setAttributes({ value: current[0].value })
+		}
+	}, [types, value, setAttributes])
+
+	/**
+	 * Enables or disables a single donation type.
+	 */
+	const toggleEnabledType = (type: string, nextChecked: boolean) => {
+		const enabled = new Set((types ?? []).map(({ value: typeValue }) => typeValue))
+		if (nextChecked === enabled.has(type)) return
+		// The form always needs at least one donation type.
+		if (!nextChecked && enabled.size <= 1) return
+
+		if (nextChecked) enabled.add(type)
+		else enabled.delete(type)
+
+		const next = DONATION_TYPES.filter(({ value: typeValue }) => enabled.has(typeValue)).map(
+			({ value: typeValue }) => ({
+				value: typeValue,
+				label: types?.find(existing => existing.value === typeValue)?.label ?? '',
+			})
+		)
+
+		setAttributes({
+			types: next,
+			value: next.some(({ value: typeValue }) => typeValue === value) ? value : next[0].value,
+		})
+	}
 
 	const visible = types && types.length > 1
 
@@ -118,18 +111,6 @@ export default function Edit({
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
-					{types?.length && types?.length > 1 && (
-						<RadioControl
-							label={__('Default donation type', 'fame_lahjoitukset')}
-							help={__(
-								'Select donation type that will be used by default.',
-								'fame_lahjoitukset'
-							)}
-							selected={value ?? types?.[0]?.value}
-							options={types}
-							onChange={nextValue => setAttributes({ value: nextValue })}
-						/>
-					)}
 					<ToggleControl
 						label={__('Show legend', 'fame_lahjoitukset')}
 						help={__(
@@ -149,6 +130,41 @@ export default function Edit({
 						value={localizedLegend}
 						onChange={legend => setAttributes({ legend })}
 					/>
+
+					<div
+						className="donation-type__enabled-types"
+						role="group"
+						aria-label={__('Enabled donation types', 'fame_lahjoitukset')}
+					>
+						{DONATION_TYPES.map(({ value: typeValue, label }) => (
+							<CheckboxControl
+								key={typeValue}
+								label={label}
+								help={__(
+									'Choose the donation type to enable.',
+									'fame_lahjoitukset'
+								)}
+								checked={(types ?? []).some(type => type.value === typeValue)}
+								onChange={next => toggleEnabledType(typeValue, next)}
+							/>
+						))}
+					</div>
+
+					{(types?.length ?? 0) > 1 && (
+						<RadioControl
+							label={__('Default donation type', 'fame_lahjoitukset')}
+							help={__(
+								'Select donation type that will be used by default.',
+								'fame_lahjoitukset'
+							)}
+							selected={value ?? types?.[0]?.value}
+							options={(types ?? []).map(type => ({
+								value: type.value,
+								label: localizedDonationTypeLabel(type),
+							}))}
+							onChange={nextValue => setAttributes({ value: nextValue })}
+						/>
+					)}
 				</PanelBody>
 			</InspectorControls>
 			<div {...useBlockProps({ className: 'donation-type' })}>

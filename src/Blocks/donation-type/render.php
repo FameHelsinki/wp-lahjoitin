@@ -9,7 +9,6 @@ defined('ABSPATH') || exit;
  *
  * @var array<string, mixed>|null $attributes Block attributes.
  * @var string|null              $content    Inner content (unused here).
- * @var WP_Block                 $block      Block instance.
  */
 
 $attributes = $attributes ?? [];
@@ -46,21 +45,10 @@ $legend_style = 'text-align:' . $legend_align . ';';
 $saved_types = (isset($attributes['types']) && is_array($attributes['types'])) ? $attributes['types'] : [];
 $saved_value = isset($attributes['value']) ? (string) $attributes['value'] : '';
 
-// Context: enabled donation types from parent (providesContext).
-$enabled_types = [];
-if (array_key_exists('famehelsinki/donation-types', $block->context)) {
-  $raw = $block->context['famehelsinki/donation-types'];
-  if (is_array($raw)) {
-    $enabled_types = array_values(array_map('strval', $raw));
-  }
-}
-
-// Types comes from attributes (saved) or context (enabled) or fallback (default).
 $types = !empty($saved_types)
   ? $saved_types
   : [
-    ['value' => 'single',    'label' => __('Single', 'fame_lahjoitukset')],
-    ['value' => 'recurring', 'label' => __('Recurring', 'fame_lahjoitukset')],
+    ['value' => 'single', 'label' => __('Single', 'fame_lahjoitukset')],
   ];
 
 $types = array_values(array_filter(
@@ -78,13 +66,6 @@ $types = array_map(static function (array $type) use ($localized_default): array
   }
   return $type;
 }, $types);
-
-if (!empty($enabled_types)) {
-  $types = array_values(array_filter(
-    $types,
-    static fn($t) => in_array((string) $t['value'], $enabled_types, true)
-  ));
-}
 
 // Fallback
 if (empty($types)) {

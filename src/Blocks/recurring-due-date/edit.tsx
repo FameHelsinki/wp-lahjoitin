@@ -9,6 +9,7 @@ import {
 } from '@wordpress/components'
 import { __, sprintf } from '@wordpress/i18n'
 import { EditProps } from '../common/types.ts'
+import { useEnabledDonationTypes } from '../common/donation-type.ts'
 import { localizedDefault } from '../common/localized-default.ts'
 import { DEFAULT_DUE_DATE_DAY, DUE_DATE_DAYS, normalizeDueDateDays } from '../common/due-date.ts'
 import './edit.css'
@@ -22,14 +23,11 @@ type Attributes = {
 export default function Edit({
 	attributes,
 	setAttributes,
-	context,
 	clientId,
 }: EditProps<Attributes>): React.JSX.Element {
-	const enabledTypes = context['famehelsinki/donation-types']
-	const recurringEnabled =
-		!Array.isArray(enabledTypes) ||
-		enabledTypes.length === 0 ||
-		enabledTypes.includes('recurring')
+	const enabledTypes = useEnabledDonationTypes(clientId)
+	// Keep the block visible while the enabled types are still unknown.
+	const recurringEnabled = enabledTypes === null || enabledTypes.includes('recurring')
 	const label = localizedDefault(
 		attributes.label,
 		'Charge day',

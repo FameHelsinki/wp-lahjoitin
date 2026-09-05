@@ -7,14 +7,7 @@
 	"category": "widgets",
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
-	"providesContext": {
-		"famehelsinki/donation-types": "types"
-	},
 	"attributes": {
-		"types": {
-			"type": "array",
-			"default": []
-		},
 		"colsDesktop": {
 			"type": "number",
 			"default": 1

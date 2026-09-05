@@ -12,7 +12,6 @@
 		"showLabel": { "type": "boolean", "default": true },
 		"days": { "type": "array", "default": [] }
 	},
-	"usesContext": ["famehelsinki/donation-types"],
 	"supports": {
 		"multiple": false,
 		"color": { "background": false, "text": true },
