@@ -97,4 +97,35 @@ final class BlocksTest extends WP_UnitTestCase
         $this->assertStringContainsString('<option value="Spring">', $rendered);
         $this->assertStringContainsString('<option value="Autumn">', $rendered);
     }
+
+    public function testDueDateWithoutDaysIsRenderedAsHiddenInputWithDefaultDay(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/recurring-due-date ' . wp_json_encode(['days' => []]) . ' /-->');
+
+        $this->assertStringContainsString('<input type="hidden" name="due_date" value="5"', $rendered);
+        $this->assertStringContainsString('data-recurring-due-date-input', $rendered);
+        $this->assertStringContainsString('disabled', $rendered);
+        $this->assertStringNotContainsString('<select', $rendered);
+    }
+
+    public function testSingleDueDateDayIsRenderedAsHiddenInput(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/recurring-due-date ' . wp_json_encode(['days' => [12]]) . ' /-->');
+
+        $this->assertStringContainsString('<input type="hidden" name="due_date" value="12"', $rendered);
+        $this->assertStringNotContainsString('<select', $rendered);
+    }
+
+    public function testMultipleDueDateDaysAreRenderedAsSelect(): void
+    {
+        $rendered = do_blocks('<!-- wp:famehelsinki/recurring-due-date ' . wp_json_encode(['days' => [15, 1]]) . ' /-->');
+
+        $this->assertStringContainsString('name="due_date"', $rendered);
+        $this->assertStringNotContainsString('<input type="hidden" name="due_date"', $rendered);
+
+        // Days are sorted, so the lowest day is the preselected default.
+        $this->assertStringContainsString("<option value=\"1\"  selected='selected'>", $rendered);
+        $this->assertStringContainsString('<option value="15" >', $rendered);
+        $this->assertStringNotContainsString('<option value="2"', $rendered);
+    }
 }

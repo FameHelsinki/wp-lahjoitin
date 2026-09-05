@@ -212,6 +212,40 @@ describe('FormHandler events', () => {
 		})
 	})
 
+	test('submits the hidden due_date input only for recurring donations', () => {
+		// Fewer than two configured days render a bare hidden input instead of
+		// the selector, but the recurring-only rule must still hold.
+		form.querySelector('[data-recurring-due-date]')!.outerHTML =
+			'<input type="hidden" name="due_date" value="5" data-recurring-due-date-input disabled />'
+		handler = new FormHandler('https://api.lahjoitin.fi', 'my-org', form)
+
+		let captured: FormSubmitEvent | undefined
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			captured = event as FormSubmitEvent
+			event.preventDefault()
+		})
+
+		const dueDate = form.querySelector<HTMLInputElement>('[name="due_date"]')!
+		expect(dueDate.disabled).toBe(true)
+
+		submit()
+		expect(captured?.detail.data).not.toHaveProperty('due_date')
+
+		const recurring = form.querySelector<HTMLInputElement>(
+			'input[name="type"][value="recurring"]'
+		)!
+		recurring.checked = true
+		recurring.dispatchEvent(new Event('change', { bubbles: true }))
+		expect(dueDate.disabled).toBe(false)
+
+		submit()
+
+		expect(captured?.detail.data).toMatchObject({
+			type: 'recurring',
+			due_date: '5',
+		})
+	})
+
 	test('preventDefault() on the submit event cancels submission', async () => {
 		const fetchMock = jest.fn()
 		;(globalThis as any).fetch = fetchMock

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-04T22:23:42+00:00\n"
+"POT-Creation-Date: 2026-09-05T00:36:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -106,8 +106,8 @@ msgstr ""
 msgid "Select campaign"
 msgstr ""
 
-#: build/Blocks/donation-form/render.php:141
-#: src/Blocks/donation-form/render.php:141
+#: build/Blocks/donation-form/render.php:138
+#: src/Blocks/donation-form/render.php:138
 msgid "Loading"
 msgstr ""
 
@@ -117,8 +117,8 @@ msgstr ""
 msgid "Payment provider"
 msgstr ""
 
-#: build/Blocks/donation-providers/render.php:135
-#: src/Blocks/donation-providers/render.php:135
+#: build/Blocks/donation-providers/render.php:129
+#: src/Blocks/donation-providers/render.php:129
 msgid "Payment methods are currently unavailable. Please try again later."
 msgstr ""
 
@@ -165,14 +165,14 @@ msgstr ""
 msgid "Please enable JavaScript to use this form."
 msgstr ""
 
-#: build/Blocks/recurring-due-date/render.php:19
-#: src/Blocks/recurring-due-date/render.php:19
+#: build/Blocks/recurring-due-date/render.php:43
+#: src/Blocks/recurring-due-date/render.php:43
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Charge day"
 msgstr ""
 
-#: build/Blocks/recurring-due-date/render.php:52
-#: src/Blocks/recurring-due-date/render.php:52
+#: build/Blocks/recurring-due-date/render.php:75
+#: src/Blocks/recurring-due-date/render.php:75
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "The donation will be charged on this day each month."
 msgstr ""
@@ -226,6 +226,7 @@ msgstr ""
 #: build/Blocks/contact-form/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/donation-providers/index.js:1
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Label"
 msgstr ""
 
@@ -271,8 +272,13 @@ msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
+#: build/Blocks/donation-providers/index.js:1
 #: build/Blocks/donation-type/index.js:1
 msgid "If disabled, the legend is marked visually hidden."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "If disabled, the label is marked visually hidden."
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
@@ -286,6 +292,7 @@ msgstr ""
 #: build/Blocks/donation-amounts/index.js:1
 #: build/Blocks/donation-providers/index.js:1
 #: build/Blocks/donation-type/index.js:1
+#: build/Blocks/recurring-due-date/index.js:1
 msgid "Description for screen readers (for accessibility)."
 msgstr ""
 
@@ -612,15 +619,39 @@ msgid "Recurring button text"
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1
-msgid "Default charge day"
+msgid "Hidden because only one charge day is configured."
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1
-msgid "Donors can change this day when making a recurring donation."
+msgid "Hidden because no charge days are configured."
 msgstr ""
 
 #: build/Blocks/recurring-due-date/index.js:1
 msgid "Hidden because recurring donations are not enabled."
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:1
+msgid "Charge days"
+msgstr ""
+
+#. translators: %d: charge day used when no days are selected.
+#: build/Blocks/recurring-due-date/index.js:2
+#, js-format
+msgid "Select at least two days to let donors choose. With fewer, the first selected day (or day %d) is submitted without showing the field."
+msgstr ""
+
+#. translators: %d: day of month.
+#: build/Blocks/recurring-due-date/index.js:3
+#, js-format
+msgid "Day %d"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:3
+msgid "Select all"
+msgstr ""
+
+#: build/Blocks/recurring-due-date/index.js:3
+msgid "Clear"
 msgstr ""
 
 #: build/Blocks/contact-form/block.json
