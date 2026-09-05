@@ -316,13 +316,6 @@ input {
 	margin-bottom: 0;
 }
 
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-amounts
-.donation-amounts__other
-.donation-amounts__minmax {
-	font-size: 0.8em;
-}
-
 /* Hover before checked (order for no-descending-specificity) */
 .wp-block-famehelsinki-donation-form
 .wp-block-famehelsinki-donation-amounts

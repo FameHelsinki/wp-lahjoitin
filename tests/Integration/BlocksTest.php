@@ -51,4 +51,26 @@ final class BlocksTest extends WP_UnitTestCase
 
         $this->assertStringContainsString('wp-block-famehelsinki-donation-form', $rendered);
     }
+
+    public function testOtherAmountHelpTextIsRendered(): void
+    {
+		$settings = [
+			[
+				'type' => 'single',
+				'default' => true,
+				'defaultAmount' => 10,
+				'minAmount' => 10,
+				'maxAmount' => 10000,
+				'helpText' => 'Vähintään 10€',
+				'unit' => '€',
+				'amounts' => [],
+			]
+		];
+
+		$rendered = do_blocks('<!-- wp:famehelsinki/donation-amounts ' . wp_json_encode(['other' => true, 'settings' => $settings]) . ' /-->');
+
+        $this->assertStringContainsString('id="single-amount-help"', $rendered);
+        $this->assertStringContainsString('Vähintään 10€', $rendered);
+        $this->assertStringContainsString('aria-describedby="single-amount-help"', $rendered);
+    }
 }

@@ -6,7 +6,7 @@
 
 <!-- wp:famehelsinki/donation-campaigns /-->
 
-<!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"showMaxAmount":false,"unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]},{"type":"recurring","amounts":[{"value":10},{"value":20},{"value":30}],"default":false,"defaultAmount":10,"unit":"€","minAmount":10,"maxAmount":10000,"showMaxAmount":false}]} /-->
+<!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"helpText":"","unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]},{"type":"recurring","amounts":[{"value":10},{"value":20},{"value":30}],"default":false,"defaultAmount":10,"unit":"€","minAmount":10,"maxAmount":10000,"helpText":""}]} /-->
 
 <!-- wp:famehelsinki/recurring-due-date /--></div>
 <!-- /wp:group -->

@@ -139,7 +139,6 @@ export default function Edit({
 					if (setting.minAmount === null) setting.minAmount = MIN_AMOUNT
 					if (setting.maxAmount === null) setting.maxAmount = MAX_AMOUNT
 					if (setting.unit === null) setting.unit = DEFAULT_UNIT
-					if (setting.showMaxAmount === undefined) setting.showMaxAmount = false
 					return setting
 				}) ?? []
 
@@ -154,7 +153,7 @@ export default function Edit({
 				unit: DEFAULT_UNIT,
 				minAmount: MIN_AMOUNT,
 				maxAmount: MAX_AMOUNT,
-				showMaxAmount: false,
+				helpText: '',
 			})
 		}
 
@@ -289,6 +288,9 @@ export default function Edit({
 					other={other}
 					otherLabel={otherLabel}
 					setAttributes={setAttributes}
+					onChangeSetting={value =>
+						setAttributes({ settings: spliceSettings(settings, value) })
+					}
 				/>
 			</div>
 		</>

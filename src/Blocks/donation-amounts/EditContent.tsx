@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AmountSetting, DEFAULT_AMOUNT, MIN_AMOUNT, MAX_AMOUNT } from '../common/donation-amount.ts'
+import { AmountSetting, DEFAULT_AMOUNT } from '../common/donation-amount.ts'
 import { RichText } from '@wordpress/block-editor'
 import { __ } from '@wordpress/i18n'
 import { localizedDefault } from '../common/localized-default.ts'
@@ -10,9 +10,10 @@ type Props = {
 	other?: boolean
 	otherLabel?: string
 	setAttributes: (attributes: any) => void
+	onChangeSetting: (value: AmountSetting) => void
 }
 
-const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) => {
+const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes, onChangeSetting }) => {
 	if (!current) return null
 
 	if (!other && !current?.amounts?.length) {
@@ -65,17 +66,16 @@ const EditContent: FC<Props> = ({ current, other, otherLabel, setAttributes }) =
 					<div className="donation-amounts__other__placeholder">
 						{current.defaultAmount} {current.unit}
 					</div>
-					<span className="donation-amounts__minmax">
-						{__('Min', 'fame_lahjoitukset')} {current.minAmount ?? MIN_AMOUNT}
-						{current.unit ?? ''}
-						{current.showMaxAmount && (
-							<>
-								{' – '}
-								{__('Max', 'fame_lahjoitukset')} {current.maxAmount ?? MAX_AMOUNT}
-								{current.unit ?? ''}
-							</>
-						)}
-					</span>
+					<RichText
+						tagName="small"
+						multiline={false}
+						className="fame-form__help"
+						allowedFormats={[]}
+						aria-label={__('Help text', 'fame_lahjoitukset')}
+						placeholder={__('Help text', 'fame_lahjoitukset')}
+						value={current.helpText ?? ''}
+						onChange={value => onChangeSetting({ ...current, helpText: value })}
+					/>
 				</div>
 			)}
 		</>

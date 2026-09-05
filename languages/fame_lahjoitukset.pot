@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-25T07:07:16+00:00\n"
+"POT-Creation-Date: 2026-09-04T21:56:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -93,18 +93,6 @@ msgstr ""
 #: src/Blocks/donation-amounts/render.php:43
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Donation amount"
-msgstr ""
-
-#: build/Blocks/donation-amounts/render.php:240
-#: src/Blocks/donation-amounts/render.php:240
-#: build/Blocks/donation-amounts/index.js:1
-msgid "Min"
-msgstr ""
-
-#: build/Blocks/donation-amounts/render.php:246
-#: src/Blocks/donation-amounts/render.php:246
-#: build/Blocks/donation-amounts/index.js:1
-msgid "Max"
 msgstr ""
 
 #: build/Blocks/donation-campaigns/render.php:42
@@ -199,31 +187,31 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/Settings.php:49
+#: src/Settings.php:50
 msgid "Slug"
 msgstr ""
 
-#: src/Settings.php:50
+#: src/Settings.php:51
 msgid "Your organization slug provided by lahjoitin.fi"
 msgstr ""
 
-#: src/Settings.php:54
+#: src/Settings.php:55
 msgid "Use staging environment"
 msgstr ""
 
-#: src/Settings.php:55
+#: src/Settings.php:56
 msgid "Send donations to the staging/test environment for testing."
 msgstr ""
 
-#: src/Settings.php:60
+#: src/Settings.php:61
 msgid "Fame lahjoitukset settings"
 msgstr ""
 
-#: src/Settings.php:61
+#: src/Settings.php:62
 msgid "Lahjoitukset"
 msgstr ""
 
-#: src/Settings.php:90
+#: src/Settings.php:91
 msgid "Lahjoitukset: the staging environment is enabled, donations are not sent to the live payment providers."
 msgstr ""
 
@@ -242,6 +230,7 @@ msgid "Label"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Help text"
 msgstr ""
 
@@ -338,14 +327,6 @@ msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Maximum amount for other amount field."
-msgstr ""
-
-#: build/Blocks/donation-amounts/index.js:1
-msgid "Show maximum amount to donor"
-msgstr ""
-
-#: build/Blocks/donation-amounts/index.js:1
-msgid "Show the maximum amount in the helper text under the other amount field."
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
