@@ -23,6 +23,22 @@ add_action('init', static function (): void {
 }, 0);
 
 /**
+ * Hide plugin updates. The demo may run an unreleased build, and "updating" it
+ * to the latest release would replace the code being demonstrated.
+ */
+add_filter('site_transient_update_plugins', static function ($transient) {
+    if (is_object($transient) && isset($transient->response)) {
+        foreach (array_keys($transient->response) as $file) {
+            if (str_ends_with($file, '/fame-lahjoitukset.php')) {
+                unset($transient->response[$file]);
+            }
+        }
+    }
+
+    return $transient;
+});
+
+/**
  * Answer the server-side `/providers/{slug}` lookup without a loopback request.
  */
 add_filter('pre_http_request', static function ($preempt, $args, $url) {

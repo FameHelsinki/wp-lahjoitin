@@ -80,9 +80,9 @@ jobs:
                       ./ "$STAGE/fame-lahjoitukset/"
                   (cd "$STAGE" && zip -r "$PACKAGE" fame-lahjoitukset)
 
-            # Create workflow artifact.
+            # Create workflow artifact. The Pages job deploys it as the demo's
+            # plugin, so every run uploads it.
             - uses: actions/upload-artifact@v7
-              if: github.event_name != 'release'
               with:
                   name: fame-lahjoitukset.zip
                   path: ${{ steps.release-setup.outputs.PACKAGE }}
@@ -95,52 +95,48 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ github.TOKEN }}
 
-    # Decide whether this run should drive the public update channel.
+    # Decide whether this release should drive the public update channel.
     # We only publish for the release GitHub considers "latest" and skip
     # pre-releases, so that editing an older release cannot downgrade
-    # existing installs. A manual run republishes the latest release, which
-    # lets demo changes go live without cutting a new release.
+    # existing installs.
     check-release:
-        if: >-
-            github.event_name == 'workflow_dispatch' ||
-            (github.event_name == 'release' && github.event.release.prerelease == false)
+        if: github.event_name == 'release' && github.event.release.prerelease == false
         runs-on: ubuntu-latest
         outputs:
             is_latest: ${{ steps.check.outputs.is_latest }}
-            tag: ${{ steps.check.outputs.tag }}
         steps:
             - name: Compare tag against latest release
               id: check
               env:
-                  EVENT: ${{ github.event_name }}
                   TAG: ${{ github.event.release.tag_name }}
                   REPO: ${{ github.repository }}
                   GH_TOKEN: ${{ github.token }}
               run: |
-                  LATEST_TAG=$(gh api "/repos/${REPO}/releases/latest" --jq .tag_name || true)
-                  if [ "$EVENT" = "workflow_dispatch" ]; then
-                      TAG="$LATEST_TAG"
-                  fi
-
-                  if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" = "$TAG" ]; then
+                  LATEST_TAG=$(gh api "/repos/${REPO}/releases/latest" --jq .tag_name)
+                  if [ "$LATEST_TAG" = "$TAG" ]; then
                       echo "is_latest=true" >> "$GITHUB_OUTPUT"
-                      echo "tag=$TAG" >> "$GITHUB_OUTPUT"
                   else
                       echo "is_latest=false" >> "$GITHUB_OUTPUT"
-                      echo "Skipping manifest publish: '$TAG' is not the latest release ('$LATEST_TAG')."
+                      echo "Skipping manifest publish: $TAG is not the latest release ($LATEST_TAG)."
                   fi
 
-    # Publish auto-update metadata to GitHub Pages. The Lahjoitin plugin's
-    # Updater component fetches this JSON to discover new versions, so this
-    # job is the public side of the auto-update mechanism.
+    # Publish auto-update metadata and the Playground demo to GitHub Pages.
+    # The Lahjoitin plugin's Updater component fetches update.json to discover
+    # new versions, so this job is the public side of the auto-update
+    # mechanism. Only releases regenerate update.json. A manual run redeploys
+    # the demo with the plugin built from the selected branch, so unreleased
+    # features can be shown before they ship.
     publish-metadata:
         needs: [build, check-release]
-        if: needs.check-release.outputs.is_latest == 'true'
+        if: >-
+            !cancelled() && needs.build.result == 'success' &&
+            (github.event_name == 'workflow_dispatch' || needs.check-release.outputs.is_latest == 'true')
         runs-on: ubuntu-latest
         permissions:
             contents: read
             pages: write
             id-token: write
+            actions: read
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
@@ -148,35 +144,33 @@ jobs:
             group: github-pages
             cancel-in-progress: false
         steps:
-            # Demo files come from the ref the workflow runs on (main for a
-            # manual run), plugin metadata from the released tag.
             - uses: actions/checkout@v6
 
-            - uses: actions/checkout@v6
-              with:
-                  ref: ${{ needs.check-release.outputs.tag }}
-                  path: release
+            - name: Setup Pages
+              id: pages
+              uses: actions/configure-pages@v5
+
+            - name: Create site directory
+              run: mkdir -p _site
 
             - name: Generate update.json
+              if: github.event_name == 'release'
               env:
-                  TAG: ${{ needs.check-release.outputs.tag }}
+                  TAG: ${{ github.event.release.tag_name }}
+                  RELEASE_BODY: ${{ github.event.release.body }}
+                  PUBLISHED_AT: ${{ github.event.release.published_at }}
                   REPO: ${{ github.repository }}
                   GH_TOKEN: ${{ github.token }}
               run: |
                   VERSION="${TAG#v}"
                   DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${TAG}/fame-lahjoitukset-${VERSION}.zip"
 
-                  # Release notes and date, the same for release and manual runs.
-                  RELEASE_JSON=$(gh api "/repos/${REPO}/releases/tags/${TAG}")
-                  RELEASE_BODY=$(jq -r '.body // ""' <<< "$RELEASE_JSON")
-                  PUBLISHED_AT=$(jq -r '.published_at' <<< "$RELEASE_JSON")
-
                   # Read metadata from the plugin docblock and readme
-                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" release/fame-lahjoitukset.php)
-                  AUTHOR=$(grep -Po "Author:\s+\K.*$" release/fame-lahjoitukset.php)
-                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" release/fame-lahjoitukset.php)
-                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" release/fame-lahjoitukset.php)
-                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" release/readme.txt)
+                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" fame-lahjoitukset.php)
+                  AUTHOR=$(grep -Po "Author:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" fame-lahjoitukset.php)
+                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" fame-lahjoitukset.php)
+                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" readme.txt)
 
                   # Render the release notes (Markdown) as HTML for the
                   # "View details" modal. Fall back to a <pre> wrapper if the
@@ -188,7 +182,6 @@ jobs:
                       CHANGELOG_HTML="<pre>${RELEASE_BODY}</pre>"
                   fi
 
-                  mkdir -p _site
                   jq -n \
                       --arg name "$NAME" \
                       --arg author "$AUTHOR" \
@@ -219,24 +212,38 @@ jobs:
 
                   # Ship optional icon/banner assets alongside update.json if
                   # the repo provides them under assets/.
-                  if [ -d release/assets ]; then
-                      cp -r release/assets _site/assets
+                  if [ -d assets ]; then
+                      cp -r assets _site/assets
+                  fi
+
+            # A deploy replaces the whole Pages site, so a manual run must carry
+            # the published update.json and assets over unchanged. Fail rather
+            # than deploy a site without update.json, which would break updates
+            # for installed sites.
+            - name: Keep published update.json
+              if: github.event_name != 'release'
+              env:
+                  BASE_URL: ${{ steps.pages.outputs.base_url }}
+              run: |
+                  curl --fail --silent --show-error --location "${BASE_URL}/update.json" --output _site/update.json
+                  if [ -d assets ]; then
+                      cp -r assets _site/assets
                   fi
 
             # WordPress Playground demo. The blueprint fetches the plugin zip and
             # demo files from Pages, which serves them with permissive CORS.
+            - name: Download plugin package
+              uses: actions/download-artifact@v5
+              with:
+                  name: fame-lahjoitukset.zip
+                  path: package
+
             - name: Add Playground demo
-              env:
-                  TAG: ${{ needs.check-release.outputs.tag }}
-                  GH_TOKEN: ${{ github.token }}
               run: |
-                  gh release download "$TAG" --repo "${{ github.repository }}" --pattern 'fame-lahjoitukset-*.zip' --output _site/fame-lahjoitukset.zip
+                  mv package/fame-lahjoitukset-*.zip _site/fame-lahjoitukset.zip
                   cp demo/blueprint.json _site/blueprint.json
                   mkdir -p _site/demo
                   cp -r demo/lahjoitin-demo.php demo/lahjoitin-demo _site/demo/
-
-            - name: Setup Pages
-              uses: actions/configure-pages@v5
 
             - name: Upload Pages artifact
               uses: actions/upload-pages-artifact@v3
