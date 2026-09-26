@@ -1,0 +1,74 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "Lahjoitin demo",
+		"description": "Donation form examples for the Lahjoitin plugin.",
+		"author": "FameHelsinki",
+		"categories": [
+			"Blocks"
+		]
+	},
+	"landingPage": "/",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"login": true,
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/fame-lahjoitukset.zip"
+			}
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo.php",
+			"data": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/demo/lahjoitin-demo.php"
+			}
+		},
+		{
+			"step": "mkdir",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo"
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo/home.html",
+			"data": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/demo/lahjoitin-demo/home.html"
+			}
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo/simple.html",
+			"data": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/demo/lahjoitin-demo/simple.html"
+			}
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo/full.html",
+			"data": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/demo/lahjoitin-demo/full.html"
+			}
+		},
+		{
+			"step": "writeFile",
+			"path": "/wordpress/wp-content/mu-plugins/lahjoitin-demo/thank-you.html",
+			"data": {
+				"resource": "url",
+				"url": "https://famehelsinki.github.io/wp-lahjoitin/demo/lahjoitin-demo/thank-you.html"
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require_once '/wordpress/wp-load.php'; lahjoitin_demo_install();"
+		}
+	]
+}

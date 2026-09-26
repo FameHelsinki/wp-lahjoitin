@@ -21,6 +21,7 @@
 		"env:start": "wp-env start",
 		"env:stop": "wp-env stop",
 		"env:destroy": "wp-env destroy",
+		"demo": "npx @wp-playground/cli@latest server --php=8.3 --login --mount=.:/wordpress/wp-content/plugins/fame-lahjoitukset --mount=./demo/lahjoitin-demo.php:/wordpress/wp-content/mu-plugins/lahjoitin-demo.php --mount=./demo/lahjoitin-demo:/wordpress/wp-content/mu-plugins/lahjoitin-demo --blueprint=demo/blueprint.local.json",
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"dev": "wp-scripts start",
