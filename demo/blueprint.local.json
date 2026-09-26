@@ -1,0 +1,27 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "Lahjoitin demo",
+		"description": "Donation form examples for the Lahjoitin plugin.",
+		"author": "FameHelsinki",
+		"categories": [
+			"Blocks"
+		]
+	},
+	"landingPage": "/",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"login": true,
+	"steps": [
+		{
+			"step": "activatePlugin",
+			"pluginPath": "fame-lahjoitukset/fame-lahjoitukset.php"
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require_once '/wordpress/wp-load.php'; lahjoitin_demo_install();"
+		}
+	]
+}

@@ -33,6 +33,10 @@ Build the block scripts:
 
 npm run build
 
+Start development server at http://localhost:8888
+
+npm run env:start
+
 Start development build with watch mode:
 
 npm run dev

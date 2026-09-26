@@ -76,6 +76,7 @@ jobs:
                       --exclude='playwright.config.ts' \
                       --exclude='jest-unit.config.js' \
                       --exclude='.wp-env.json' \
+                      --exclude='demo' \
                       ./ "$STAGE/fame-lahjoitukset/"
                   (cd "$STAGE" && zip -r "$PACKAGE" fame-lahjoitukset)
 
@@ -94,29 +95,39 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ github.TOKEN }}
 
-    # Decide whether this release should drive the public update channel.
+    # Decide whether this run should drive the public update channel.
     # We only publish for the release GitHub considers "latest" and skip
     # pre-releases, so that editing an older release cannot downgrade
-    # existing installs.
+    # existing installs. A manual run republishes the latest release, which
+    # lets demo changes go live without cutting a new release.
     check-release:
-        if: github.event_name == 'release' && github.event.release.prerelease == false
+        if: >-
+            github.event_name == 'workflow_dispatch' ||
+            (github.event_name == 'release' && github.event.release.prerelease == false)
         runs-on: ubuntu-latest
         outputs:
             is_latest: ${{ steps.check.outputs.is_latest }}
+            tag: ${{ steps.check.outputs.tag }}
         steps:
             - name: Compare tag against latest release
               id: check
               env:
+                  EVENT: ${{ github.event_name }}
                   TAG: ${{ github.event.release.tag_name }}
                   REPO: ${{ github.repository }}
                   GH_TOKEN: ${{ github.token }}
               run: |
-                  LATEST_TAG=$(gh api "/repos/${REPO}/releases/latest" --jq .tag_name)
-                  if [ "$LATEST_TAG" = "$TAG" ]; then
+                  LATEST_TAG=$(gh api "/repos/${REPO}/releases/latest" --jq .tag_name || true)
+                  if [ "$EVENT" = "workflow_dispatch" ]; then
+                      TAG="$LATEST_TAG"
+                  fi
+
+                  if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" = "$TAG" ]; then
                       echo "is_latest=true" >> "$GITHUB_OUTPUT"
+                      echo "tag=$TAG" >> "$GITHUB_OUTPUT"
                   else
                       echo "is_latest=false" >> "$GITHUB_OUTPUT"
-                      echo "Skipping manifest publish: $TAG is not the latest release ($LATEST_TAG)."
+                      echo "Skipping manifest publish: '$TAG' is not the latest release ('$LATEST_TAG')."
                   fi
 
     # Publish auto-update metadata to GitHub Pages. The Lahjoitin plugin's
@@ -133,26 +144,39 @@ jobs:
         environment:
             name: github-pages
             url: ${{ steps.deployment.outputs.page_url }}
+        concurrency:
+            group: github-pages
+            cancel-in-progress: false
         steps:
+            # Demo files come from the ref the workflow runs on (main for a
+            # manual run), plugin metadata from the released tag.
             - uses: actions/checkout@v6
+
+            - uses: actions/checkout@v6
+              with:
+                  ref: ${{ needs.check-release.outputs.tag }}
+                  path: release
 
             - name: Generate update.json
               env:
-                  TAG: ${{ github.event.release.tag_name }}
-                  RELEASE_BODY: ${{ github.event.release.body }}
-                  PUBLISHED_AT: ${{ github.event.release.published_at }}
+                  TAG: ${{ needs.check-release.outputs.tag }}
                   REPO: ${{ github.repository }}
                   GH_TOKEN: ${{ github.token }}
               run: |
                   VERSION="${TAG#v}"
                   DOWNLOAD_URL="https://github.com/${REPO}/releases/download/${TAG}/fame-lahjoitukset-${VERSION}.zip"
 
+                  # Release notes and date, the same for release and manual runs.
+                  RELEASE_JSON=$(gh api "/repos/${REPO}/releases/tags/${TAG}")
+                  RELEASE_BODY=$(jq -r '.body // ""' <<< "$RELEASE_JSON")
+                  PUBLISHED_AT=$(jq -r '.published_at' <<< "$RELEASE_JSON")
+
                   # Read metadata from the plugin docblock and readme
-                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" fame-lahjoitukset.php)
-                  AUTHOR=$(grep -Po "Author:\s+\K.*$" fame-lahjoitukset.php)
-                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" fame-lahjoitukset.php)
-                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" fame-lahjoitukset.php)
-                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" readme.txt)
+                  NAME=$(grep -Po "Plugin Name:\s+\K.*$" release/fame-lahjoitukset.php)
+                  AUTHOR=$(grep -Po "Author:\s+\K.*$" release/fame-lahjoitukset.php)
+                  REQUIRES=$(grep -Po "Requires at least:\s+\K.*$" release/fame-lahjoitukset.php)
+                  REQUIRES_PHP=$(grep -Po "Requires PHP:\s+\K.*$" release/fame-lahjoitukset.php)
+                  TESTED=$(grep -Po "Tested up to:\s+\K.*$" release/readme.txt)
 
                   # Render the release notes (Markdown) as HTML for the
                   # "View details" modal. Fall back to a <pre> wrapper if the
@@ -195,9 +219,21 @@ jobs:
 
                   # Ship optional icon/banner assets alongside update.json if
                   # the repo provides them under assets/.
-                  if [ -d assets ]; then
-                      cp -r assets _site/assets
+                  if [ -d release/assets ]; then
+                      cp -r release/assets _site/assets
                   fi
+
+            # WordPress Playground demo. The blueprint fetches the plugin zip and
+            # demo files from Pages, which serves them with permissive CORS.
+            - name: Add Playground demo
+              env:
+                  TAG: ${{ needs.check-release.outputs.tag }}
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh release download "$TAG" --repo "${{ github.repository }}" --pattern 'fame-lahjoitukset-*.zip' --output _site/fame-lahjoitukset.zip
+                  cp demo/blueprint.json _site/blueprint.json
+                  mkdir -p _site/demo
+                  cp -r demo/lahjoitin-demo.php demo/lahjoitin-demo _site/demo/
 
             - name: Setup Pages
               uses: actions/configure-pages@v5
