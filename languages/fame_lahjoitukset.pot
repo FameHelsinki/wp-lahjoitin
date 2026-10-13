@@ -158,6 +158,16 @@ msgstr ""
 msgid "Donate"
 msgstr ""
 
+#: build/Blocks/form-controls/render.php:34
+#: src/Blocks/form-controls/render.php:34
+msgid "The form has incomplete or invalid fields."
+msgstr ""
+
+#: build/Blocks/form-controls/render.php:35
+#: src/Blocks/form-controls/render.php:35
+msgid "The form is ready to submit."
+msgstr ""
+
 #: build/Blocks/form-controls/render.php:45
 #: src/Blocks/form-controls/render.php:45
 msgid "Please enable JavaScript to use this form."
@@ -519,6 +529,14 @@ msgid "This is the border-radius for the text fields."
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
+msgid "The donation could not be submitted. Please try again."
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid value"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
 msgid "Invalid amount"
 msgstr ""
 
@@ -552,6 +570,30 @@ msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid charge day"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a donation type"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid donation type"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a campaign"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid campaign"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a payment method"
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid payment method"
 msgstr ""
 
 #. translators: %1$s: minimum amount, %2$s: currency symbol

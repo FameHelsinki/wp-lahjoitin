@@ -54,17 +54,28 @@ $get = static function (array $attrs, string $key, string $fallback = '') use ($
   return $value !== '' ? $value : $fallback;
 };
 
+$autocomplete = [
+  'first_name' => 'given-name',
+  'last_name' => 'family-name',
+  'email' => 'email',
+  'address' => 'street-address',
+  'city' => 'address-level2',
+  'postal_code' => 'postal-code',
+  'phone' => 'tel',
+];
+
 $render_input = static function (
   array $attrs,
   string $name,
   string $type,
   bool $required = false,
   ?string $ariaDescribedBy = null
-) use ($get): void {
+) use ($get, $autocomplete): void {
   $label = $get($attrs, "{$name}_label", '');
   $help  = $get($attrs, "{$name}_help", '');
 
   $aria_id = $ariaDescribedBy ?: ($help !== '' ? "contact-{$name}-help" : '');
+  $error_id = "contact-{$name}-error";
 ?>
   <div class="<?php echo esc_attr('fame-form__group' . ($required ? ' fame-form__group--required' : '')); ?>">
     <label for="<?php echo esc_attr("contact-{$name}"); ?>" class="fame-form__label">
@@ -76,6 +87,7 @@ $render_input = static function (
       name="<?php echo esc_attr($name); ?>" <?php echo $required ? ' required' : ''; ?>
       class="fame-form__input"
       id="<?php echo esc_attr("contact-{$name}"); ?>"
+      autocomplete="<?php echo esc_attr($autocomplete[$name] ?? ''); ?>"
       <?php if ($aria_id !== '') : ?>
       aria-describedby="<?php echo esc_attr($aria_id); ?>"
       <?php endif; ?> />
@@ -85,6 +97,11 @@ $render_input = static function (
         <?php echo esc_html($help); ?>
       </small>
     <?php endif; ?>
+
+    <span
+      id="<?php echo esc_attr($error_id); ?>"
+      class="fame-form__feedback"
+      data-validation-for="<?php echo esc_attr($name); ?>"></span>
   </div>
 <?php
 };
@@ -100,7 +117,7 @@ $render_group = static function (array $attrs, string $groupName, array $control
       $r = !empty($c['required']);
       if ($n === '') continue;
 
-      $render_input($attrs, $n, $t, $r, $help_id);
+      $render_input($attrs, $n, $t, $r, $help !== '' ? $help_id : null);
     endforeach; ?>
 
     <?php if ($help !== '') : ?>

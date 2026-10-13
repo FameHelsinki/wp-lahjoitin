@@ -15,8 +15,11 @@ export class AmountWrapper {
 	readonly #buttons: NodeListOf<HTMLInputElement>
 	readonly #other: HTMLInputElement | null
 	readonly #otherWrapper: HTMLElement | null
+	readonly #announcer: HTMLElement | null
 
 	#invalidOther = false
+	#announcedMessage = ''
+	#externalErrorControl: HTMLInputElement | null = null
 	#disabled = false
 
 	get type() {
@@ -26,9 +29,15 @@ export class AmountWrapper {
 	set disabled(value: boolean) {
 		this.#disabled = value
 		this.#wrapper.style.display = value ? 'none' : ''
+		this.#buttons.forEach(button => {
+			button.disabled = value
+		})
 
 		if (this.#otherWrapper) {
 			this.#otherWrapper.style.display = value ? 'none' : ''
+		}
+		if (this.#other) {
+			this.#other.disabled = value
 		}
 
 		// When hiding this wrapper (type switch), clear its invalid state & re-enable submit.
@@ -42,7 +51,22 @@ export class AmountWrapper {
 	}
 
 	get invalid() {
-		return this.#invalidOther
+		return this.#invalidOther || this.#externalErrorControl !== null
+	}
+
+	/** Show a backend error on the visible control that represents the amount. */
+	addError(message: string): boolean {
+		if (this.#disabled) return false
+
+		const checked = Array.from(this.#buttons).find(button => button.checked)
+		const control = checked ?? this.#other ?? this.#buttons[0]
+		if (!control) return false
+
+		this.#clearExternalError()
+		this.#externalErrorControl = control
+		this.#showError(control, message)
+		this.#notifyValidityChange(true)
+		return true
 	}
 
 	get value() {
@@ -57,6 +81,7 @@ export class AmountWrapper {
 
 	#resetInvalid() {
 		this.#invalidOther = false
+		this.#clearExternalError()
 
 		if (this.#other) {
 			this.#clearError(this.#other)
@@ -137,17 +162,24 @@ export class AmountWrapper {
 	constructor(
 		wrapper: HTMLElement,
 		onChange: (amount: number) => void,
-		messages: AmountMessages = defaultAmountMessages
+		messages: AmountMessages = defaultAmountMessages,
+		announcer: HTMLElement | null = null
 	) {
 		const onChangeButton = this.#onChangeButton.bind(this)
 
 		this.#onChange = onChange
 		this.#messages = messages
+		this.#announcer = announcer
 		this.#wrapper = wrapper
 		this.#buttons = wrapper.querySelectorAll('input[type="radio"]')
-		this.#buttons.forEach(radio => radio.addEventListener('change', onChangeButton))
+		this.#buttons.forEach(radio => {
+			// AmountHandler owns validation for the complete amount selector.
+			radio.dataset.customValidator = ''
+			radio.addEventListener('change', onChangeButton)
+		})
 		this.#other = this.#findOtherInput(wrapper)
 		this.#other?.addEventListener('input', this.#onChangeOther.bind(this))
+		this.#other?.addEventListener('focusout', this.#onLeaveOther.bind(this))
 		this.#otherWrapper = this.#findOtherWrapper(wrapper)
 	}
 
@@ -197,14 +229,13 @@ export class AmountWrapper {
 	}
 
 	#getErrorEl(input: HTMLInputElement) {
-		const wrapper = input.closest('.donation-amounts__input-wrapper')
-		if (!wrapper) return null
+		const wrapper = input.closest('.donation-amounts__input-wrapper') ?? this.#wrapper
 
 		let el = wrapper.querySelector('.donation-amounts__error') as HTMLElement | null
 		if (!el) {
 			el = document.createElement('div')
 			el.className = 'donation-amounts__error'
-			el.setAttribute('role', 'alert')
+			el.id = `${input.id || input.name}-error`
 			wrapper.appendChild(el)
 		}
 		return el
@@ -212,21 +243,81 @@ export class AmountWrapper {
 
 	#showError(input: HTMLInputElement, message: string) {
 		const el = this.#getErrorEl(input)
-		if (el) el.textContent = message
-		input.setAttribute('aria-invalid', 'true')
+		if (el) {
+			if (el.textContent !== message) {
+				el.textContent = message
+			}
+			for (const control of input.type === 'radio' ? Array.from(this.#buttons) : [input]) {
+				this.#addDescription(control, el.id)
+				control.setAttribute('aria-invalid', 'true')
+			}
+		}
 	}
 
 	#clearError(input: HTMLInputElement) {
 		const el = this.#getErrorEl(input)
-		if (el) el.textContent = ''
-		input.removeAttribute('aria-invalid')
+		if (el) {
+			if (el.textContent !== '') {
+				el.textContent = ''
+			}
+			this.#clearAnnouncement()
+			for (const control of input.type === 'radio' ? Array.from(this.#buttons) : [input]) {
+				this.#removeDescription(control, el.id)
+				control.removeAttribute('aria-invalid')
+			}
+		}
+	}
+
+	#clearAnnouncement() {
+		if (this.#announcedMessage && this.#announcer?.textContent === this.#announcedMessage) {
+			this.#announcer.textContent = ''
+		}
+		this.#announcedMessage = ''
+	}
+
+	#onLeaveOther() {
+		if (!this.#other || !this.#invalidOther || !this.#announcer) return
+		const message = this.#getErrorEl(this.#other)?.textContent?.trim()
+		if (!message) return
+		const label = this.#other.labels?.[0]?.textContent?.trim() ?? this.#other.name
+		const announcement = `${label}: ${message}`
+		if (this.#announcer.textContent !== announcement) {
+			this.#announcer.textContent = announcement
+		}
+		this.#announcedMessage = announcement
+	}
+
+	#clearExternalError() {
+		if (!this.#externalErrorControl) return
+		this.#clearError(this.#externalErrorControl)
+		this.#externalErrorControl = null
+	}
+
+	#addDescription(input: HTMLInputElement, id: string) {
+		const ids = new Set(input.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? [])
+		ids.delete('')
+		ids.add(id)
+		input.setAttribute('aria-describedby', Array.from(ids).join(' '))
+	}
+
+	#removeDescription(input: HTMLInputElement, id: string) {
+		const ids = (input.getAttribute('aria-describedby')?.trim().split(/\s+/) ?? []).filter(
+			current => current !== '' && current !== id
+		)
+		if (ids.length > 0) {
+			input.setAttribute('aria-describedby', ids.join(' '))
+		} else {
+			input.removeAttribute('aria-describedby')
+		}
 	}
 
 	#onChangeOther(event: Event) {
 		const target = event.target
 		if (!(target instanceof HTMLInputElement)) return
 
+		this.#clearAnnouncement()
 		const amount = parseInt(target.value) || 0
+		this.#clearExternalError()
 
 		// Only allow numbers.
 		target.value = amount.toString()
@@ -269,6 +360,7 @@ export class AmountWrapper {
 		if (!(target instanceof HTMLInputElement)) return
 
 		const amount = target.value
+		this.#clearExternalError()
 
 		// Keep other amount in sync.
 		if (this.#other) {
@@ -297,6 +389,12 @@ export default class AmountHandler {
 		return this.#isInvalid()
 	}
 
+	/** Attach a backend amount error to the currently visible amount control. */
+	addError(message: string): boolean {
+		const active = this.#wrappers.find(wrapper => !wrapper.disabled)
+		return active?.addError(message) ?? false
+	}
+
 	set amount(value: number) {
 		// Amount should be in cents.
 		this.#amount.value = (value * 100).toString()
@@ -312,10 +410,11 @@ export default class AmountHandler {
 
 		const onChangeAmount = this.#onChangeAmount.bind(this)
 		const onChangeType = this.#onChangeType.bind(this)
+		const announcer = form.querySelector<HTMLElement>('.fame-form__validation-announcer')
 
 		form.querySelectorAll('.donation-amounts').forEach(wrapper => {
 			if (wrapper instanceof HTMLElement) {
-				this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount, messages))
+				this.#wrappers.push(new AmountWrapper(wrapper, onChangeAmount, messages, announcer))
 
 				const eventTarget: any = wrapper
 				eventTarget.addEventListener('fame-lahjoitukset-change', onChangeAmount)
@@ -359,7 +458,6 @@ export default class AmountHandler {
 			event => {
 				if (this.#isInvalid()) {
 					event.preventDefault()
-					event.stopPropagation()
 				}
 			},
 			true
