@@ -86,6 +86,7 @@ $render_input = static function (
       type="<?php echo esc_attr($type); ?>"
       name="<?php echo esc_attr($name); ?>" <?php echo $required ? ' required' : ''; ?>
       class="fame-form__input"
+      aria-invalid="false"
       id="<?php echo esc_attr("contact-{$name}"); ?>"
       autocomplete="<?php echo esc_attr($autocomplete[$name] ?? ''); ?>"
       <?php if ($aria_id !== '') : ?>

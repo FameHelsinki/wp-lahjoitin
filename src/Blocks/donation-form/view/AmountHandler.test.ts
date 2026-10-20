@@ -31,6 +31,35 @@ describe('AmountWrapper', () => {
 		expect(amountWrapper.type).toBe('recurring')
 	})
 
+	test('keeps the spoken amount in sync with typing, preset choices and defaults', () => {
+		const input = wrapper.querySelector<HTMLInputElement>('input[type="number"]')!
+		expect(input.getAttribute('aria-valuetext')).toBe('10')
+		input.parentElement!.classList.add('donation-amounts__other')
+		const unit = document.createElement('span')
+		unit.className = 'donation-amounts__unit'
+		unit.textContent = '€'
+		input.parentElement!.appendChild(unit)
+		amountWrapper.ensureSelection()
+		expect(input.getAttribute('aria-valuetext')).toBe('10 €')
+
+		for (const value of ['17', '0', '']) {
+			input.value = value
+			input.dispatchEvent(new Event('input'))
+			expect(input.getAttribute('aria-valuetext')).toBe(`${input.value} €`)
+		}
+		const preset = wrapper.querySelector<HTMLInputElement>('input[type="radio"][value="20"]')!
+		preset.checked = true
+		preset.dispatchEvent(new Event('change'))
+		expect(input.getAttribute('aria-valuetext')).toBe('20 €')
+
+		wrapper.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(radio => {
+			radio.checked = false
+		})
+		wrapper.dataset.defaultAmount = '35'
+		amountWrapper.ensureSelection()
+		expect(input.getAttribute('aria-valuetext')).toBe('35 €')
+	})
+
 	test('should hide the wrapper when disabled is set to true', () => {
 		amountWrapper.disabled = true
 		expect(wrapper.style.display).toBe('none')

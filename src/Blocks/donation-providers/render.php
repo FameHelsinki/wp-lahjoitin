@@ -172,6 +172,7 @@ $wrapper_attrs = get_block_wrapper_attributes();
               type="radio"
               id="<?php echo esc_attr($id); ?>"
               name="provider"
+              aria-invalid="false"
               value="<?php echo esc_attr($pval); ?>"
               data-type="<?php echo esc_attr($ptype); ?>"
               required />

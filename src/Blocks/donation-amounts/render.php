@@ -236,6 +236,7 @@ endif;
             min="<?php echo esc_attr((string) $min_amount); ?>"
             max="<?php echo esc_attr((string) $max_amount); ?>"
             value="<?php echo esc_attr((string) $default_euros); ?>"
+            aria-valuetext="<?php echo esc_attr(trim((string) $default_euros . ' ' . $unit)); ?>"
             <?php if ($help_text !== '') : ?>
             aria-describedby="<?php echo esc_attr($help_id); ?>"
             <?php endif; ?> />

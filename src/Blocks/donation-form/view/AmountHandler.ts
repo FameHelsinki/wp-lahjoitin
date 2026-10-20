@@ -84,6 +84,7 @@ export class AmountWrapper {
 		this.#clearExternalError()
 
 		if (this.#other) {
+			this.#syncOtherValueText()
 			this.#clearError(this.#other)
 		}
 
@@ -181,6 +182,20 @@ export class AmountWrapper {
 		this.#other?.addEventListener('input', this.#onChangeOther.bind(this))
 		this.#other?.addEventListener('focusout', this.#onLeaveOther.bind(this))
 		this.#otherWrapper = this.#findOtherWrapper(wrapper)
+		this.#syncOtherValueText()
+	}
+
+	/** Expose the amount and unit instead of a percentage of the numeric range. */
+	#syncOtherValueText(): void {
+		if (!this.#other) return
+		if (this.#other.value === '') {
+			this.#other.removeAttribute('aria-valuetext')
+			return
+		}
+		this.#other.setAttribute(
+			'aria-valuetext',
+			`${this.#other.value} ${this.#getUnit(this.#other)}`.trim()
+		)
 	}
 
 	#findOtherWrapper(wrapper: HTMLElement): HTMLElement | null {
@@ -321,6 +336,7 @@ export class AmountWrapper {
 
 		// Only allow numbers.
 		target.value = amount.toString()
+		this.#syncOtherValueText()
 
 		// Validate min/max from HTML attributes.
 		const min = parseInt(target.min || '')
@@ -367,6 +383,7 @@ export class AmountWrapper {
 			this.#invalidOther = false
 			this.#clearError(this.#other)
 			this.#other.value = amount
+			this.#syncOtherValueText()
 			this.#notifyValidityChange(false)
 		}
 

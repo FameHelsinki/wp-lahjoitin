@@ -347,6 +347,59 @@ test.describe('donation form accessibility', () => {
 		await expect(status).not.toHaveAttribute('aria-live')
 	})
 
+	test('untouched required fields do not receive native invalid events during readiness checks', async ({
+		page,
+	}) => {
+		await page.addInitScript(() => {
+			document.addEventListener(
+				'invalid',
+				() => {
+					const root = document.documentElement
+					root.dataset.invalidEvents = String(Number(root.dataset.invalidEvents ?? 0) + 1)
+				},
+				true
+			)
+		})
+		await page.goto(fixtures['all-features']!.url)
+		const form = page.locator(formSelector)
+		const firstName = form.locator('input[name="first_name"]')
+		const provider = form
+			.locator('fieldset.payment-method-selector:not([hidden]) input[name="provider"]')
+			.first()
+		await firstName.focus()
+		await expect(firstName).toHaveAttribute('aria-invalid', 'false')
+		await expect(form.locator('button[type="submit"]')).toHaveAttribute('aria-disabled', 'true')
+		await provider.focus()
+		await expect(provider).toHaveAttribute('aria-invalid', 'false')
+		await expect(provider).toHaveAttribute('required', '')
+		await expect(firstName).toHaveAttribute('aria-invalid', 'true')
+		await expect(page.locator('html')).not.toHaveAttribute('data-invalid-events')
+	})
+
+	test('contact fields expose errors only after blur and reset the explicit state after correction', async ({
+		page,
+	}) => {
+		await page.goto(fixtures['all-features']!.url)
+		const form = page.locator(formSelector)
+		for (const [name, value] of [
+			['first_name', 'Ada'],
+			['last_name', 'Lovelace'],
+			['email', 'ada@example.com'],
+		]) {
+			const field = form.locator(`input[name="${name}"]`)
+			await field.focus()
+			await expect(field).toHaveAttribute('aria-invalid', 'false')
+			if (name === 'email') {
+				await field.pressSequentially('ada@')
+				await expect(field).toHaveAttribute('aria-invalid', 'false')
+			}
+			await form.locator('button[type="submit"]').focus()
+			await expect(field).toHaveAttribute('aria-invalid', 'true')
+			await field.fill(value)
+			await expect(field).toHaveAttribute('aria-invalid', 'false')
+		}
+	})
+
 	test('each invalid contact field has its own error message', async ({ page }) => {
 		await touchInvalidRequiredContactFields(page, fixtures['all-features']!.url)
 		const form = page.locator(formSelector)
@@ -355,7 +408,7 @@ test.describe('donation form accessibility', () => {
 
 		const firstName = form.locator('input[name="first_name"]')
 		await firstName.fill('Ada')
-		await expect(firstName).not.toHaveAttribute('aria-invalid')
+		await expect(firstName).toHaveAttribute('aria-invalid', 'false')
 		await expect(form.locator('.fame-form__feedback--invalid')).toHaveCount(2)
 	})
 
@@ -390,6 +443,26 @@ test.describe('donation form accessibility', () => {
 		await expect(page.locator(`${formSelector} .fame-form__feedback--invalid`)).toHaveCount(3)
 
 		await expectDonationFormToPassAxe(page, 'all-features form with validation errors')
+	})
+
+	test('other amount exposes its current currency value across edits and type changes', async ({
+		page,
+	}) => {
+		await page.goto(fixtures['all-features']!.url)
+		const form = page.locator(formSelector)
+		const amount = form.locator('.donation-amounts__other:visible input[type="number"]')
+		await expect(amount).toHaveAttribute('aria-valuetext', '20 €')
+		await amount.fill('25')
+		await expect(amount).toHaveAttribute('aria-valuetext', '25 €')
+		await amount.fill('4')
+		await expect(amount).toHaveAttribute('aria-valuetext', '4 €')
+		await expect(amount).toHaveAttribute('aria-invalid', 'true')
+		await form.locator('label:has(input[name="amount-radio-single"][value="50"])').click()
+		await expect(amount).toHaveAttribute('aria-valuetext', '50 €')
+		await form.locator('label:has(input[name="type"][value="recurring"])').click()
+		await expect(amount).toHaveAttribute('aria-valuetext', '10 €')
+		await form.locator('label:has(input[name="type"][value="single"])').click()
+		await expect(amount).toHaveAttribute('aria-valuetext', '50 €')
 	})
 
 	test('an invalid other amount is immediately linked to its error message', async ({ page }) => {
@@ -562,10 +635,18 @@ test.describe('donation form accessibility', () => {
 		await email.press('Enter')
 		await expect(email).toBeFocused()
 		await expect(announcer).toHaveText(`${label}: ${(await error.textContent())?.trim()}`)
+		await expect
+			.poll(() => announcer.textContent())
+			.toBe(`${label}: ${(await error.textContent())?.trim()}\u00a0`)
+
+		await email.press('Enter')
+		await expect
+			.poll(() => announcer.textContent())
+			.toBe(`${label}: ${(await error.textContent())?.trim()}`)
 
 		await email.fill('ada@example.com')
 		await expect(announcer).toBeEmpty()
-		await expect(email).not.toHaveAttribute('aria-invalid')
+		await expect(email).toHaveAttribute('aria-invalid', 'false')
 	})
 
 	test('Enter announces the radio group and choosing another option clears its error', async ({
@@ -588,12 +669,35 @@ test.describe('donation form accessibility', () => {
 		await expect(radios.first()).toBeFocused()
 		await expect(announcer).toHaveText('Payment method: Choose a payment method')
 
+		await page.keyboard.press('Enter')
+		await expect(announcer).toHaveText('Payment method: Choose a payment method')
+
 		await page.keyboard.press('ArrowRight')
 		await expect(radios.nth(1)).toBeChecked()
 		await expect(radios.nth(1)).toBeFocused()
 		await expect(announcer).toBeEmpty()
 		await expect(group.locator('[aria-invalid="true"]')).toHaveCount(0)
 		await expect(group.locator('.fame-form__feedback')).toBeEmpty()
+	})
+
+	test('submitting from outside the payment group announces its correction instruction', async ({
+		page,
+	}) => {
+		await page.goto(fixtures['all-features']!.url)
+		const form = page.locator(formSelector)
+		await form.locator('input[name="first_name"]').fill('Ada')
+		await form.locator('input[name="last_name"]').fill('Lovelace')
+		await form.locator('input[name="email"]').fill('ada@example.com')
+		// aria-disabled blocks Playwright's default click, but not browser clicks.
+		await form.locator('button[type="submit"]').click({ force: true })
+		await expect(
+			form
+				.locator('fieldset.payment-method-selector:not([hidden]) input[type="radio"]')
+				.first()
+		).toBeFocused()
+		await expect(form.locator('.fame-form__validation-announcer')).toHaveText(
+			'Payment method: Choose a payment method'
+		)
 	})
 
 	test('changing donation type clears an announcement for the hidden payment group', async ({
@@ -642,7 +746,7 @@ test.describe('donation form accessibility', () => {
 		const amountMessage = await announcer.textContent()
 
 		await email.fill('ada@example.com')
-		await expect(email).not.toHaveAttribute('aria-invalid')
+		await expect(email).toHaveAttribute('aria-invalid', 'false')
 		await expect(announcer).toHaveText(amountMessage!)
 
 		await amount.fill('5')

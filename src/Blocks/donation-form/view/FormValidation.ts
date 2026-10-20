@@ -27,6 +27,8 @@ export default class FormValidation {
 	#announcedControl: ValidatedFormControl | null = null
 	#announcedMessage = ''
 	#bulkValidation = false
+	#announcementTimer: ReturnType<typeof setTimeout> | null = null
+	#lastSubmittedAnnouncement = ''
 
 	constructor(
 		form: HTMLFormElement,
@@ -38,17 +40,30 @@ export default class FormValidation {
 		this.#onValidityChange = onValidityChange
 		this.#announcer = form.querySelector('.fame-form__validation-announcer')
 
+		// Explicitly defer errors until our validation runs. An absent ARIA
+		// state can expose Safari's native invalid state on untouched fields.
+		// Custom validators (such as other amount) retain their own timing.
+		for (const control of this.#controls()) {
+			if (!control.hasAttribute('aria-invalid')) control.setAttribute('aria-invalid', 'false')
+		}
+
 		this.#form.addEventListener('focusout', this.#onFocusOut.bind(this))
 		this.#form.addEventListener('input', this.#onInput.bind(this))
 		this.#form.addEventListener('change', this.#onChange.bind(this))
 	}
 
 	get valid(): boolean {
-		return this.#form.checkValidity()
+		// Read validity without firing native `invalid` events. Button-state
+		// checks must not expose untouched required fields as user errors.
+		return Array.from(this.#form.elements).every(
+			control =>
+				!isValidatedControl(control) || !control.willValidate || control.validity.valid
+		)
 	}
 
 	/** Validate every enabled, visible form control and optionally focus the first error. */
 	validateAll(focusFirst = false): boolean {
+		this.#cancelPendingAnnouncement()
 		let firstInvalid: ValidatedFormControl | null = null
 		this.#bulkValidation = true
 		this.#announcedControl = null
@@ -98,10 +113,12 @@ export default class FormValidation {
 			if (selected) target = selected
 		}
 
-		if (this.#form.ownerDocument.activeElement === target) {
+		const alreadyFocused = this.#form.ownerDocument.activeElement === target
+		if (!alreadyFocused) target.focus()
+		// VoiceOver may omit a radio's error description even after focus moves.
+		// Text fields keep the existing focus-description path when focus moves.
+		if (alreadyFocused || (target instanceof HTMLInputElement && target.type === 'radio')) {
 			this.#announceFocusedError(target)
-		} else {
-			target.focus()
 		}
 	}
 
@@ -121,11 +138,43 @@ export default class FormValidation {
 
 		const label = this.#controlLabel(control)
 		const announcement = `${label}: ${message}`
-		if (this.#announcer.textContent !== announcement) {
-			this.#announcer.textContent = announcement
-		}
+		this.#cancelPendingAnnouncement()
+		this.#announcer.textContent = ''
 		this.#announcedControl = control
 		this.#announcedMessage = announcement
+		// A separate task lets assistive technology observe the empty region
+		// before the same error is reinserted on a repeated submit attempt.
+		this.#announcementTimer = setTimeout(() => {
+			this.#announcementTimer = null
+			if (
+				!control.isConnected ||
+				control.matches(':disabled') ||
+				control.closest('[hidden]') ||
+				this.#form.ownerDocument.activeElement !== control ||
+				control.getAttribute('aria-invalid') !== 'true' ||
+				error?.textContent?.trim() !== message ||
+				this.#announcedControl !== control ||
+				this.#announcedMessage !== announcement ||
+				!this.#announcer ||
+				this.#announcer.textContent !== ''
+			)
+				return
+			// Safari/VoiceOver can ignore identical messages even after a delay.
+			// Alternate a trailing NBSP, as in WordPress's repeated-message fix:
+			// https://core.trac.wordpress.org/ticket/36853
+			const spokenText =
+				this.#lastSubmittedAnnouncement === announcement
+					? `${announcement}\u00a0`
+					: announcement
+			this.#lastSubmittedAnnouncement = spokenText
+			this.#announcedMessage = spokenText
+			this.#announcer.textContent = spokenText
+		}, 100)
+	}
+
+	#cancelPendingAnnouncement(): void {
+		if (this.#announcementTimer !== null) clearTimeout(this.#announcementTimer)
+		this.#announcementTimer = null
 	}
 
 	#controlLabel(control: ValidatedFormControl): string {
@@ -176,6 +225,7 @@ export default class FormValidation {
 
 	#onFocusOut(event: FocusEvent): void {
 		const control = event.target
+		if (control === this.#announcedControl) this.#cancelPendingAnnouncement()
 		if (!isValidatedControl(control) || !this.#shouldValidate(control)) return
 		// Radio groups are validated when a choice changes or the form is
 		// submitted. Merely tabbing through a group must not create an error.
@@ -278,6 +328,7 @@ export default class FormValidation {
 		if (feedback.textContent !== message) {
 			feedback.textContent = message
 			if (announce && !this.#bulkValidation && this.#announcer) {
+				this.#cancelPendingAnnouncement()
 				const label = this.#controlLabel(control)
 				this.#announcedMessage = `${label}: ${message}`
 				this.#announcer.textContent = this.#announcedMessage
@@ -293,7 +344,11 @@ export default class FormValidation {
 	#clearError(control: ValidatedFormControl): void {
 		const feedback = this.#findFeedback(control)
 		for (const relatedControl of this.#relatedControls(control)) {
-			relatedControl.removeAttribute('aria-invalid')
+			if (relatedControl.dataset.customValidator === undefined) {
+				relatedControl.setAttribute('aria-invalid', 'false')
+			} else {
+				relatedControl.removeAttribute('aria-invalid')
+			}
 			if (feedback) this.#removeDescription(relatedControl, feedback.id)
 		}
 		if (!feedback) return
@@ -313,6 +368,7 @@ export default class FormValidation {
 		) {
 			return
 		}
+		this.#cancelPendingAnnouncement()
 		if (this.#announcer?.textContent === this.#announcedMessage) {
 			this.#announcer.textContent = ''
 		}
