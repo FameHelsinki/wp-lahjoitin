@@ -17,7 +17,14 @@ domReady(() => {
 	if (!form) return
 
 	const translations = {
+		submitError: __(
+			'The donation could not be submitted. Please try again.',
+			'fame_lahjoitukset'
+		),
 		errors: {
+			_default: {
+				unknown: __('Invalid value', 'fame_lahjoitukset'),
+			},
 			amount: {
 				unknown: __('Invalid amount', 'fame_lahjoitukset'),
 			},
@@ -38,6 +45,18 @@ domReady(() => {
 			},
 			due_date: {
 				unknown: __('Invalid charge day', 'fame_lahjoitukset'),
+			},
+			type: {
+				required: __('Choose a donation type', 'fame_lahjoitukset'),
+				unknown: __('Invalid donation type', 'fame_lahjoitukset'),
+			},
+			campaign: {
+				required: __('Choose a campaign', 'fame_lahjoitukset'),
+				unknown: __('Invalid campaign', 'fame_lahjoitukset'),
+			},
+			provider: {
+				required: __('Choose a payment method', 'fame_lahjoitukset'),
+				unknown: __('Invalid payment method', 'fame_lahjoitukset'),
 			},
 		},
 		amount: {
