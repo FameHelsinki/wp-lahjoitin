@@ -172,6 +172,7 @@ $wrapper_attrs = get_block_wrapper_attributes();
               type="radio"
               id="<?php echo esc_attr($id); ?>"
               name="provider"
+              aria-invalid="false"
               value="<?php echo esc_attr($pval); ?>"
               data-type="<?php echo esc_attr($ptype); ?>"
               required />
@@ -180,6 +181,10 @@ $wrapper_attrs = get_block_wrapper_attributes();
         </div>
 
       <?php endforeach; ?>
+		<span
+			id="<?php echo esc_attr('payment-method-' . sanitize_key((string) $type) . '-error'); ?>"
+			class="fame-form__feedback"
+			data-validation-for="provider"></span>
       <?php endif; ?>
     </fieldset>
   <?php endforeach; ?>
