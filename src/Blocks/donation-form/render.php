@@ -121,6 +121,11 @@ if ($block instanceof WP_Block && count($block->inner_blocks) > 0) {
 }
 
 $return_address = famehelsinki_sanitize_return_url((string) ($attrs['returnAddress'] ?? '/'));
+
+global $wp;
+$cancel_address = famehelsinki_sanitize_return_url(
+  home_url(user_trailingslashit((string) ($wp->request ?? '')))
+);
 ?>
 <div <?php echo $block_wrapper_attrs; ?>>
   <form class="fame-form fame-form--donations" novalidate>
@@ -129,6 +134,7 @@ $return_address = famehelsinki_sanitize_return_url((string) ($attrs['returnAddre
     </div>
 
     <input type="hidden" name="return_address" value="<?php echo esc_attr($return_address); ?>" />
+    <input type="hidden" name="cancel_address" value="<?php echo esc_attr($cancel_address); ?>" />
     <input type="hidden" name="provider" data-selected-provider />
 
   </form>
