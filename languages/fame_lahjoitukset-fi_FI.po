@@ -149,6 +149,16 @@ msgstr "Toistuva"
 msgid "Donate"
 msgstr "Lahjoita"
 
+#: build/Blocks/form-controls/render.php:34
+#: src/Blocks/form-controls/render.php:34
+msgid "The form has incomplete or invalid fields."
+msgstr "Lomakkeessa on puuttuvia tai virheellisiä tietoja."
+
+#: build/Blocks/form-controls/render.php:35
+#: src/Blocks/form-controls/render.php:35
+msgid "The form is ready to submit."
+msgstr "Lomake on valmis lähetettäväksi."
+
 #: build/Blocks/form-controls/render.php:45
 #: src/Blocks/form-controls/render.php:45
 msgid "Please enable JavaScript to use this form."
@@ -528,6 +538,14 @@ msgid "This is the border-radius for the text fields."
 msgstr "Tämä on tekstikenttien reunan pyöristys."
 
 #: build/Blocks/donation-form/view.js:1
+msgid "The donation could not be submitted. Please try again."
+msgstr "Lahjoitusta ei voitu lähettää. Yritä uudelleen."
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid value"
+msgstr "Virheellinen arvo"
+
+#: build/Blocks/donation-form/view.js:1
 msgid "Invalid amount"
 msgstr "Virheellinen summa"
 
@@ -562,6 +580,30 @@ msgstr "Virheellinen puhelinnumero"
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid charge day"
 msgstr "Virheellinen veloituspäivä"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a donation type"
+msgstr "Valitse lahjoitustyyppi"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid donation type"
+msgstr "Virheellinen lahjoitustyyppi"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a campaign"
+msgstr "Valitse kampanja"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid campaign"
+msgstr "Virheellinen kampanja"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Choose a payment method"
+msgstr "Valitse maksutapa"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Invalid payment method"
+msgstr "Virheellinen maksutapa"
 
 #. translators: %1$s: minimum amount, %2$s: currency symbol
 #: build/Blocks/donation-form/view.js:2

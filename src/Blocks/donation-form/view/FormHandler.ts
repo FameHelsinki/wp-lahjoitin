@@ -1,5 +1,6 @@
 import AmountHandler, { AmountMessages } from './AmountHandler.ts'
-import Validation, { ErrorTranslations, getErrorType } from './Validation.ts'
+import FormValidation from './FormValidation.ts'
+import Validation, { ErrorTranslations } from './Validation.ts'
 import { FormResultEvent, FormSubmitEvent } from './Events.ts'
 
 /**
@@ -10,21 +11,7 @@ import { FormResultEvent, FormSubmitEvent } from './Events.ts'
 export type Translations = {
 	errors?: ErrorTranslations
 	amount?: AmountMessages
-}
-
-type FormControlElement =
-	| HTMLInputElement
-	| HTMLTextAreaElement
-	| HTMLSelectElement
-	| HTMLButtonElement
-
-function isFormControl(element: any): element is FormControlElement {
-	return (
-		element instanceof HTMLInputElement ||
-		element instanceof HTMLTextAreaElement ||
-		element instanceof HTMLSelectElement ||
-		element instanceof HTMLButtonElement
-	)
+	submitError?: string
 }
 
 export default class FormHandler {
@@ -33,7 +20,10 @@ export default class FormHandler {
 	readonly #form: HTMLFormElement
 	readonly #submit: NodeListOf<HTMLButtonElement | HTMLInputElement>
 	readonly #amount: AmountHandler
-	readonly #translations: ErrorTranslations
+	readonly #validation: FormValidation
+	readonly #submitStatus: HTMLElement | null
+	readonly #submissionError: HTMLElement | null
+	readonly #submitErrorMessage: string
 
 	#providerField: HTMLInputElement | null
 	#providerRadios: NodeListOf<HTMLInputElement>
@@ -42,6 +32,8 @@ export default class FormHandler {
 	#typeRadios: NodeListOf<HTMLInputElement>
 	#dueDateSections: NodeListOf<HTMLElement>
 	#dueDateInputs: NodeListOf<HTMLSelectElement | HTMLInputElement>
+	#submitting = false
+	#hasUnmappedError = false
 
 	get form() {
 		return this.#form
@@ -58,7 +50,15 @@ export default class FormHandler {
 
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
 		this.#amount = new AmountHandler(this.#form, translations.amount)
-		this.#translations = translations.errors ?? {}
+		this.#validation = new FormValidation(
+			this.#form,
+			translations.errors,
+			this.#updateSubmitState.bind(this)
+		)
+		this.#submitStatus = this.#form.querySelector('.fame-form__submit-status')
+		this.#submissionError = this.#form.querySelector('.fame-form__submission-error')
+		this.#submitErrorMessage =
+			translations.submitError ?? 'The donation could not be submitted. Please try again.'
 
 		// Initialize form elements.
 		this.#providerField = this.#form.querySelector<HTMLInputElement>(
@@ -84,31 +84,17 @@ export default class FormHandler {
 		)
 
 		this.#form.addEventListener('submit', this.#onSubmit.bind(this))
+		window.addEventListener('pageshow', event => {
+			if (event.persisted) this.#finishSubmitting()
+		})
 		this.#form.addEventListener('fame-lahjoitukset-amount-validity', () => {
-			this.#allowSubmit(this.#canSubmit())
+			this.#updateSubmitState()
 		})
 
 		// Bind events to provider radios and type radios.
 		this.#bindProviderEvents()
 
-		Array.prototype.forEach.call(this.#form.elements, element =>
-			element.addEventListener('change', (event: Event) => {
-				const target = event.target
-
-				// Clear any custom errors on change.
-				if (
-					isFormControl(target) &&
-					target.dataset['custom-validator'] === undefined &&
-					target.validity.customError
-				) {
-					target.setCustomValidity('')
-				}
-			})
-		)
-
-		// Form submit requires JavaScript and an available payment provider, so all
-		// submit buttons are disabled by default.
-		this.#allowSubmit(this.#canSubmit())
+		this.#updateSubmitState()
 	}
 
 	/**
@@ -123,7 +109,7 @@ export default class FormHandler {
 		this.#providerRadios.forEach(r =>
 			r.addEventListener('change', () => {
 				this.#updateProvider()
-				this.#allowSubmit(this.#canSubmit())
+				this.#updateSubmitState()
 			})
 		)
 
@@ -133,7 +119,7 @@ export default class FormHandler {
 				this.#filterDueDateByType()
 				this.#updateProvider()
 				this.#updateSubmitLabel()
-				this.#allowSubmit(this.#canSubmit())
+				this.#updateSubmitState()
 			})
 		)
 	}
@@ -178,6 +164,9 @@ export default class FormHandler {
 			const active = section.dataset.type === selectedType
 			section.hidden = !active
 			section.setAttribute('aria-hidden', String(!active))
+			section.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(radio => {
+				radio.disabled = !active
+			})
 			section.classList.remove('payment-method-selector--single')
 			if (active) {
 				const radios = section.querySelectorAll<HTMLInputElement>('input[type="radio"]')
@@ -195,7 +184,7 @@ export default class FormHandler {
 	}
 
 	#canSubmit(): boolean {
-		return this.#hasAvailableProvider() && !this.#amount.invalid
+		return this.#hasAvailableProvider() && !this.#amount.invalid && this.#validation.valid
 	}
 
 	/**
@@ -272,20 +261,32 @@ export default class FormHandler {
 
 	async #onSubmit(event: SubmitEvent) {
 		event.preventDefault()
+		if (this.#submitting) return
 
 		this.#filterProvidersByType()
 		this.#filterDueDateByType()
 		this.#updateProvider()
+		this.#hasUnmappedError = false
+		if (this.#submissionError) {
+			this.#submissionError.textContent = ''
+		}
 
-		// Checks provider field value.
-		if (!this.#hasAvailableProvider()) {
-			this.#form.classList.add('was-validated')
-			this.#allowSubmit(false)
+		// An aria-disabled submit stays in the keyboard order so its status and
+		// description remain available to assistive technology. It has no submit
+		// action until progressive field validation marks the form as complete.
+		if (!this.#canSubmit()) {
+			this.#validation.validateAll(false)
+			this.#validation.focusFirstInvalid()
+			this.#updateSubmitState()
 			return
 		}
 
-		// Disable form submit.
-		this.#allowSubmit(false)
+		// Recheck all constraints as a final safety net before sending data.
+		if (!this.#validation.validateAll(true)) {
+			this.#updateSubmitState()
+			return
+		}
+		this.#setSubmitting(true)
 		this.#form.classList.add('fame-form--submitting')
 
 		const formData = new FormData(this.#form)
@@ -304,45 +305,51 @@ export default class FormHandler {
 			},
 		})
 
-		window.dispatchEvent(alterFormDataEvent)
-
-		Object.entries(alterFormDataEvent.detail.errors).forEach(([key, error]) => {
-			this.addError(key, error)
-		})
-
+		let keepSubmitting = false
 		try {
+			window.dispatchEvent(alterFormDataEvent)
+
+			Object.entries(alterFormDataEvent.detail.errors).forEach(([key, error]) => {
+				this.addError(key, error)
+			})
+
 			// Run built-in validators. This should fail if
 			// any validation errors were added by the event.
 			if (!this.validate()) {
+				this.#validation.focusFirstInvalid()
 				return
 			}
 
 			// Events can cancel form submit by calling
 			if (!alterFormDataEvent.defaultPrevented) {
-				await this.#submitForm(
+				keepSubmitting = await this.#submitForm(
 					alterFormDataEvent.detail.url,
 					alterFormDataEvent.detail.data
 				)
 			}
 		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.error('Submit failed', error)
-
 			if (error instanceof Validation) {
 				Object.entries(error.errors).forEach(([key, message]) => {
 					this.addError(key, message)
 				})
+				this.#validation.focusFirstInvalid()
 				return
 			}
 
-			throw error
+			// Keep unexpected transport and response failures diagnosable while the
+			// user receives a safe, localized message.
+			// eslint-disable-next-line no-console
+			console.error('Donation form submission failed', error)
+			this.#showSubmissionError(this.#submitErrorMessage)
+			return
 		} finally {
-			this.#allowSubmit(this.#canSubmit())
-			this.#form.classList.remove('fame-form--submitting')
+			if (!keepSubmitting) {
+				this.#finishSubmitting()
+			}
 		}
 	}
 
-	async #submitForm(url: URL, data: any) {
+	async #submitForm(url: URL, data: any): Promise<boolean> {
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -372,8 +379,19 @@ export default class FormHandler {
 
 		// Redirect to success URL.
 		if (!formResultEvent.defaultPrevented) {
-			window.location.href = formResultEvent.detail.result.redirect_url
+			const redirectUrl = formResultEvent.detail.result.redirect_url
+			const redirect = new URL(redirectUrl, window.location.href)
+			const current = new URL(window.location.href)
+			const sameDocument =
+				redirectUrl.includes('#') &&
+				redirect.origin === current.origin &&
+				redirect.pathname === current.pathname &&
+				redirect.search === current.search
+			window.location.href = redirect.href
+			return !sameDocument
 		}
+
+		return false
 	}
 
 	/**
@@ -395,39 +413,9 @@ export default class FormHandler {
 	}
 
 	validate(): boolean {
-		// The resolved provider value lives in the hidden selected-provider field,
-		// so the browser's constraint validation on the provider inputs can be
-		// overridden when a provider has been selected. Every other field is still
-		// validated normally.
-		const hasValidProvider = this.#hasAvailableProvider()
-
-		let valid = true
-
-		Array.prototype.forEach.call(this.#form.elements, element => {
-			if (element.validity.valid) {
-				return
-			}
-
-			// Provider inputs are validated via hasValidProvider above.
-			if (element.name === 'provider' && hasValidProvider) {
-				return
-			}
-
-			valid = false
-
-			// Custom errors already carry their own message, only render messages
-			// for built-in validation failures.
-			if (!element.validity.customError) {
-				this.#addErrorToElement(
-					element,
-					this.#getErrorMessage(element.name, element.validity)
-				)
-			}
-		})
-
-		this.#form.classList.add('was-validated')
-
-		return valid
+		return (
+			this.#validation.validateAll(true) && !this.#amount.invalid && !this.#hasUnmappedError
+		)
 	}
 
 	/**
@@ -436,51 +424,28 @@ export default class FormHandler {
 	 * @param name
 	 * @param error
 	 */
-	addError(name: string, error: string) {
-		const element = this.#form.elements.namedItem(name)
+	addError(name: string, error: string): boolean {
+		const mapped =
+			name === 'amount'
+				? this.#amount.addError(error)
+				: this.#validation.addError(name, error)
 
-		if (element instanceof RadioNodeList) {
-			Array.prototype.forEach.call(element, (item, idx) => {
-				if (item instanceof HTMLInputElement) {
-					item.setCustomValidity(error)
-
-					// For the first element only.
-					if (idx === 0) {
-						this.#addErrorToElement(item, error)
-					}
-				}
-			})
-		} else if (isFormControl(element)) {
-			if (element.type === 'hidden') {
-				throw new Error(`Trying to set validation message to hidden element ${name}`)
-			}
-
-			element.setCustomValidity(error)
-
-			this.#addErrorToElement(element, error)
-		} else {
-			throw new Error(`Trying to set validation message to unknown element ${name}`)
+		if (!mapped) {
+			this.#hasUnmappedError = true
+			this.#showSubmissionError(error)
 		}
+
+		return mapped
 	}
 
-	#addErrorToElement(element: FormControlElement, message: string) {
-		const parent = element.closest('.fame-form__fieldset') || element.parentElement
-		if (parent) {
-			const feedback =
-				parent.querySelector('.fame-form__feedback') ??
-				parent.appendChild(document.createElement('span'))
-			feedback.className = 'fame-form__feedback fame-form__feedback--invalid'
-			feedback.setAttribute('aria-live', 'polite')
-			feedback.textContent = message
+	#showSubmissionError(message: string): void {
+		if (!this.#submissionError) return
+		const existing = this.#submissionError.textContent?.trim()
+		if (!existing) {
+			this.#submissionError.textContent = message
+		} else if (!existing.includes(message)) {
+			this.#submissionError.textContent = `${existing} ${message}`
 		}
-	}
-
-	#getErrorMessage(name: string, validity: ValidityState) {
-		if (validity.valid) {
-			throw new Error(`Element ${name} is valid`)
-		}
-
-		return this.#translations[name]?.[getErrorType(validity)] ?? 'Invalid value'
 	}
 
 	#removeEmptyOptionalFields(data: Record<string, FormDataEntryValue>) {
@@ -489,11 +454,36 @@ export default class FormHandler {
 		}
 	}
 
-	/**
-	 * Allow form submit.
-	 */
-	#allowSubmit(allow: boolean) {
-		this.#submit.forEach(submit => (submit.disabled = !allow))
+	#updateSubmitState(): void {
+		const complete = this.#canSubmit()
+		const available = complete && !this.#submitting
+		this.#submit.forEach(submit => {
+			// Keep focus on the button while the request is in progress. The
+			// submitting guard prevents duplicate requests while aria-disabled
+			// communicates the temporarily unavailable action.
+			submit.disabled = false
+			submit.setAttribute('aria-disabled', String(!available))
+			submit.classList.toggle('fame-form__submit--inactive', !available)
+		})
+
+		if (this.#submitStatus) {
+			const message = complete
+				? this.#submitStatus.dataset.readyStatus
+				: this.#submitStatus.dataset.incompleteStatus
+			if (message && this.#submitStatus.textContent?.trim() !== message) {
+				this.#submitStatus.textContent = message
+			}
+		}
+	}
+
+	#setSubmitting(submitting: boolean): void {
+		this.#submitting = submitting
+		this.#updateSubmitState()
+	}
+
+	#finishSubmitting(): void {
+		this.#form.classList.remove('fame-form--submitting', 'fame-form--submitted')
+		this.#setSubmitting(false)
 	}
 
 	/**

@@ -25,14 +25,15 @@ describe('FormHandler', () => {
 		expect(form.addEventListener).toHaveBeenCalledWith('submit', expect.any(Function))
 	})
 
-	test('keeps submit disabled when no payment provider is available', () => {
+	test('keeps submit focusable but aria-disabled when no payment provider is available', () => {
 		new FormHandler('/submit', 'my-org', form, mockTranslations)
 
 		const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]')!
-		expect(submit.disabled).toBe(true)
+		expect(submit.disabled).toBe(false)
+		expect(submit.getAttribute('aria-disabled')).toBe('true')
 	})
 
-	test('keeps submit disabled when amount changes without an available provider', () => {
+	test('keeps submit aria-disabled when amount changes without an available provider', () => {
 		document.body.innerHTML = `
 			<form action="/submit">
 				<input type="hidden" name="amount" value="1000">
@@ -51,7 +52,8 @@ describe('FormHandler', () => {
 		amount.value = '20'
 		amount.dispatchEvent(new Event('input', { bubbles: true }))
 
-		expect(submit.disabled).toBe(true)
+		expect(submit.disabled).toBe(false)
+		expect(submit.getAttribute('aria-disabled')).toBe('true')
 	})
 
 	test('getSubmitUrl includes the backend host and slug', () => {
@@ -125,6 +127,9 @@ describe('FormHandler events', () => {
 		document.body.innerHTML = `
             <form class="fame-form fame-form--donations" novalidate>
                 <input type="hidden" name="amount" value="1000" />
+				<div class="donation-amounts" data-type="single">
+					<label><input id="amount-choice" type="radio" value="10" checked />10</label>
+				</div>
 				<input type="radio" name="type" value="single" checked />
 				<input type="radio" name="type" value="recurring" />
                 <fieldset class="payment-method-selector fame-form__fieldset" data-type="single">
@@ -146,6 +151,7 @@ describe('FormHandler events', () => {
                     <input type="text" name="email" />
                 </div>
                 <input type="hidden" name="provider" data-selected-provider />
+				<p class="fame-form__submission-error" role="alert"></p>
                 <button type="submit">Submit</button>
             </form>
         `
@@ -258,6 +264,19 @@ describe('FormHandler events', () => {
 		expect(fetchMock).not.toHaveBeenCalled()
 	})
 
+	test('an incomplete submission exposes errors and focuses the first invalid field', () => {
+		const requiredGroup = document.createElement('div')
+		requiredGroup.className = 'fame-form__group'
+		requiredGroup.innerHTML = '<input id="last-name" name="last_name" required />'
+		form.querySelector('[type="submit"]')!.before(requiredGroup)
+
+		const lastName = form.querySelector<HTMLInputElement>('[name="last_name"]')!
+		submit()
+
+		expect(lastName.getAttribute('aria-invalid')).toBe('true')
+		expect(form.ownerDocument.activeElement).toBe(lastName)
+	})
+
 	test('listener-populated detail.errors blocks submission', async () => {
 		const fetchMock = jest.fn()
 		;(globalThis as any).fetch = fetchMock
@@ -279,6 +298,52 @@ describe('FormHandler events', () => {
 		expect(feedback?.textContent).toBe('Invalid email')
 	})
 
+	test('maps an integration amount error to the visible amount control', async () => {
+		const fetchMock = jest.fn()
+		;(globalThis as any).fetch = fetchMock
+
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			;(event as FormSubmitEvent).detail.errors = { amount: 'Check the donation amount' }
+		})
+
+		submit()
+		await flush()
+
+		const amount = form.querySelector<HTMLInputElement>('#amount-choice')!
+		expect(fetchMock).not.toHaveBeenCalled()
+		expect(amount.getAttribute('aria-invalid')).toBe('true')
+		expect(form.ownerDocument.activeElement).toBe(amount)
+		expect(form.querySelector('.donation-amounts__error')?.textContent).toBe(
+			'Check the donation amount'
+		)
+	})
+
+	test('shows hidden-provider and unknown integration errors at form level', async () => {
+		const fetchMock = jest.fn()
+		;(globalThis as any).fetch = fetchMock
+
+		const recurring = form.querySelector<HTMLInputElement>(
+			'input[name="type"][value="recurring"]'
+		)!
+		recurring.checked = true
+		recurring.dispatchEvent(new Event('change', { bubbles: true }))
+
+		on('fame-lahjoitukset-submit', (event: Event) => {
+			;(event as FormSubmitEvent).detail.errors = {
+				provider: 'This payment method is unavailable',
+				integration_field: 'The integration rejected this donation',
+			}
+		})
+
+		submit()
+		await flush()
+
+		expect(fetchMock).not.toHaveBeenCalled()
+		expect(form.querySelector('.fame-form__submission-error')?.textContent).toBe(
+			'This payment method is unavailable The integration rejected this donation'
+		)
+	})
+
 	test('handler.addError() from the listener blocks submission', async () => {
 		const fetchMock = jest.fn()
 		;(globalThis as any).fetch = fetchMock
@@ -295,6 +360,104 @@ describe('FormHandler events', () => {
 		const email = form.querySelector<HTMLInputElement>('input[name="email"]')!
 		expect(email.validity.customError).toBe(true)
 		expect(email.validationMessage).toBe('Required')
+	})
+
+	test('an API validation error preserves button focus during loading and then focuses the field', async () => {
+		const fetchMock = jest.fn<() => Promise<any>>().mockResolvedValue({
+			ok: false,
+			statusText: 'Unprocessable Entity',
+			json: async () => ({
+				message: 'Invalid form',
+				error: { email: 'Check the email address' },
+			}),
+		})
+		;(globalThis as any).fetch = fetchMock
+
+		const button = form.querySelector<HTMLButtonElement>('[type="submit"]')!
+		const email = form.querySelector<HTMLInputElement>('[name="email"]')!
+		button.focus()
+		submit()
+
+		expect(button.disabled).toBe(false)
+		await flush()
+
+		expect(form.ownerDocument.activeElement).toBe(email)
+		expect(email.getAttribute('aria-invalid')).toBe('true')
+		expect(button.disabled).toBe(false)
+	})
+
+	test('an API amount error is shown on the visible amount control', async () => {
+		const fetchMock = jest.fn<() => Promise<any>>().mockResolvedValue({
+			ok: false,
+			statusText: 'Unprocessable Entity',
+			json: async () => ({
+				message: 'Invalid form',
+				error: { amount: 'Choose a supported donation amount' },
+			}),
+		})
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+
+		const amount = form.querySelector<HTMLInputElement>('#amount-choice')!
+		expect(amount.getAttribute('aria-invalid')).toBe('true')
+		expect(form.ownerDocument.activeElement).toBe(amount)
+		expect(form.querySelector('.donation-amounts__error')?.textContent).toBe(
+			'Choose a supported donation amount'
+		)
+	})
+
+	test('a non-validation API failure is announced at form level', async () => {
+		const fetchMock = jest.fn<() => Promise<any>>().mockResolvedValue({
+			ok: false,
+			statusText: 'Server Error',
+			json: async () => ({ message: 'Temporary failure' }),
+		})
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+
+		expect(form.querySelector('.fame-form__submission-error')?.textContent).toBe(
+			'The donation could not be submitted. Please try again.'
+		)
+		expect(form.querySelector('.fame-form__submission-error')?.getAttribute('role')).toBe(
+			'alert'
+		)
+		expect(console).toHaveErrored()
+	})
+
+	test('a rejected request is announced and logged', async () => {
+		const requestError = new TypeError('Failed to fetch')
+		;(globalThis as any).fetch = jest.fn().mockRejectedValue(requestError)
+
+		submit()
+		await flush()
+
+		expect(form.querySelector('.fame-form__submission-error')?.textContent).toBe(
+			'The donation could not be submitted. Please try again.'
+		)
+		expect(console).toHaveErroredWith('Donation form submission failed', requestError)
+	})
+
+	test('a non-JSON server failure is announced and logged', async () => {
+		const parseError = new SyntaxError('Unexpected token <')
+		;(globalThis as any).fetch = jest.fn().mockResolvedValue({
+			ok: false,
+			statusText: 'Server Error',
+			json: async () => {
+				throw parseError
+			},
+		})
+
+		submit()
+		await flush()
+
+		expect(form.querySelector('.fame-form__submission-error')?.textContent).toBe(
+			'The donation could not be submitted. Please try again.'
+		)
+		expect(console).toHaveErroredWith('Donation form submission failed', parseError)
 	})
 
 	test('mutated detail.data is sent in the request body', async () => {
@@ -323,6 +486,89 @@ describe('FormHandler events', () => {
 			email: '',
 			campaign: 'spring',
 		})
+	})
+
+	test('ignores a second submission while a request is in progress', async () => {
+		let resolveRequest: (response: any) => void = () => undefined
+		const pendingRequest = new Promise<any>(resolve => {
+			resolveRequest = resolve
+		})
+		const fetchMock = jest.fn<() => Promise<any>>().mockReturnValue(pendingRequest)
+		;(globalThis as any).fetch = fetchMock
+		on('fame-lahjoitukset-result', (event: Event) => event.preventDefault())
+
+		submit()
+		submit()
+
+		expect(fetchMock).toHaveBeenCalledTimes(1)
+		resolveRequest({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
+		await flush()
+	})
+
+	test('releases the submission guard after a same-document redirect', async () => {
+		const fetchMock = jest
+			.fn()
+			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '#thanks' }) })
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+		submit()
+
+		await flush()
+		expect(fetchMock).toHaveBeenCalledTimes(2)
+		expect(form.classList.contains('fame-form--submitting')).toBe(false)
+		expect(form.querySelector('[type="submit"]')?.getAttribute('aria-disabled')).toBe('false')
+	})
+
+	test('releases the submission guard for an empty fragment redirect', async () => {
+		const fetchMock = jest
+			.fn()
+			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '#' }) })
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+
+		expect(form.classList.contains('fame-form--submitting')).toBe(false)
+		expect(form.querySelector('[type="submit"]')?.getAttribute('aria-disabled')).toBe('false')
+	})
+
+	test('keeps the submission guard during a redirect to the same URL without a hash', async () => {
+		const redirect = new URL(window.location.href)
+		redirect.hash = ''
+		const fetchMock = jest.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({ redirect_url: redirect.href }),
+		})
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+
+		expect(form.classList.contains('fame-form--submitting')).toBe(true)
+		expect(form.querySelector('[type="submit"]')?.getAttribute('aria-disabled')).toBe('true')
+	})
+
+	test('restores submission after a bfcache pageshow', async () => {
+		const fetchMock = jest
+			.fn()
+			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
+		;(globalThis as any).fetch = fetchMock
+
+		submit()
+		await flush()
+		expect(form.classList.contains('fame-form--submitting')).toBe(true)
+
+		window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }))
+		expect(form.classList.contains('fame-form--submitting')).toBe(false)
+		expect(form.classList.contains('fame-form--submitted')).toBe(false)
+		expect(form.querySelector('[type="submit"]')?.getAttribute('aria-disabled')).toBe('false')
+
+		submit()
+		expect(fetchMock).toHaveBeenCalledTimes(2)
+		await flush()
+		expect(console).toHaveErrored()
 	})
 
 	test('dispatches fame-lahjoitukset-result on success and preventDefault suppresses the redirect', async () => {

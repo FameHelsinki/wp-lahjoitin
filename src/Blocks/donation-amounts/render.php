@@ -213,6 +213,7 @@ endif;
     <?php if ($other) :
       $other_id = "{$type}-other";
       $help_id  = "{$type}-amount-help";
+      $error_id = "{$type}-amount-error";
     ?>
       <div
         class="donation-amounts__other"
@@ -231,9 +232,11 @@ endif;
             class="fame-form__input"
             name="<?php echo esc_attr("amount-{$type}"); ?>"
             type="number"
+            data-custom-validator
             min="<?php echo esc_attr((string) $min_amount); ?>"
             max="<?php echo esc_attr((string) $max_amount); ?>"
             value="<?php echo esc_attr((string) $default_euros); ?>"
+            aria-valuetext="<?php echo esc_attr(trim((string) $default_euros . ' ' . $unit)); ?>"
             <?php if ($help_text !== '') : ?>
             aria-describedby="<?php echo esc_attr($help_id); ?>"
             <?php endif; ?> />
@@ -242,6 +245,9 @@ endif;
               <?php echo esc_html($help_text); ?>
             </small>
           <?php endif; ?>
+          <div
+            id="<?php echo esc_attr($error_id); ?>"
+            class="donation-amounts__error"></div>
         </div>
       </div>
     <?php endif; ?>

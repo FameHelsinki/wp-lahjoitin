@@ -10,27 +10,71 @@ describe('AmountWrapper', () => {
 			<div class="donation-amounts" data-type="recurring">
 				<input data-type="recurring" checked="" name="amount-radio-recurring" value="10" type="radio">
 				<input data-type="recurring" name="amount-radio-recurring" value="20" type="radio">
-				<input name="amount-recurring" type="number" min="1" value="10">
+				<div class="donation-amounts__input-wrapper">
+					<input name="amount-recurring" type="number" min="1" value="10">
+				</div>
 			</div>
+			<p class="fame-form__validation-announcer" aria-live="polite"></p>
         `
 
 		wrapper = document.querySelector('div')!
 		mockOnChange.mockReset()
-		amountWrapper = new AmountWrapper(wrapper, mockOnChange)
+		amountWrapper = new AmountWrapper(
+			wrapper,
+			mockOnChange,
+			undefined,
+			document.querySelector('.fame-form__validation-announcer')
+		)
 	})
 
 	test('should return the correct type', () => {
 		expect(amountWrapper.type).toBe('recurring')
 	})
 
+	test('keeps the spoken amount in sync with typing, preset choices and defaults', () => {
+		const input = wrapper.querySelector<HTMLInputElement>('input[type="number"]')!
+		expect(input.getAttribute('aria-valuetext')).toBe('10')
+		input.parentElement!.classList.add('donation-amounts__other')
+		const unit = document.createElement('span')
+		unit.className = 'donation-amounts__unit'
+		unit.textContent = '€'
+		input.parentElement!.appendChild(unit)
+		amountWrapper.ensureSelection()
+		expect(input.getAttribute('aria-valuetext')).toBe('10 €')
+
+		for (const value of ['17', '0', '']) {
+			input.value = value
+			input.dispatchEvent(new Event('input'))
+			expect(input.getAttribute('aria-valuetext')).toBe(`${input.value} €`)
+		}
+		const preset = wrapper.querySelector<HTMLInputElement>('input[type="radio"][value="20"]')!
+		preset.checked = true
+		preset.dispatchEvent(new Event('change'))
+		expect(input.getAttribute('aria-valuetext')).toBe('20 €')
+
+		wrapper.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(radio => {
+			radio.checked = false
+		})
+		wrapper.dataset.defaultAmount = '35'
+		amountWrapper.ensureSelection()
+		expect(input.getAttribute('aria-valuetext')).toBe('35 €')
+	})
+
 	test('should hide the wrapper when disabled is set to true', () => {
 		amountWrapper.disabled = true
 		expect(wrapper.style.display).toBe('none')
+		expect(Array.from(wrapper.querySelectorAll('input')).every(input => input.disabled)).toBe(
+			true
+		)
 	})
 
 	test('should show the wrapper when disabled is set to false', () => {
+		amountWrapper.disabled = true
 		amountWrapper.disabled = false
 		expect(wrapper.style.display).toBe('')
+		expect(Array.from(wrapper.querySelectorAll('input')).every(input => !input.disabled)).toBe(
+			true
+		)
 	})
 
 	test('should return the selected radio button value', () => {
@@ -66,6 +110,69 @@ describe('AmountWrapper', () => {
 		numberInput.dispatchEvent(new Event('input'))
 		const radio = wrapper.querySelector('input[type="radio"]:checked') as HTMLInputElement
 		expect(radio.value).toBe('20')
+	})
+
+	test('links an invalid other amount to its error and removes the link when corrected', () => {
+		const numberInput = wrapper.querySelector('input[type="number"]') as HTMLInputElement
+		numberInput.id = 'recurring-other'
+		numberInput.value = '0'
+		numberInput.dispatchEvent(new Event('input'))
+
+		const error = wrapper.querySelector('.donation-amounts__error') as HTMLElement
+		expect(numberInput.getAttribute('aria-invalid')).toBe('true')
+		expect(numberInput.getAttribute('aria-describedby')).toContain(error.id)
+		expect(error.textContent).not.toBe('')
+		expect(error.hasAttribute('aria-live')).toBe(false)
+		expect(document.querySelector('.fame-form__validation-announcer')?.textContent).toBe('')
+
+		numberInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+		expect(document.querySelector('.fame-form__validation-announcer')?.textContent).toContain(
+			'The minimum donation amount'
+		)
+
+		numberInput.value = '2'
+		numberInput.dispatchEvent(new Event('input'))
+		expect(numberInput.hasAttribute('aria-invalid')).toBe(false)
+		expect(numberInput.hasAttribute('aria-describedby')).toBe(false)
+		expect(error.textContent).toBe('')
+		expect(document.querySelector('.fame-form__validation-announcer')?.textContent).toBe('')
+	})
+
+	test('correcting the amount preserves a newer announcement from another component', () => {
+		const numberInput = wrapper.querySelector<HTMLInputElement>('input[type="number"]')!
+		const announcer = document.querySelector<HTMLElement>('.fame-form__validation-announcer')!
+		numberInput.value = '0'
+		numberInput.dispatchEvent(new Event('input'))
+		numberInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }))
+		expect(announcer.textContent).toContain('The minimum donation amount')
+
+		announcer.textContent = 'Email: Invalid email'
+		numberInput.value = '5'
+		numberInput.dispatchEvent(new Event('input'))
+
+		expect(announcer.textContent).toBe('Email: Invalid email')
+		expect(numberInput.hasAttribute('aria-invalid')).toBe(false)
+	})
+
+	test('links a backend amount error to the selected visible control', () => {
+		const selected = wrapper.querySelector<HTMLInputElement>('input[type="radio"]:checked')!
+
+		expect(amountWrapper.addError('Check the donation amount')).toBe(true)
+
+		const error = wrapper.querySelector<HTMLElement>('.donation-amounts__error')!
+		for (const radio of wrapper.querySelectorAll<HTMLInputElement>('input[type="radio"]')) {
+			expect(radio.getAttribute('aria-invalid')).toBe('true')
+			expect(radio.getAttribute('aria-describedby')).toContain(error.id)
+		}
+		expect(error.textContent).toBe('Check the donation amount')
+		expect(amountWrapper.invalid).toBe(true)
+
+		const otherRadio = wrapper.querySelector<HTMLInputElement>('input[value="20"]')!
+		otherRadio.checked = true
+		otherRadio.dispatchEvent(new Event('change'))
+		expect(selected.hasAttribute('aria-invalid')).toBe(false)
+		expect(otherRadio.hasAttribute('aria-invalid')).toBe(false)
+		expect(amountWrapper.invalid).toBe(false)
 	})
 })
 
