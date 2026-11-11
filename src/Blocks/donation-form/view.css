@@ -280,7 +280,7 @@ input {
 .wp-block-famehelsinki-donation-amounts
 .donation-amounts__other
 .label-wrapper {
-	display: inline-flex;
+	display: block;
 	font-size: inherit;
 }
 
@@ -373,6 +373,12 @@ input {
 /* Contact form labels */
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-contact-form label {
 	font-size: inherit;
+}
+
+/* A full-width theme label would push the currency away from its text. */
+.wp-block-famehelsinki-donation-form .donation-amounts__other .label-wrapper > label {
+	display: inline;
+	width: auto;
 }
 
 .wp-block-famehelsinki-donation-form

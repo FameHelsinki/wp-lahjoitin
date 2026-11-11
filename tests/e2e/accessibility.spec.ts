@@ -90,6 +90,27 @@ test.describe('donation form accessibility', () => {
 		await expectDonationFormToPassAxe(page, 'optional contact form on initial load')
 	})
 
+	test('other amount unit follows its label without horizontal overflow', async ({ page }) => {
+		for (const width of [600, 320]) {
+			await page.setViewportSize({ width, height: 800 })
+			await page.goto(fixtures['optional-contact']!.url)
+
+			const other = page.locator('.donation-amounts__other:visible')
+			const label = other.locator('.label-wrapper label')
+			const unit = other.locator('.label-wrapper .donation-amounts__unit')
+			const labelBox = await label.boundingBox()
+			const unitBox = await unit.boundingBox()
+			expect(labelBox).not.toBeNull()
+			expect(unitBox).not.toBeNull()
+			expect(unitBox!.x - (labelBox!.x + labelBox!.width)).toBeGreaterThanOrEqual(0)
+			expect(unitBox!.x - (labelBox!.x + labelBox!.width)).toBeLessThan(12)
+			expect(Math.abs(unitBox!.y - labelBox!.y)).toBeLessThan(4)
+			expect(
+				await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
+			).toBe(true)
+		}
+	})
+
 	test('all-features form covers campaigns, charge days and required contact details', async ({
 		page,
 	}) => {
