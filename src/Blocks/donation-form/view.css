@@ -232,6 +232,19 @@
 	gap: 10px;
 }
 
+.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .donation-type__checkmark {
+	display: none;
+	inline-size: 1.2em;
+	block-size: 1.2em;
+	margin-inline-end: 0.35em;
+	flex: none;
+	fill: currentcolor;
+}
+
+.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__check-input:checked + .donation-type__checkmark {
+	display: block;
+}
+
 /* Shared “button-like” labels for tabs, amount buttons and providers */
 .wp-block-famehelsinki-donation-form .donation-amounts .fame-form__label,
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label,
@@ -496,7 +509,6 @@ input {
 	}
 
 	.wp-block-famehelsinki-donation-form .donation-amounts .fame-form__label:has(.fame-form__check-input:checked)::before,
-	.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__label:has(.fame-form__check-input:checked)::before,
 	.wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-providers .fame-form__label:has(.fame-form__check-input:checked)::before {
 		content: "✓" / "";
 		font-weight: 700;

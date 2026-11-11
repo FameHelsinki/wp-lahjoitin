@@ -41,6 +41,16 @@ test.describe('donation form', () => {
 		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-type"]'))
 		await editor.openDocumentSettingsSidebar()
 		await page.getByRole('checkbox', { name: 'Recurring' }).check()
+		const donationType = canvas.locator('[data-type="famehelsinki/donation-type"]')
+		const single = donationType.locator('input[type="radio"][value="single"]')
+		const recurring = donationType.locator('input[type="radio"][value="recurring"]')
+		await expect(single).toBeChecked()
+		await expect(
+			single.locator('xpath=ancestor::label').locator('.donation-type__checkmark')
+		).toBeVisible()
+		await expect(
+			recurring.locator('xpath=ancestor::label').locator('.donation-type__checkmark')
+		).toBeHidden()
 
 		// The charge-day block hides itself until at least two days are
 		// configured, so pick the days this suite selects from later.
