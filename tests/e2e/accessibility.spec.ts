@@ -109,6 +109,8 @@ test.describe('donation form accessibility', () => {
 				await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
 			).toBe(true)
 		}
+	})
+
 	test('donation type checkmark follows the selected radio without changing its accessible name', async ({
 		page,
 	}) => {
