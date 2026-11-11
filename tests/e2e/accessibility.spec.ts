@@ -109,6 +109,50 @@ test.describe('donation form accessibility', () => {
 				await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
 			).toBe(true)
 		}
+	test('donation type checkmark follows the selected radio without changing its accessible name', async ({
+		page,
+	}) => {
+		await page.goto(fixtures['optional-contact']!.url)
+		const form = page.locator(formSelector)
+		const monthly = form.getByRole('radio', { name: 'Monthly' })
+		const oneTime = form.getByRole('radio', { name: 'One-time' })
+		const monthlyCheckmark = monthly
+			.locator('xpath=ancestor::label')
+			.locator('.donation-type__checkmark')
+		const oneTimeCheckmark = oneTime
+			.locator('xpath=ancestor::label')
+			.locator('.donation-type__checkmark')
+
+		await expect(monthly).toBeChecked()
+		await expect(monthlyCheckmark).toBeVisible()
+		await expect(oneTimeCheckmark).toBeHidden()
+		await expect(monthlyCheckmark).toHaveAttribute('aria-hidden', 'true')
+		await expect(oneTimeCheckmark).toHaveAttribute('aria-hidden', 'true')
+		await expect(monthlyCheckmark).toHaveAttribute('fill', 'currentColor')
+		const monthlyColors = await monthlyCheckmark.evaluate(icon => ({
+			icon: getComputedStyle(icon).fill,
+			label: getComputedStyle(icon.closest('label')!).color,
+		}))
+		expect(monthlyColors.icon).toBe(monthlyColors.label)
+		await expect(monthly).toHaveAccessibleName('Monthly')
+		await expect(oneTime).toHaveAccessibleName('One-time')
+
+		await oneTime.locator('xpath=ancestor::label').click()
+		await expect(oneTime).toBeChecked()
+		await expect(oneTimeCheckmark).toBeVisible()
+		await expect(monthlyCheckmark).toBeHidden()
+		const oneTimeColors = await oneTimeCheckmark.evaluate(icon => ({
+			icon: getComputedStyle(icon).fill,
+			label: getComputedStyle(icon.closest('label')!).color,
+		}))
+		expect(oneTimeColors.icon).toBe(oneTimeColors.label)
+
+		await oneTime.focus()
+		await page.keyboard.press('ArrowLeft')
+		await expect(monthly).toBeChecked()
+		await expect(monthlyCheckmark).toBeVisible()
+		await expect(oneTimeCheckmark).toBeHidden()
+		await expect(monthly).toHaveAccessibleName('Monthly')
 	})
 
 	test('all-features form covers campaigns, charge days and required contact details', async ({
@@ -369,7 +413,10 @@ test.describe('donation form accessibility', () => {
 				background: style.backgroundColor,
 				color: style.color,
 				borderWidth: Number.parseFloat(style.borderTopWidth),
-				marker: getComputedStyle(element, '::before').content,
+				marker: getComputedStyle(element.querySelector('.donation-type__checkmark')!)
+					.display,
+				markerColor: getComputedStyle(element.querySelector('.donation-type__checkmark')!)
+					.fill,
 			}
 		})
 		const unselectedStyle = await page
@@ -393,7 +440,8 @@ test.describe('donation form accessibility', () => {
 		expect(selectedStyle.background).not.toBe(unselectedStyle.background)
 		expect(selectedStyle.color).not.toBe(unselectedStyle.color)
 		expect(selectedStyle.borderWidth).toBeGreaterThanOrEqual(3)
-		expect(selectedStyle.marker).toContain('✓')
+		expect(selectedStyle.marker).not.toBe('none')
+		expect(selectedStyle.markerColor).toBe(selectedStyle.color)
 		await expect(selectedLabel.locator('input[type="radio"]')).toHaveAccessibleName(/^[^✓]+$/)
 
 		const inactiveSubmitStyle = await page

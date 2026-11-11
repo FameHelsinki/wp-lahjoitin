@@ -134,6 +134,19 @@
 	gap: 10px;
 }
 
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .donation-type__checkmark {
+	display: none;
+	inline-size: 1.2em;
+	block-size: 1.2em;
+	margin-inline-end: 0.35em;
+	flex: none;
+	fill: currentcolor;
+}
+
+.editor-styles-wrapper .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__check-input:checked + .donation-type__checkmark {
+	display: block;
+}
+
 /* Amounts grid in editor */
 .editor-styles-wrapper
 .wp-block-famehelsinki-donation-form
