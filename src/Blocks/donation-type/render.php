@@ -119,6 +119,9 @@ $wrapper_attrs = get_block_wrapper_attributes(['class' => $classes]);
             name="type"
             value="<?php echo esc_attr($value); ?>"
             <?php checked($value, $default_value); ?> />
+          <svg class="donation-type__checkmark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+            <path d="M9.55,18l-5.7-5.7l1.43-1.42l4.28,4.28l9.18-9.18L20.15,7.4L9.55,18Z" />
+          </svg>
           <?php echo esc_html($label); ?>
         </label>
       </div>
