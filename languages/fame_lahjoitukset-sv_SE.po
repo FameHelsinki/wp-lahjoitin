@@ -307,6 +307,10 @@ msgid "Show phone number fields"
 msgstr "Visa telefonnummerfält"
 
 #: build/Blocks/contact-form/index.js:1
+msgid "Require phone number"
+msgstr "Kräv telefonnummer"
+
+#: build/Blocks/contact-form/index.js:1
 msgid ""
 "The contact form is not in use. Use the toggle in the sidebar to enable it."
 msgstr ""
@@ -578,6 +582,10 @@ msgstr "Ogiltig e-postadress"
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid phone number"
 msgstr "Ogiltigt telefonnummer"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Phone number is required"
+msgstr "Telefonnummer krävs"
 
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid charge day"

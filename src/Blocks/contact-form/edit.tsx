@@ -21,7 +21,15 @@ import { captionStrings } from '../common/strings.ts'
  * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
  */
 export default function Edit({ attributes, setAttributes }: EditProps): React.JSX.Element {
-	const { contact, showAddress, showPhone, showLegend, legend, legendAlign = 'left' } = attributes
+	const {
+		contact,
+		showAddress,
+		showPhone,
+		requirePhone = false,
+		showLegend,
+		legend,
+		legendAlign = 'left',
+	} = attributes
 	const { show = true } = attributes as { show?: boolean }
 	const strings = captionStrings('legend')
 	const translatedLegend = __('Contacts', 'fame_lahjoitukset')
@@ -66,6 +74,13 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 								checked={showPhone}
 								onChange={value => setAttributes({ showPhone: value })}
 							/>
+							{showPhone && (
+								<ToggleControl
+									label={__('Require phone number', 'fame_lahjoitukset')}
+									checked={requirePhone}
+									onChange={value => setAttributes({ requirePhone: value })}
+								/>
+							)}
 							<ToggleControl
 								label={strings.visibilityLabel}
 								checked={showLegend}
@@ -146,6 +161,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						{showPhone && (
 							<ContactInputControl
 								name="phone"
+								required={requirePhone}
 								attributes={attributes}
 								setAttributes={setAttributes}
 							/>

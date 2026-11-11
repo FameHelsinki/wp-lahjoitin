@@ -306,6 +306,10 @@ msgid "Show phone number fields"
 msgstr "Näytä puhelinnumerokentät"
 
 #: build/Blocks/contact-form/index.js:1
+msgid "Require phone number"
+msgstr "Vaadi puhelinnumero"
+
+#: build/Blocks/contact-form/index.js:1
 msgid ""
 "The contact form is not in use. Use the toggle in the sidebar to enable it."
 msgstr ""
@@ -576,6 +580,10 @@ msgstr "Virheellinen sähköpostiosoite"
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid phone number"
 msgstr "Virheellinen puhelinnumero"
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Phone number is required"
+msgstr "Puhelinnumero on pakollinen"
 
 #: build/Blocks/donation-form/view.js:1
 msgid "Invalid charge day"

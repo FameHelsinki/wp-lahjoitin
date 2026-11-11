@@ -41,6 +41,7 @@ domReady(() => {
 				unknown: __('Invalid email', 'fame_lahjoitukset'),
 			},
 			phone: {
+				required: __('Phone number is required', 'fame_lahjoitukset'),
 				unknown: __('Invalid phone number', 'fame_lahjoitukset'),
 			},
 			due_date: {

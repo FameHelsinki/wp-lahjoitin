@@ -52,6 +52,26 @@ final class BlocksTest extends WP_UnitTestCase
         $this->assertStringContainsString('wp-block-famehelsinki-donation-form', $rendered);
     }
 
+    public function testPhoneRequiredSettingOnlyAffectsVisiblePhoneField(): void
+    {
+        $render = static function (array $attributes): string {
+            return do_blocks('<!-- wp:famehelsinki/contact-form ' . wp_json_encode($attributes) . ' /-->');
+        };
+
+        $optional = $render(['showPhone' => true]);
+        $this->assertMatchesRegularExpression('/<input[^>]*name="phone"[^>]*>/', $optional);
+        $this->assertDoesNotMatchRegularExpression('/<input[^>]*name="phone"[^>]*required/', $optional);
+
+        $required = $render(['showPhone' => true, 'requirePhone' => true]);
+        $this->assertMatchesRegularExpression('/<input[^>]*name="phone"[^>]*required/', $required);
+        $this->assertStringContainsString('fame-form__group--required', $required);
+        $this->assertStringContainsString('aria-invalid="false"', $required);
+        $this->assertStringContainsString('autocomplete="tel"', $required);
+
+        $hidden = $render(['showPhone' => false, 'requirePhone' => true]);
+        $this->assertStringNotContainsString('name="phone"', $hidden);
+    }
+
     public function testOtherAmountHelpTextIsRendered(): void
     {
 		$settings = [
