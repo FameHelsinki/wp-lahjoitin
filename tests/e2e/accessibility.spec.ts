@@ -121,6 +121,80 @@ test.describe('donation form accessibility', () => {
 		await expectDonationFormToPassAxe(page, 'all-features form after switching donation type')
 	})
 
+	test('required phone is announced once per submit attempt and clears after correction', async ({
+		page,
+	}) => {
+		await page.goto(fixtures['required-phone']!.url)
+		const form = page.locator(formSelector)
+		const phone = form.locator('input[name="phone"]')
+		const announcer = form.locator('.fame-form__validation-announcer')
+		const feedback = form.locator('[data-validation-for="phone"]')
+		const submit = form.locator('button[type="submit"]')
+
+		await expect(
+			form.locator('.wp-block-famehelsinki-contact-form input[required]')
+		).toHaveCount(1)
+		await expect(phone).toHaveAttribute('required', '')
+		await expect(phone).toHaveAttribute('aria-invalid', 'false')
+		await expect(phone).toHaveAttribute('autocomplete', 'tel')
+		await expect(phone).toHaveAccessibleName(/Phone/)
+		await expect(submit).toHaveAttribute('aria-disabled', 'true')
+		await expect(announcer).toBeEmpty()
+		await expectDonationFormToPassAxe(page, 'required phone before validation')
+
+		await page.evaluate(() => {
+			const liveRegion = document.querySelector('.fame-form__validation-announcer')!
+			const observedWindow = window as Window & {
+				phoneAnnouncements?: string[]
+				phoneAnnouncementObserver?: MutationObserver
+			}
+			observedWindow.phoneAnnouncements = []
+			observedWindow.phoneAnnouncementObserver = new MutationObserver(() => {
+				const message = liveRegion.textContent?.trim()
+				if (message) observedWindow.phoneAnnouncements!.push(message)
+			})
+			observedWindow.phoneAnnouncementObserver.observe(liveRegion, {
+				childList: true,
+			})
+		})
+
+		await phone.focus()
+		await phone.press('Enter')
+		await expect(phone).toBeFocused()
+		await expect(phone).toHaveAttribute('aria-invalid', 'true')
+		await expect(feedback).toHaveText('Phone number is required')
+		await expect(feedback).not.toHaveAttribute('aria-live')
+		await expect(phone).toHaveAttribute(
+			'aria-describedby',
+			'contact-phone-help contact-phone-error'
+		)
+		await expect(announcer).toHaveText('Phone: Phone number is required')
+		await expect
+			.poll(() =>
+				page.evaluate(
+					() => (window as Window & { phoneAnnouncements: string[] }).phoneAnnouncements
+				)
+			)
+			.toEqual(['Phone: Phone number is required'])
+		await expectDonationFormToPassAxe(page, 'required phone after validation')
+
+		await phone.press('Enter')
+		await expect(announcer).toHaveText('Phone: Phone number is required')
+		await expect
+			.poll(() =>
+				page.evaluate(
+					() => (window as Window & { phoneAnnouncements: string[] }).phoneAnnouncements
+				)
+			)
+			.toEqual(['Phone: Phone number is required', 'Phone: Phone number is required'])
+
+		await phone.fill('+358 40 123 4567')
+		await expect(phone).toHaveAttribute('aria-invalid', 'false')
+		await expect(feedback).toBeEmpty()
+		await expect(announcer).toBeEmpty()
+		await expect(submit).toHaveAttribute('aria-disabled', 'false')
+	})
+
 	test('Tab reaches controls in logical order and arrow keys change donation type', async ({
 		page,
 	}) => {

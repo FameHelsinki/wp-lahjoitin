@@ -15,6 +15,7 @@
 		"contact": { "type": "boolean", "default": false },
 		"showAddress": { "type": "boolean", "default": true },
 		"showPhone": { "type": "boolean", "default": true },
+		"requirePhone": { "type": "boolean", "default": false },
 
 		"first_name_label": { "type": "string", "default": "" },
 		"last_name_label": { "type": "string", "default": "" },

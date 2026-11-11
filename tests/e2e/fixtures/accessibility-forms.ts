@@ -1,6 +1,10 @@
 import type { RequestUtils } from '@wordpress/e2e-test-utils-playwright'
 
-export type AccessibilityFormScenario = 'minimal' | 'optional-contact' | 'all-features'
+export type AccessibilityFormScenario =
+	| 'minimal'
+	| 'optional-contact'
+	| 'required-phone'
+	| 'all-features'
 
 export interface AccessibilityFormFixture {
 	title: string
@@ -191,6 +195,33 @@ export const accessibilityFormFixtures: Record<
 			controls: {
 				submitLabelSingle: 'Donate once',
 				submitLabelRecurring: 'Start monthly donation',
+			},
+		}),
+	},
+	'required-phone': {
+		title: 'Accessibility fixture: required phone',
+		content: donationForm({
+			type: {
+				value: 'single',
+				types: [{ value: 'single', label: 'One-time' }],
+			},
+			amounts: { settings: [amountSettings.single] },
+			contact: {
+				contact: false,
+				showAddress: false,
+				showPhone: true,
+				requirePhone: true,
+				phone_help: 'A phone number is needed for this donation.',
+			},
+			providers: {
+				providers: [
+					{
+						value: 'checkout',
+						label: 'Paytrail',
+						types: ['single'],
+						type: 'single',
+					},
+				],
 			},
 		}),
 	},

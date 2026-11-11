@@ -26,9 +26,10 @@ $legend      = $legend_raw === '' || $legend_raw === 'Contacts'
   ? __('Contacts', 'fame_lahjoitukset')
   : $legend_raw;
 
-$contact     = array_key_exists('contact', $attributes) ? (bool) $attributes['contact'] : false;
-$showAddress = array_key_exists('showAddress', $attributes) ? (bool) $attributes['showAddress'] : true;
-$showPhone   = array_key_exists('showPhone', $attributes) ? (bool) $attributes['showPhone'] : true;
+$contact      = array_key_exists('contact', $attributes) ? (bool) $attributes['contact'] : false;
+$showAddress  = array_key_exists('showAddress', $attributes) ? (bool) $attributes['showAddress'] : true;
+$showPhone    = array_key_exists('showPhone', $attributes) ? (bool) $attributes['showPhone'] : true;
+$requirePhone = array_key_exists('requirePhone', $attributes) ? (bool) $attributes['requirePhone'] : false;
 
 $wrapper_attrs = get_block_wrapper_attributes([
   'class' => 'fame-form__fieldset',
@@ -168,7 +169,7 @@ $render_group = static function (array $attrs, string $groupName, array $control
   }
 
   if ($showPhone) {
-    $render_input($attributes, 'phone', 'tel', false, null);
+    $render_input($attributes, 'phone', 'tel', $requirePhone, null);
   }
   ?>
 </fieldset>
