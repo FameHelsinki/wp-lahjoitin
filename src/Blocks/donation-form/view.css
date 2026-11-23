@@ -68,6 +68,10 @@
 	color: inherit;
 }
 
+.fame-form__help[hidden] {
+	display: none;
+}
+
 .fame-form__row > .fame-form__help {
 	flex-basis: 100%;
 }

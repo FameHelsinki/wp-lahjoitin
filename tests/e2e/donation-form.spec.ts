@@ -1,4 +1,5 @@
 import { test, expect } from '@wordpress/e2e-test-utils-playwright'
+import type { Page } from '@playwright/test'
 
 /**
  * End-to-end flow for the donation form.
@@ -15,6 +16,16 @@ async function setOrganizationSlug(requestUtils: any, slug: string) {
 		method: 'POST',
 		data: { slug },
 	})
+}
+
+async function openSettingsSidebar(page: Page) {
+	const toggle = page
+		.getByRole('region', { name: 'Editor top bar', exact: true })
+		.getByRole('button', { name: 'Settings', exact: true })
+	if ((await toggle.getAttribute('aria-expanded')) === 'false') {
+		await toggle.click()
+	}
+	await expect(page.getByRole('region', { name: 'Editor settings', exact: true })).toBeVisible()
 }
 
 test.describe('donation form', () => {
@@ -39,7 +50,7 @@ test.describe('donation form', () => {
 		await expect(canvas.locator('[data-type="famehelsinki/form-controls"]')).toBeVisible()
 
 		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-type"]'))
-		await editor.openDocumentSettingsSidebar()
+		await openSettingsSidebar(page)
 		await page.getByRole('checkbox', { name: 'Recurring' }).check()
 		const donationType = canvas.locator('[data-type="famehelsinki/donation-type"]')
 		const single = donationType.locator('input[type="radio"][value="single"]')
@@ -177,7 +188,7 @@ test.describe('donation form', () => {
 		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
 
 		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
-		await editor.openDocumentSettingsSidebar()
+		await openSettingsSidebar(page)
 		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('3')
 
 		// The edit() effect rebuilds core/columns but must keep the same

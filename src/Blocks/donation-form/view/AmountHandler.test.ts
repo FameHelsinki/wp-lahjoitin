@@ -154,6 +154,55 @@ describe('AmountWrapper', () => {
 		expect(numberInput.hasAttribute('aria-invalid')).toBe(false)
 	})
 
+	test.each(['typing', 'preset', 'type switch', 'backend'])(
+		'replaces help with the error and restores it after %s',
+		recovery => {
+			const input = wrapper.querySelector<HTMLInputElement>('input[type="number"]')!
+			const help = document.createElement('small')
+			help.id = 'amount-help'
+			help.className = 'fame-form__help'
+			help.textContent = 'Minimum 1 €'
+			input.after(help)
+			input.setAttribute('aria-describedby', 'additional-description amount-help')
+			input.value = '0'
+			input.dispatchEvent(new Event('input'))
+
+			if (recovery === 'backend') {
+				wrapper.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach(radio => {
+					radio.checked = false
+				})
+				amountWrapper.addError('Check the amount')
+			}
+
+			const error = wrapper.querySelector<HTMLElement>('.donation-amounts__error')!
+			expect(help.hidden).toBe(true)
+			expect(input.getAttribute('aria-describedby')).toBe(
+				`additional-description ${error.id}`
+			)
+			expect(input.getAttribute('aria-invalid')).toBe('true')
+
+			if (recovery === 'preset') {
+				const radio = wrapper.querySelector<HTMLInputElement>('input[type="radio"]')!
+				radio.checked = true
+				radio.dispatchEvent(new Event('change'))
+			} else if (recovery === 'type switch') {
+				amountWrapper.disabled = true
+				amountWrapper.disabled = false
+			} else {
+				input.value = '10'
+				input.dispatchEvent(new Event('input'))
+			}
+
+			expect(help.hidden).toBe(false)
+			expect(help.textContent).toBe('Minimum 1 €')
+			expect(error.textContent).toBe('')
+			expect(input.getAttribute('aria-describedby')).toBe(
+				'additional-description amount-help'
+			)
+			expect(input.hasAttribute('aria-invalid')).toBe(false)
+		}
+	)
+
 	test('links a backend amount error to the selected visible control', () => {
 		const selected = wrapper.querySelector<HTMLInputElement>('input[type="radio"]:checked')!
 
