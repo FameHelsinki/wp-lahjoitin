@@ -6,7 +6,7 @@
 	"title": "Campaigns",
 	"category": "widgets",
 	"description": "Campaign selector for the donation form.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
 		"campaigns": { "type": "array", "default": [] },

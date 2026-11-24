@@ -818,5 +818,97 @@ msgctxt "block description"
 msgid "Allows donors to choose the monthly recurring charge day."
 msgstr "Mahdollistaa kuukausilahjoituksen veloituspäivän valitsemisen."
 
+#: build/Blocks/donation-form/index.js:1
+msgid "Theme default"
+msgstr "Teeman oletus"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Content width"
+msgstr "Sisältöleveys"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Custom width"
+msgstr "Oma leveys"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Width"
+msgstr "Leveys"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Form width"
+msgstr "Lomakkeen leveys"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Maximum width (px)"
+msgstr "Enimmäisleveys (px)"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "saved value"
+msgstr "tallennettu arvo"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Choose 1–3 columns. New columns start empty. Removing columns moves their "
+"blocks to the end of the last remaining column."
+msgstr ""
+"Valitse 1–3 saraketta. Uudet sarakkeet ovat tyhjiä. Poistettujen "
+"sarakkeiden lohkot siirtyvät viimeisen jäljelle jäävän sarakkeen loppuun."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label font weight"
+msgstr "Osio-otsikoiden fontin paksuus"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "The theme does not declare font weights for the current font."
+msgstr "Teema ei määritä paksuuksia käytössä olevalle fontille."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Available weights come from the theme font definitions. Applies only to "
+"section labels."
+msgstr ""
+"Valittavissa olevat paksuudet tulevat teeman fonttimäärityksistä. Asetus "
+"koskee vain osio-otsikoita."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Another form is embedded in this donation form. Remove it or move it "
+"outside before saving."
+msgstr ""
+"Lahjoituslomakkeen sisällä on toinen lomake. Poista se tai siirrä se "
+"lahjoituslomakkeen ulkopuolelle ennen tallentamista."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"The donation form is incomplete. Restore the missing sections before "
+"saving."
+msgstr ""
+"Lahjoituslomake on puutteellinen. Palauta puuttuvat osiot ennen "
+"tallentamista."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Restore missing sections"
+msgstr "Palauta puuttuvat osiot"
+
+#: build/Blocks/donation-form/render.php:144
+#: src/Blocks/donation-form/render.php:144
+msgid ""
+"The donation form is temporarily unavailable because its configuration is "
+"incomplete."
+msgstr ""
+"Lahjoituslomake on tilapäisesti poissa käytöstä, koska sen asetukset ovat "
+"puutteelliset."
+
+#: build/Blocks/donation-form/render.php:169
+#: build/Blocks/donation-form/render.php:198
+#: src/Blocks/donation-form/render.php:169
+#: src/Blocks/donation-form/render.php:198
+msgid ""
+"The donation form contains another form. Move the embedded form outside "
+"the donation form."
+msgstr ""
+"Lahjoituslomake sisältää toisen lomakkeen. Siirrä upotettu lomake "
+"lahjoituslomakkeen ulkopuolelle."
+
 #~ msgid "Donation provider"
 #~ msgstr "Lahjoitusmaksuntarjoaja"

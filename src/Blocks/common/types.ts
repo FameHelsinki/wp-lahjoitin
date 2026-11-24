@@ -5,5 +5,5 @@ export type SaveProps<T = any> = {
 export type EditProps<T = any> = SaveProps<T> & {
 	context: any
 	clientId: string
-	setAttributes: (attributes: T) => void
+	setAttributes: (attributes: Partial<T>) => void
 }

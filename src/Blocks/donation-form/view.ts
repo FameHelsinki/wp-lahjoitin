@@ -65,14 +65,14 @@ domReady(() => {
 				sprintf(
 					/* translators: %1$s: minimum amount, %2$s: currency symbol */
 					__('The minimum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
-					min,
+					String(min),
 					unit
 				),
 			max: (max: number, unit: string) =>
 				sprintf(
 					/* translators: %1$s: maximum amount, %2$s: currency symbol */
 					__('The maximum donation amount is %1$s%2$s.', 'fame_lahjoitukset'),
-					max,
+					String(max),
 					unit
 				),
 		},

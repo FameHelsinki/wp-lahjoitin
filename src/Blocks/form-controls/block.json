@@ -6,7 +6,7 @@
 	"title": "Form controls",
 	"category": "widgets",
 	"description": "Adds form controls.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
 		"submitLabel": {
 			"type": "string",

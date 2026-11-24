@@ -3,6 +3,8 @@
  *
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
+import { addFilter } from '@wordpress/hooks'
+import { canInsertDonationContent } from './insertion'
 import { registerBlockType } from '@wordpress/blocks'
 
 /**
@@ -29,3 +31,9 @@ registerBlockType(metadata.name, {
 	 */
 	save,
 } as any)
+
+addFilter(
+	'blockEditor.__unstableCanInsertBlockType',
+	'famehelsinki/donation-content',
+	canInsertDonationContent
+)

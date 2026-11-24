@@ -6,7 +6,7 @@
 	"title": "Donation type",
 	"category": "widgets",
 	"description": "Allows selecting donation type.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
 		"showLegend": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "" },

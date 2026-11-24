@@ -1,95 +1,41 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { __ } from '@wordpress/i18n'
 import {
 	InspectorControls,
+	ColorPalette,
 	InnerBlocks,
 	useBlockProps,
+	useSettings,
 	store as blockEditorStore,
 } from '@wordpress/block-editor'
 import {
 	PanelBody,
 	TextControl,
-	ColorPicker,
 	BaseControl,
 	RangeControl,
+	SelectControl,
+	Notice,
+	Button,
 } from '@wordpress/components'
 import { useInstanceId } from '@wordpress/compose'
-import { useDispatch, useSelect } from '@wordpress/data'
-import { createBlock, type BlockInstance } from '@wordpress/blocks'
+import { useDispatch, useSelect, useRegistry } from '@wordpress/data'
+import { getBlockType, type Block as BlockInstance } from '@wordpress/blocks'
+import {
+	createInitialLayout,
+	resizeLayout,
+	prepareLayout,
+	missingSections,
+	restoreSections,
+} from './layout'
+
+import { invalidContent } from './content-validation'
+import { colorValue, cssLength } from './style-values'
+import { legendFontWeights } from './legend-font-weights'
+import WidthControl, { type WidthChoice } from './width-control'
 
 import { EditProps } from '../common/types.ts'
 
 const TOP_ALLOWED_BLOCKS = ['core/columns'] as const
-
-function buildInitialLayout(colsDesktop: 1 | 2 | 3): BlockInstance[] {
-	const group = (inner: BlockInstance[] = [], attrs: Record<string, any> = {}) =>
-		createBlock('core/group', attrs, inner)
-
-	const donationType = createBlock('famehelsinki/donation-type')
-	const donationCampaigns = createBlock('famehelsinki/donation-campaigns')
-	const donationAmounts = createBlock('famehelsinki/donation-amounts')
-	const recurringDueDate = createBlock('famehelsinki/recurring-due-date')
-	const contactForm = createBlock('famehelsinki/contact-form')
-	const donationProviders = createBlock('famehelsinki/donation-providers')
-	const formControls = createBlock('famehelsinki/form-controls')
-
-	const g1 = group([donationType, donationCampaigns, donationAmounts, recurringDueDate])
-
-	const g2 = group([contactForm])
-
-	const g3 = group([donationProviders, formControls])
-
-	const columns = buildColumnsFromGroups(colsDesktop, [g1, g2, g3])
-	return [columns]
-}
-
-function buildColumnsFromGroups(colsDesktop: 1 | 2 | 3, groups: BlockInstance[]): BlockInstance {
-	let columnsContent: BlockInstance[][]
-	if (colsDesktop === 1) {
-		columnsContent = [[groups[0], groups[1], groups[2]]]
-	} else if (colsDesktop === 2) {
-		columnsContent = [[groups[0], groups[1]], [groups[2]]]
-	} else {
-		columnsContent = [[groups[0]], [groups[1]], [groups[2]]]
-	}
-
-	return createBlock(
-		'core/columns',
-		{},
-		columnsContent.map(inner => createBlock('core/column', {}, inner))
-	)
-}
-
-/**
- * Read the 3 core/group blocks inside the top columns, in visual order.
- * If not exactly 3 groups, return null (structure unexpected).
- */
-function readTopGroups(blocks: BlockInstance[]): BlockInstance[] | null {
-	const top = blocks?.[0]
-	if (!top || top.name !== 'core/columns') return null
-
-	const groups: BlockInstance[] = []
-	for (const col of top.innerBlocks ?? []) {
-		for (const child of col.innerBlocks ?? []) {
-			if (child.name === 'core/group') groups.push(child as BlockInstance)
-		}
-	}
-	return groups.length === 3 ? groups : null
-}
-
-/**
- * Repack: rebuild core/columns with desired col count,
- * but keep the SAME 3 group blocks.
- */
-function repackColumns(colsDesktop: 1 | 2 | 3, currentTop: BlockInstance, groups: BlockInstance[]) {
-	const next = buildColumnsFromGroups(colsDesktop, groups)
-	// Preserve top-level columns attributes if you ever add any to columns
-	return createBlock(
-		next.name,
-		{ ...(currentTop.attributes as any), ...(next.attributes as any) },
-		next.innerBlocks
-	)
-}
 
 export default function Edit({
 	attributes,
@@ -98,6 +44,9 @@ export default function Edit({
 }: EditProps & { clientId: string }): React.JSX.Element {
 	const {
 		returnAddress,
+		align,
+		formWidth,
+		formMaxWidth,
 		primaryColor,
 		secondaryColor,
 		buttonBorderColor,
@@ -109,8 +58,12 @@ export default function Edit({
 		dangerColor,
 		sectionLabelColor,
 		sectionLabelFontSize,
+		sectionLabelFontWeight,
 	} = attributes as {
 		returnAddress?: string
+		align?: string
+		formWidth?: '' | 'content' | 'custom'
+		formMaxWidth?: number
 		primaryColor?: string
 		secondaryColor?: string
 		buttonBorderColor?: string
@@ -122,9 +75,81 @@ export default function Edit({
 		dangerColor?: string
 		sectionLabelColor?: string
 		sectionLabelFontSize?: string
+		sectionLabelFontWeight?: string
 	}
 
-	const cols = Math.min(3, Math.max(1, colsDesktop ?? 3)) as 1 | 2 | 3
+	const [fontFamilies] = useSettings('typography.fontFamilies')
+	const wrapperRef = useRef<HTMLDivElement>(null)
+	const [fontFamily, setFontFamily] = useState('')
+	// Wait for iframe styles/fonts and observe ancestor typography changes.
+	useEffect(() => {
+		const element = wrapperRef.current
+		const view = element?.ownerDocument.defaultView
+		if (!element || !view) return
+		let active = true
+		let frame = 0
+		const update = () => {
+			if (!active || frame) return
+			frame = view.requestAnimationFrame(() => {
+				frame = 0
+				const legend = element.querySelector('.fame-form__legend') ?? element
+				if (active) setFontFamily(view.getComputedStyle(legend).fontFamily)
+			})
+		}
+		update()
+		void element.ownerDocument.fonts?.ready.then(update)
+		const observer = new view.MutationObserver(update)
+		observer.observe(element, { childList: true, subtree: true })
+		let ancestor: HTMLElement | null = element
+		while (ancestor) {
+			observer.observe(ancestor, { attributes: true, attributeFilter: ['class', 'style'] })
+			ancestor = ancestor.parentElement
+		}
+		element.ownerDocument.addEventListener('load', update, true)
+		return () => {
+			active = false
+			view.cancelAnimationFrame(frame)
+			observer.disconnect()
+			element.ownerDocument.removeEventListener('load', update, true)
+		}
+	}, [fontFamilies])
+
+	const fontWeights = legendFontWeights(fontFamilies, fontFamily)
+	const fontWeightOptions = [
+		{ label: __('Theme default', 'fame_lahjoitukset'), value: '' },
+		...fontWeights.map(value => ({ label: value, value })),
+	]
+	// Keep a saved selection visible when switching themes; it can be reset.
+	if (sectionLabelFontWeight && !fontWeights.includes(sectionLabelFontWeight)) {
+		fontWeightOptions.push({
+			label: `${sectionLabelFontWeight} (${__('saved value', 'fame_lahjoitukset')})`,
+			value: sectionLabelFontWeight,
+		})
+	}
+
+	const cols = Math.min(3, Math.max(1, colsDesktop ?? 1)) as 1 | 2 | 3
+	const wideAlignment = align === 'wide' || align === 'full' ? align : undefined
+	const width = formWidth ?? ''
+	const customWidth = formMaxWidth ?? 0
+	let widthLimit: string | undefined
+	if (!wideAlignment && width === 'content') {
+		widthLimit = 'var(--wp--style--global--content-size, 100%)'
+	}
+	if (
+		!wideAlignment &&
+		width === 'custom' &&
+		Number.isSafeInteger(customWidth) &&
+		customWidth > 0
+	) {
+		widthLimit = `${customWidth}px`
+	}
+
+	const changeWidth = (choice: WidthChoice) => {
+		setAttributes({
+			formWidth: choice,
+			align: wideAlignment ? '' : align,
+		})
+	}
 
 	type ThemeVars = Partial<
 		Record<
@@ -137,22 +162,29 @@ export default function Edit({
 			| '--text-field-border-radius'
 			| '--fame-clr-danger'
 			| '--section-label-color'
-			| '--section-label-font-size',
+			| '--section-label-font-size'
+			| '--section-label-font-weight'
+			| '--fame-form-max-width',
 			string
 		>
 	>
 
 	const styleVars: React.CSSProperties & ThemeVars = {
-		'--primary-color': primaryColor ?? undefined,
-		'--secondary-color': secondaryColor ?? undefined,
-		'--button-border-color': buttonBorderColor || primaryColor || undefined,
-		'--third-color': thirdColor ?? undefined,
-		'--border-radius': borderRadius ?? undefined,
-		'--border-width': borderWidth ?? undefined,
-		'--text-field-border-radius': textFieldBorderRadius ?? undefined,
-		'--fame-clr-danger': dangerColor ?? undefined,
-		'--section-label-color': sectionLabelColor || undefined,
-		'--section-label-font-size': sectionLabelFontSize || '1.25em',
+		'--primary-color': colorValue(primaryColor, '#000000'),
+		'--secondary-color': colorValue(secondaryColor, '#FFFFFF'),
+		'--button-border-color': colorValue(buttonBorderColor, colorValue(primaryColor, '#000000')),
+		'--third-color': colorValue(thirdColor, '#444'),
+		'--border-radius': cssLength(borderRadius, '0px'),
+		'--border-width': cssLength(borderWidth, '1px'),
+		'--text-field-border-radius': cssLength(textFieldBorderRadius, '0px'),
+		'--fame-clr-danger': colorValue(dangerColor, '#dc3545'),
+		'--section-label-color': colorValue(sectionLabelColor, 'inherit'),
+		'--section-label-font-size': cssLength(sectionLabelFontSize, '1.25em'),
+		'--section-label-font-weight': sectionLabelFontWeight || undefined,
+		'--fame-form-max-width': widthLimit,
+		// The editor applies its own content width to the block wrapper.
+		width: widthLimit ? '100%' : undefined,
+		maxWidth: widthLimit ? 'min(100%, var(--fame-form-max-width))' : undefined,
 	}
 
 	const primaryColorId = useInstanceId(BaseControl, 'primary-color')
@@ -166,102 +198,105 @@ export default function Edit({
 		select => select(blockEditorStore).getBlocks(clientId) as BlockInstance[],
 		[clientId]
 	)
-	const { replaceInnerBlocks } = useDispatch(blockEditorStore)
+	const invalidBlocks = invalidContent(innerBlocks)
+	const invalidKey = invalidBlocks.join(',')
+	const blockActions = useDispatch(blockEditorStore)
+	const { replaceInnerBlocks } = blockActions
+	const { __unstableMarkNextChangeAsNotPersistent } = blockActions as unknown as {
+		__unstableMarkNextChangeAsNotPersistent: () => void
+	}
+	const registry = useRegistry()
+	const initialized = useRef(false)
+	const missing = missingSections(innerBlocks)
+	const missingKey = missing.join(',')
 
-	// Keep a ref so the effect always reads the latest inner blocks without
-	// needing them in the dependency array (which would fire on every keystroke).
-	const innerBlocksRef = useRef<BlockInstance[]>(innerBlocks)
-	innerBlocksRef.current = innerBlocks
-
-	/**
-	 * Single effect that:
-	 * - initializes if empty/broken
-	 * - repacks columns when colsDesktop changes (without losing content)
-	 *
-	 * Intentionally omits `innerBlocks` and `replaceInnerBlocks` from deps:
-	 * - `innerBlocks` is read via ref to avoid running on every child block change.
-	 * - `replaceInnerBlocks` is a stable dispatch reference that never changes.
-	 */
+	// Migration is a one-time, non-undoable normalization, not an effect that
+	// rewrites every restored undo state or overrides user block locks.
 	useEffect(() => {
-		const currentInnerBlocks = innerBlocksRef.current
-		const nextInit = buildInitialLayout(cols)
-
-		// Init: empty
-		if (!currentInnerBlocks || currentInnerBlocks.length === 0) {
-			replaceInnerBlocks(clientId, nextInit, false)
-			return
+		if (initialized.current) return
+		initialized.current = true
+		if ((attributes.layoutVersion ?? 0) > 1) return
+		const top = innerBlocks[0]
+		let next: BlockInstance[] | null = null
+		if (innerBlocks.length === 0) next = createInitialLayout(cols)
+		else if (innerBlocks.length === 1 && top.name === 'core/columns') {
+			next = [prepareLayout(top, (attributes.layoutVersion ?? 0) < 1)]
 		}
+		if (!next) return
+		const treeChanged =
+			next.length !== innerBlocks.length ||
+			next.some((item, index) => item !== innerBlocks[index])
+		const versionChanged = (attributes.layoutVersion ?? 0) < 1
+		if (!treeChanged && !versionChanged) return
+		registry.batch(() => {
+			if (treeChanged) {
+				__unstableMarkNextChangeAsNotPersistent()
+				replaceInnerBlocks(clientId, next, false)
+			}
+			if (versionChanged) {
+				__unstableMarkNextChangeAsNotPersistent()
+				setAttributes({ layoutVersion: 1 })
+			}
+		})
+	}, [
+		attributes.layoutVersion,
+		clientId,
+		cols,
+		innerBlocks,
+		registry,
+		replaceInnerBlocks,
+		setAttributes,
+		__unstableMarkNextChangeAsNotPersistent,
+	])
 
-		const top = currentInnerBlocks[0]
-		const hasColumnsTop = currentInnerBlocks.length === 1 && top?.name === 'core/columns'
-		if (!hasColumnsTop) {
-			replaceInnerBlocks(clientId, nextInit, false)
-			return
-		}
+	useEffect(() => {
+		// Widgets and other block editors do not necessarily register core/editor.
+		const actions = registry.dispatch('core/editor') as
+			| {
+					lockPostSaving?: (key: string) => void
+					unlockPostSaving?: (key: string) => void
+			  }
+			| undefined
+		const key = `lahjoitin-incomplete-${clientId}`
+		if (missingKey || invalidKey) actions?.lockPostSaving?.(key)
+		else actions?.unlockPostSaving?.(key)
+		return () => actions?.unlockPostSaving?.(key)
+	}, [clientId, missingKey, invalidKey, registry])
 
-		const groups = readTopGroups(currentInnerBlocks)
-		if (!groups) {
-			replaceInnerBlocks(clientId, nextInit, false)
-			return
-		}
-
-		// Migrations: keep the first group complete without replacing existing blocks.
-		const g1 = groups[0]
-		const migratedG1Inner = [...(g1.innerBlocks ?? [])]
-		let migrated = false
-		const hasCampaigns = g1.innerBlocks?.some(b => b.name === 'famehelsinki/donation-campaigns')
-		if (!hasCampaigns) {
-			const campaigns = createBlock('famehelsinki/donation-campaigns')
-			const donationTypeIdx = migratedG1Inner.findIndex(
-				b => b.name === 'famehelsinki/donation-type'
-			)
-			const insertAt = donationTypeIdx >= 0 ? donationTypeIdx + 1 : 0
-			migratedG1Inner.splice(insertAt, 0, campaigns)
-			migrated = true
-		}
-
-		const hasRecurringDueDate = migratedG1Inner.some(
-			b => b.name === 'famehelsinki/recurring-due-date'
-		)
-		if (!hasRecurringDueDate) {
-			const recurringDueDate = createBlock('famehelsinki/recurring-due-date')
-			const donationAmountsIdx = migratedG1Inner.findIndex(
-				b => b.name === 'famehelsinki/donation-amounts'
-			)
-			const insertAt =
-				donationAmountsIdx >= 0 ? donationAmountsIdx + 1 : migratedG1Inner.length
-			migratedG1Inner.splice(insertAt, 0, recurringDueDate)
-			migrated = true
-		}
-
-		if (migrated) {
-			const newG1 = createBlock('core/group', g1.attributes, migratedG1Inner)
-			const nextTop = repackColumns(cols, top as BlockInstance, [newG1, groups[1], groups[2]])
-			replaceInnerBlocks(clientId, [nextTop], false)
-			return
-		}
-
-		// Repack columns only if count differs
-		const currentColCount = top.innerBlocks?.length ?? 0
-		if (currentColCount !== cols) {
-			const nextTop = repackColumns(cols, top as BlockInstance, groups)
-			replaceInnerBlocks(clientId, [nextTop], false)
-		}
-		// We intentionally read innerBlocks through a ref to avoid rerunning on every block edit.
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cols, clientId])
+	const changeColumns = (value?: number) => {
+		const top = innerBlocks[0]
+		if (!top || top.name !== 'core/columns') return
+		const count = Math.min(3, Math.max(1, value ?? 1))
+		registry.batch(() => {
+			setAttributes({ colsDesktop: count })
+			replaceInnerBlocks(clientId, [resizeLayout(top, count)], false)
+		})
+	}
 
 	return (
 		<>
+			<WidthControl
+				width={width}
+				wideAlignment={wideAlignment}
+				customWidth={customWidth}
+				onChange={changeWidth}
+				onAlignmentChange={value =>
+					setAttributes({ align: value ?? (wideAlignment ? '' : align) })
+				}
+				onCustomWidthChange={value => setAttributes({ formMaxWidth: value })}
+			/>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
 					<RangeControl
 						label={__('Desktop columns', 'fame_lahjoitukset')}
-						help={__('Choose 1–3 columns for the form layout.', 'fame_lahjoitukset')}
+						help={__(
+							'Choose 1–3 columns. New columns start empty. Removing columns moves their blocks to the end of the last remaining column.',
+							'fame_lahjoitukset'
+						)}
 						min={1}
 						max={3}
 						value={cols}
-						onChange={(v?: number) => setAttributes({ colsDesktop: v ?? 3 })}
+						onChange={changeColumns}
 					/>
 
 					<TextControl
@@ -288,12 +323,11 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={primaryColor || '#000000'}
-							onChangeComplete={value =>
-								setAttributes({ primaryColor: value?.hex || '' })
-							}
-							disableAlpha
+						<ColorPalette
+							value={colorValue(primaryColor, '#000000')}
+							onChange={value => setAttributes({ primaryColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
 
@@ -305,15 +339,14 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={buttonBorderColor || primaryColor || '#000000'}
-							onChangeComplete={value =>
-								setAttributes({
-									buttonBorderColor:
-										typeof value === 'string' ? value : value?.hex || '',
-								})
-							}
-							disableAlpha
+						<ColorPalette
+							value={colorValue(
+								buttonBorderColor,
+								colorValue(primaryColor, '#000000')
+							)}
+							onChange={value => setAttributes({ buttonBorderColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
 
@@ -325,12 +358,11 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={secondaryColor || '#FFFFFF'}
-							onChangeComplete={value =>
-								setAttributes({ secondaryColor: value?.hex || '' })
-							}
-							disableAlpha
+						<ColorPalette
+							value={colorValue(secondaryColor, '#FFFFFF')}
+							onChange={value => setAttributes({ secondaryColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
 
@@ -342,12 +374,11 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={thirdColor || '#444'}
-							onChangeComplete={value =>
-								setAttributes({ thirdColor: value?.hex || '' })
-							}
-							disableAlpha
+						<ColorPalette
+							value={colorValue(thirdColor, '#444')}
+							onChange={value => setAttributes({ thirdColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
 
@@ -359,17 +390,35 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={sectionLabelColor || '#000000'}
-							onChangeComplete={value =>
-								setAttributes({
-									sectionLabelColor:
-										typeof value === 'string' ? value : value?.hex || '',
-								})
+						<ColorPalette
+							value={
+								sectionLabelColor
+									? colorValue(sectionLabelColor, 'inherit')
+									: undefined
 							}
-							disableAlpha
+							onChange={value => setAttributes({ sectionLabelColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
+
+					<SelectControl
+						label={__('Section label font weight', 'fame_lahjoitukset')}
+						value={sectionLabelFontWeight ?? ''}
+						options={fontWeightOptions}
+						onChange={value => setAttributes({ sectionLabelFontWeight: value })}
+						help={
+							fontWeights.length === 0
+								? __(
+										'The theme does not declare font weights for the current font.',
+										'fame_lahjoitukset'
+									)
+								: __(
+										'Available weights come from the theme font definitions. Applies only to section labels.',
+										'fame_lahjoitukset'
+									)
+						}
+					/>
 
 					<TextControl
 						label={__('Section label font size', 'fame_lahjoitukset')}
@@ -390,15 +439,11 @@ export default function Edit({
 							'fame_lahjoitukset'
 						)}
 					>
-						<ColorPicker
-							color={dangerColor || '#dc3545'}
-							onChangeComplete={value =>
-								setAttributes({
-									dangerColor:
-										typeof value === 'string' ? value : value?.hex || '',
-								})
-							}
-							disableAlpha
+						<ColorPalette
+							value={colorValue(dangerColor, '#dc3545')}
+							onChange={value => setAttributes({ dangerColor: value ?? '' })}
+							disableCustomColors={false}
+							enableAlpha={false}
 						/>
 					</BaseControl>
 
@@ -436,10 +481,58 @@ export default function Edit({
 
 			<div
 				{...useBlockProps({
-					className: 'fame-form__wrapper',
+					className:
+						'fame-form__wrapper' +
+						((attributes.layoutVersion ?? 0) >= 1
+							? ' fame-form--editable-layout'
+							: '') +
+						(widthLimit ? ' fame-form--width-limited' : ''),
+					ref: wrapperRef,
 					style: styleVars,
 				})}
 			>
+				{invalidBlocks.length > 0 && (
+					<Notice
+						status="error"
+						isDismissible={false}
+						className="fame-form__configuration-notice"
+					>
+						{__(
+							'Another form is embedded in this donation form. Remove it or move it outside before saving.',
+							'fame_lahjoitukset'
+						)}
+						<ul>
+							{invalidBlocks.map(name => (
+								<li key={name}>{getBlockType(name)?.title ?? name}</li>
+							))}
+						</ul>
+					</Notice>
+				)}
+				{missing.length > 0 && (
+					<Notice
+						status="error"
+						isDismissible={false}
+						className="fame-form__configuration-notice"
+					>
+						{__(
+							'The donation form is incomplete. Restore the missing sections before saving.',
+							'fame_lahjoitukset'
+						)}
+						<ul>
+							{missing.map(name => (
+								<li key={name}>{getBlockType(name)?.title ?? name}</li>
+							))}
+						</ul>
+						<Button
+							variant="secondary"
+							onClick={() => {
+								replaceInnerBlocks(clientId, restoreSections(innerBlocks), false)
+							}}
+						>
+							{__('Restore missing sections', 'fame_lahjoitukset')}
+						</Button>
+					</Notice>
+				)}
 				<InnerBlocks
 					allowedBlocks={TOP_ALLOWED_BLOCKS as unknown as string[]}
 					templateLock="all"

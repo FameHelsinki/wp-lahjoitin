@@ -6,7 +6,7 @@
 	"title": "Donation amounts",
 	"category": "widgets",
 	"description": "Allows selecting donation amounts.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
 		"settings": {

@@ -356,3 +356,8 @@ input {
 		max-width: 100% !important;
 	}
 }
+
+/* Keep recovery actions clear of the following block's floating toolbar. */
+.editor-styles-wrapper .fame-form__configuration-notice {
+	margin-block-end: 64px;
+}

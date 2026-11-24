@@ -430,7 +430,7 @@ describe('FormHandler events', () => {
 
 	test('a rejected request is announced and logged', async () => {
 		const requestError = new TypeError('Failed to fetch')
-		;(globalThis as any).fetch = jest.fn().mockRejectedValue(requestError)
+		;(globalThis as any).fetch = jest.fn<() => Promise<any>>().mockRejectedValue(requestError)
 
 		submit()
 		await flush()
@@ -443,7 +443,7 @@ describe('FormHandler events', () => {
 
 	test('a non-JSON server failure is announced and logged', async () => {
 		const parseError = new SyntaxError('Unexpected token <')
-		;(globalThis as any).fetch = jest.fn().mockResolvedValue({
+		;(globalThis as any).fetch = jest.fn<() => Promise<any>>().mockResolvedValue({
 			ok: false,
 			statusText: 'Server Error',
 			json: async () => {
@@ -462,7 +462,7 @@ describe('FormHandler events', () => {
 
 	test('mutated detail.data is sent in the request body', async () => {
 		const fetchMock = jest
-			.fn()
+			.fn<() => Promise<any>>()
 			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
 		;(globalThis as any).fetch = fetchMock
 
@@ -477,7 +477,7 @@ describe('FormHandler events', () => {
 
 		expect(fetchMock).toHaveBeenCalledTimes(1)
 
-		const [, options] = fetchMock.mock.calls[0] as [URL, RequestInit]
+		const [, options] = fetchMock.mock.calls[0] as unknown as [URL, RequestInit]
 		const body = JSON.parse(options.body as string)
 		expect(body).toEqual({
 			amount: '1000',
@@ -507,7 +507,7 @@ describe('FormHandler events', () => {
 
 	test('releases the submission guard after a same-document redirect', async () => {
 		const fetchMock = jest
-			.fn()
+			.fn<() => Promise<any>>()
 			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '#thanks' }) })
 		;(globalThis as any).fetch = fetchMock
 
@@ -523,7 +523,7 @@ describe('FormHandler events', () => {
 
 	test('releases the submission guard for an empty fragment redirect', async () => {
 		const fetchMock = jest
-			.fn()
+			.fn<() => Promise<any>>()
 			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '#' }) })
 		;(globalThis as any).fetch = fetchMock
 
@@ -537,7 +537,7 @@ describe('FormHandler events', () => {
 	test('keeps the submission guard during a redirect to the same URL without a hash', async () => {
 		const redirect = new URL(window.location.href)
 		redirect.hash = ''
-		const fetchMock = jest.fn().mockResolvedValue({
+		const fetchMock = jest.fn<() => Promise<any>>().mockResolvedValue({
 			ok: true,
 			json: async () => ({ redirect_url: redirect.href }),
 		})
@@ -552,7 +552,7 @@ describe('FormHandler events', () => {
 
 	test('restores submission after a bfcache pageshow', async () => {
 		const fetchMock = jest
-			.fn()
+			.fn<() => Promise<any>>()
 			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
 		;(globalThis as any).fetch = fetchMock
 
@@ -573,7 +573,7 @@ describe('FormHandler events', () => {
 
 	test('dispatches fame-lahjoitukset-result on success and preventDefault suppresses the redirect', async () => {
 		const fetchMock = jest
-			.fn()
+			.fn<() => Promise<any>>()
 			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
 		;(globalThis as any).fetch = fetchMock
 

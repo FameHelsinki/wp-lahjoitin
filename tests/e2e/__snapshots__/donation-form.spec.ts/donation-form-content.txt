@@ -1,29 +1,23 @@
-<!-- wp:famehelsinki/donation-form -->
-<!-- wp:columns -->
-<div class="wp-block-columns"><!-- wp:column -->
-<div class="wp-block-column"><!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":""},{"value":"recurring","label":""}]} /-->
+<!-- wp:famehelsinki/donation-form {"layoutVersion":1} -->
+<!-- wp:columns {"templateLock":"all","lock":{"move":true,"remove":true}} -->
+<div class="wp-block-columns"><!-- wp:column {"templateLock":false,"lock":{"move":true,"remove":true}} -->
+<div class="wp-block-column"><!-- wp:famehelsinki/donation-type {"value":"single","types":[{"value":"single","label":""},{"value":"recurring","label":""}]} /-->
 
 <!-- wp:famehelsinki/donation-campaigns /-->
 
 <!-- wp:famehelsinki/donation-amounts {"settings":[{"type":"single","default":true,"defaultAmount":10,"minAmount":10,"maxAmount":10000,"helpText":"","unit":"€","amounts":[{"value":10},{"value":20},{"value":30}]},{"type":"recurring","amounts":[{"value":10},{"value":20},{"value":30}],"default":false,"defaultAmount":10,"unit":"€","minAmount":10,"maxAmount":10000,"helpText":""}]} /-->
 
-<!-- wp:famehelsinki/recurring-due-date {"days":[5,21]} /--></div>
-<!-- /wp:group -->
+<!-- wp:famehelsinki/recurring-due-date {"days":[5,21]} /-->
 
-<!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/contact-form /--></div>
-<!-- /wp:group -->
+<!-- wp:famehelsinki/contact-form /-->
 
-<!-- wp:group -->
-<div class="wp-block-group"><!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"},{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"recurring"}]} -->
+<!-- wp:famehelsinki/donation-providers {"providers":[{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"single"},{"value":"checkout","label":"Paytrail","types":["single","recurring"],"type":"recurring"}]} /-->
+
 <!-- wp:paragraph {"placeholder":"Add privacy policy and terms text here…","className":"fame-form__terms"} -->
 <p class="fame-form__terms"></p>
 <!-- /wp:paragraph -->
-<!-- /wp:famehelsinki/donation-providers -->
 
 <!-- wp:famehelsinki/form-controls /--></div>
-<!-- /wp:group --></div>
 <!-- /wp:column --></div>
 <!-- /wp:columns -->
 <!-- /wp:famehelsinki/donation-form -->

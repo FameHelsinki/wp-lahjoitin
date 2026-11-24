@@ -1,3 +1,4 @@
+import { describe, test, expect } from '@jest/globals'
 import { defaultProviderLabel, providerDisplayLabel } from './provider-label.ts'
 
 describe('provider display labels', () => {

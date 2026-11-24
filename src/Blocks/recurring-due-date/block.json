@@ -6,7 +6,7 @@
 	"title": "Recurring charge day",
 	"category": "widgets",
 	"description": "Allows donors to choose the monthly recurring charge day.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
 		"label": { "type": "string", "default": "" },
 		"showLabel": { "type": "boolean", "default": true },

@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { test, expect } from '@wordpress/e2e-test-utils-playwright'
 
 /**
@@ -162,7 +164,7 @@ test.describe('donation form', () => {
 		})
 	})
 
-	test('repacks columns from the sidebar without losing content', async ({
+	test('repacks columns with Undo and Redo without losing content', async ({
 		admin,
 		editor,
 		page,
@@ -180,8 +182,7 @@ test.describe('donation form', () => {
 		await editor.openDocumentSettingsSidebar()
 		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('3')
 
-		// The edit() effect rebuilds core/columns but must keep the same
-		// group blocks, so every form section survives the repack.
+		// Adding columns preserves all sections and starts with empty columns.
 		await expect.poll(() => getFormColumnCount(editor)).toBe(3)
 		const blocks = await editor.getBlocks({ full: true })
 		for (const name of [
@@ -196,6 +197,179 @@ test.describe('donation form', () => {
 		}
 
 		expect(await editor.getEditedPostContent()).toContain('"colsDesktop":3')
+		const columns = findBlock(blocks, 'core/columns')
+		expect(columns.innerBlocks[1].innerBlocks).toEqual([])
+		expect(columns.innerBlocks[2].innerBlocks).toEqual([])
+		const originalOrder = columns.innerBlocks[0].innerBlocks.map((block: any) => block.name)
+		const movable = columns.innerBlocks[0].innerBlocks.filter(
+			(block: any) =>
+				['famehelsinki/donation-providers', 'famehelsinki/form-controls'].includes(
+					block.name
+				) || block.attributes.className === 'fame-form__terms'
+		)
+		expect(movable).toHaveLength(3)
+		// Use the editor's native move action, including its permission checks.
+		// This catches removal locks which allow reordering but block cross-column moves.
+		await page.evaluate(
+			({ ids, source, target }) => {
+				;(window as any).wp.data
+					.dispatch('core/block-editor')
+					.moveBlocksToPosition(ids, source, target, 0)
+			},
+			{
+				ids: movable.map((block: any) => block.clientId),
+				source: columns.innerBlocks[0].clientId,
+				target: columns.innerBlocks[2].clientId,
+			}
+		)
+		await expect
+			.poll(async () => {
+				const current = findBlock(await editor.getBlocks({ full: true }), 'core/columns')
+				return current.innerBlocks[2].innerBlocks.map((block: any) => block.name)
+			})
+			.toEqual(movable.map((block: any) => block.name))
+		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('1')
+		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
+		const collapsed = findBlock(await editor.getBlocks({ full: true }), 'core/columns')
+		expect(collapsed.innerBlocks[0].innerBlocks.map((block: any) => block.name)).toEqual(
+			originalOrder
+		)
+		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		await page.keyboard.press('ControlOrMeta+z')
+		await expect.poll(() => getFormColumnCount(editor)).toBe(3)
+		await expect(page.getByRole('spinbutton', { name: 'Desktop columns' })).toHaveValue('3')
+		await page.keyboard.press('ControlOrMeta+Shift+z')
+		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
+		await expect(page.getByRole('spinbutton', { name: 'Desktop columns' })).toHaveValue('1')
+	})
+
+	test('migrates legacy terms and preserves links across save and reload', async ({
+		admin,
+		editor,
+		page,
+	}) => {
+		await admin.createNewPost({ title: 'Legacy donation terms e2e' })
+		await editor.insertBlock({
+			name: 'famehelsinki/donation-form',
+			innerBlocks: [
+				{
+					name: 'core/columns',
+					innerBlocks: [
+						{
+							name: 'core/column',
+							innerBlocks: [
+								{
+									name: 'core/group',
+									innerBlocks: [
+										{ name: 'famehelsinki/donation-type' },
+										{ name: 'famehelsinki/donation-amounts' },
+										{
+											name: 'famehelsinki/donation-providers',
+											innerBlocks: [
+												{
+													name: 'core/paragraph',
+													attributes: {
+														className: 'fame-form__terms',
+														content:
+															'Read <a href="/privacy">privacy policy</a>',
+													},
+												},
+											],
+										},
+										{ name: 'famehelsinki/form-controls' },
+									],
+								},
+							],
+						},
+					],
+				},
+			],
+		})
+		await expect
+			.poll(async () => {
+				const columns = findBlock(await editor.getBlocks({ full: true }), 'core/columns')
+				return columns?.innerBlocks[0].innerBlocks.map((block: any) => block.name)
+			})
+			.toEqual([
+				'famehelsinki/donation-type',
+				'famehelsinki/donation-amounts',
+				'famehelsinki/donation-providers',
+				'core/paragraph',
+				'famehelsinki/form-controls',
+			])
+		const id = await editor.publishPost()
+		await page.reload()
+		await expect(
+			editor.canvas.locator('[data-type="core/paragraph"] a[href="/privacy"]')
+		).toBeVisible()
+		const providers = findBlock(
+			await editor.getBlocks({ full: true }),
+			'famehelsinki/donation-providers'
+		)
+		expect(providers.innerBlocks).toEqual([])
+		await page.goto(`/?p=${id}`)
+		await expect(page.locator('form .fame-form__terms a[href="/privacy"]')).toHaveText(
+			'privacy policy'
+		)
+	})
+
+	test('opens previously saved form markup without invalid blocks and saves it safely', async ({
+		admin,
+		editor,
+		page,
+		requestUtils,
+	}) => {
+		// This is the exact saved HTML snapshot from before the layout changes,
+		// not a tree built with the new block definitions.
+		const legacy = readFileSync(resolve('tests/e2e/fixtures/legacy-donation-form.html'), 'utf8')
+		const post = await requestUtils.rest({
+			path: '/wp/v2/posts',
+			method: 'POST',
+			data: { title: 'Previously saved donation form', status: 'publish', content: legacy },
+		})
+		// Existing published forms must render even before any editor migration.
+		await page.goto(`/?p=${post.id}`)
+		await expect(page.locator('form.fame-form--donations')).toBeVisible()
+		await expect(page.locator('form .fame-form__terms')).toHaveCount(1)
+		await expect(page.locator('form button[type="submit"]')).toBeVisible()
+		await admin.editPost(post.id)
+		await expect(
+			editor.canvas.locator('[data-type="famehelsinki/donation-amounts"]')
+		).toBeVisible()
+		const invalidBlocks = async () => {
+			const blocks = await editor.getBlocks({ full: true })
+			const invalid: string[] = []
+			const visit = (items: any[]) =>
+				items.forEach(block => {
+					if (block.isValid === false) invalid.push(block.name)
+					visit(block.innerBlocks ?? [])
+				})
+			visit(blocks)
+			return invalid
+		}
+		expect(await invalidBlocks()).toEqual([])
+		await expect(editor.canvas.locator('.block-editor-warning')).toHaveCount(0)
+		await expect
+			.poll(async () => {
+				const providers = findBlock(
+					await editor.getBlocks({ full: true }),
+					'famehelsinki/donation-providers'
+				)
+				return providers?.innerBlocks?.length
+			})
+			.toBe(0)
+		await page.evaluate(async () => {
+			await (window as any).wp.data.dispatch('core/editor').savePost()
+		})
+		await page.reload()
+		await expect(
+			editor.canvas.locator('[data-type="famehelsinki/donation-amounts"]')
+		).toBeVisible()
+		expect(await invalidBlocks()).toEqual([])
+		await expect(editor.canvas.locator('.block-editor-warning')).toHaveCount(0)
+		await page.goto(`/?p=${post.id}`)
+		await expect(page.locator('form .fame-form__terms')).toHaveCount(1)
+		await expect(page.locator('form button[type="submit"]')).toBeVisible()
 	})
 
 	test('disables submission when providers are unavailable', async ({ page, requestUtils }) => {
