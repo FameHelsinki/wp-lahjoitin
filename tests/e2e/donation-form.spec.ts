@@ -74,6 +74,9 @@ test.describe('donation form', () => {
 			canvas.getByText('Payment provider: Paytrail (hidden)', { exact: true })
 		).toBeVisible()
 
+		await expect(canvas.locator('[data-type="famehelsinki/contact-form"]')).toHaveCount(0)
+		await expect(canvas.locator('[data-type="famehelsinki/donation-campaigns"]')).toHaveCount(0)
+
 		// The serialized markup is the save() output of every block in the
 		// tree. A snapshot catches unintended save() changes, which would
 		// invalidate already-published donation forms.
@@ -102,6 +105,8 @@ test.describe('donation form', () => {
 		// A single provider is selected implicitly and has no visible frontend control.
 		await expect(form.getByText('Paytrail', { exact: true })).toHaveCount(0)
 		await expect(form.getByText('Checkout', { exact: true })).toHaveCount(0)
+
+		await expect(form.locator('input[name="email"]')).toHaveCount(0)
 
 		// The seeded default provider is auto-selected for the default type.
 		await expect(form.locator('input[data-selected-provider]')).toHaveValue('checkout')
@@ -178,9 +183,14 @@ test.describe('donation form', () => {
 		// Default layout is a single column (block.json colsDesktop default).
 		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
 
-		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		const form = canvas.locator('[data-type="famehelsinki/donation-form"]')
+		const columnsBlock = form.locator('[data-type="core/columns"]')
+		await editor.selectBlocks(form)
 		await editor.openDocumentSettingsSidebar()
-		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('3')
+		const columnCount = page.getByRole('spinbutton', { name: 'Desktop columns' })
+		await expect(columnCount).toHaveCount(0)
+		await editor.selectBlocks(columnsBlock)
+		await columnCount.fill('3')
 
 		// Adding columns preserves all sections and starts with empty columns.
 		await expect.poll(() => getFormColumnCount(editor)).toBe(3)
@@ -188,16 +198,28 @@ test.describe('donation form', () => {
 		for (const name of [
 			'famehelsinki/donation-type',
 			'famehelsinki/donation-amounts',
-			'famehelsinki/recurring-due-date',
-			'famehelsinki/contact-form',
 			'famehelsinki/donation-providers',
 			'famehelsinki/form-controls',
 		]) {
-			expect(findBlock(blocks, name), `${name} survives repack`).toBeTruthy()
+			expect(findBlock(blocks, name)?.attributes.lock, `${name} is protected`).toEqual({
+				remove: true,
+			})
 		}
+		expect(findBlock(blocks, 'famehelsinki/recurring-due-date')).toBeTruthy()
 
 		expect(await editor.getEditedPostContent()).toContain('"colsDesktop":3')
 		const columns = findBlock(blocks, 'core/columns')
+		const layoutPermissions = await page.evaluate(
+			ids => {
+				const store = (window as any).wp.data.select('core/block-editor')
+				return ids.map(id => ({
+					move: store.canMoveBlock(id),
+					remove: store.canRemoveBlock(id),
+				}))
+			},
+			[columns.clientId, ...columns.innerBlocks.map((column: any) => column.clientId)]
+		)
+		expect(layoutPermissions).toEqual(Array(4).fill({ move: true, remove: true }))
 		expect(columns.innerBlocks[1].innerBlocks).toEqual([])
 		expect(columns.innerBlocks[2].innerBlocks).toEqual([])
 		const originalOrder = columns.innerBlocks[0].innerBlocks.map((block: any) => block.name)
@@ -208,16 +230,20 @@ test.describe('donation form', () => {
 				) || block.attributes.className === 'fame-form__terms'
 		)
 		expect(movable).toHaveLength(3)
-		// Use the editor's native move action, including its permission checks.
-		// This catches removal locks which allow reordering but block cross-column moves.
+		// Unlock required blocks before using WordPress's cross-column move action.
 		await page.evaluate(
-			({ ids, source, target }) => {
-				;(window as any).wp.data
-					.dispatch('core/block-editor')
-					.moveBlocksToPosition(ids, source, target, 0)
+			({ ids, protectedIds, source, target }) => {
+				const actions = (window as any).wp.data.dispatch('core/block-editor')
+				actions.updateBlockAttributes(protectedIds, {
+					lock: { move: false, remove: false },
+				})
+				actions.moveBlocksToPosition(ids, source, target, 0)
 			},
 			{
 				ids: movable.map((block: any) => block.clientId),
+				protectedIds: movable
+					.filter((block: any) => block.attributes.lock?.remove)
+					.map((block: any) => block.clientId),
 				source: columns.innerBlocks[0].clientId,
 				target: columns.innerBlocks[2].clientId,
 			}
@@ -228,19 +254,22 @@ test.describe('donation form', () => {
 				return current.innerBlocks[2].innerBlocks.map((block: any) => block.name)
 			})
 			.toEqual(movable.map((block: any) => block.name))
-		await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('1')
+		await columnCount.fill('1')
 		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
 		const collapsed = findBlock(await editor.getBlocks({ full: true }), 'core/columns')
 		expect(collapsed.innerBlocks[0].innerBlocks.map((block: any) => block.name)).toEqual(
 			originalOrder
 		)
-		await editor.selectBlocks(canvas.locator('[data-type="famehelsinki/donation-form"]'))
+		expect(findBlock([collapsed], 'famehelsinki/form-controls').attributes.lock.remove).toBe(
+			false
+		)
+		await editor.selectBlocks(columnsBlock)
 		await page.keyboard.press('ControlOrMeta+z')
 		await expect.poll(() => getFormColumnCount(editor)).toBe(3)
-		await expect(page.getByRole('spinbutton', { name: 'Desktop columns' })).toHaveValue('3')
+		await expect(columnCount).toHaveValue('3')
 		await page.keyboard.press('ControlOrMeta+Shift+z')
 		await expect.poll(() => getFormColumnCount(editor)).toBe(1)
-		await expect(page.getByRole('spinbutton', { name: 'Desktop columns' })).toHaveValue('1')
+		await expect(columnCount).toHaveValue('1')
 	})
 
 	test('migrates legacy terms and preserves links across save and reload', async ({
@@ -349,6 +378,11 @@ test.describe('donation form', () => {
 		}
 		expect(await invalidBlocks()).toEqual([])
 		await expect(editor.canvas.locator('.block-editor-warning')).toHaveCount(0)
+		const legacyAmounts = findBlock(
+			await editor.getBlocks({ full: true }),
+			'famehelsinki/donation-amounts'
+		)
+		expect(legacyAmounts.attributes.lock.remove).toBe(true)
 		await expect
 			.poll(async () => {
 				const providers = findBlock(

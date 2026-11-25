@@ -29,6 +29,12 @@ describe('editable donation layout', () => {
 	test('new columns start empty and reducing columns preserves reading order and content', () => {
 		const [initial] = createInitialLayout(1)
 		const expanded = resizeLayout(initial, 3)
+		expect(expanded.attributes.templateLock).toBe('insert')
+		expect(expanded.attributes.lock).toEqual({ remove: false })
+		for (const column of expanded.innerBlocks) {
+			expect(column.attributes.lock).toEqual({ remove: false })
+			expect(column.attributes.templateLock).toBe(false)
+		}
 		expect(expanded.innerBlocks[1].innerBlocks).toEqual([])
 		expect(expanded.innerBlocks[2].innerBlocks).toEqual([])
 		const a = createBlock('core/paragraph', { content: 'Second column' })
@@ -39,6 +45,23 @@ describe('editable donation layout', () => {
 		expect(collapsed.innerBlocks).toHaveLength(1)
 		expect(collapsed.innerBlocks[0].innerBlocks.slice(-2)).toEqual([a, b])
 		expect(sectionNames(collapsed).slice(0, -2)).toEqual(sectionNames(initial))
+	})
+
+	test('removes old layout locks without changing the column content', () => {
+		const paragraph = createBlock('core/paragraph', { content: 'Keep this block' })
+		const column = createBlock('core/column', { templateLock: false, lock: { remove: true } }, [
+			paragraph,
+		])
+		const columns = createBlock(
+			'core/columns',
+			{ templateLock: 'all', lock: { move: true, remove: true } },
+			[column]
+		)
+		const prepared = prepareLayout(columns, false)
+		expect(prepared.attributes.templateLock).toBe('insert')
+		expect(prepared.attributes.lock).toEqual({ remove: false })
+		expect(prepared.innerBlocks[0].attributes.lock).toEqual({ remove: false })
+		expect(prepared.innerBlocks[0].innerBlocks[0]).toBe(paragraph)
 	})
 
 	test('moves legacy terms with their links out of the providers without duplicating them', () => {
@@ -71,15 +94,16 @@ describe('editable donation layout', () => {
 		expect(migratedGroup.innerBlocks[1]).toEqual(terms)
 	})
 
-	test('leaves reordered controls in place without forcing locks', () => {
+	test('leaves reordered and explicitly unlocked controls in place', () => {
 		const [top] = createInitialLayout(2)
 		const content = top.innerBlocks[0].innerBlocks
 		const providers = content.find(block => block.name === 'famehelsinki/donation-providers')!
+		providers.attributes.lock = { remove: false, move: false }
 		top.innerBlocks[0].innerBlocks = content.filter(block => block !== providers)
 		top.innerBlocks[1].innerBlocks = [providers]
 		const prepared = prepareLayout(top)
 		expect(prepared.innerBlocks[1].innerBlocks).toEqual([providers])
-		expect(providers.attributes.lock).toBeUndefined()
+		expect(providers.attributes.lock).toEqual({ remove: false, move: false })
 		expect(prepared.innerBlocks[0].attributes.templateLock).toBe(false)
 	})
 
@@ -96,15 +120,33 @@ describe('editable donation layout', () => {
 
 test('preserves user-defined locks and custom groups when resizing', () => {
 	const [top] = createInitialLayout(2)
+	const columnLock = { move: true, remove: true }
+	top.innerBlocks[0].attributes.lock = columnLock
 	const group = createBlock('core/group', { lock: { remove: true, move: false } }, [
 		createBlock('core/paragraph', { content: 'My group' }),
 	])
 	top.innerBlocks[1].innerBlocks = [group]
 	const resized = resizeLayout(top, 1)
+	expect(resized.innerBlocks[0].attributes.lock).toBe(columnLock)
 	expect(resized.innerBlocks[0].innerBlocks.at(-1)).toBe(group)
 })
 
 describe('restoring missing sections', () => {
+	test('rebuilds the columns when their contents were removed with the layout', () => {
+		const emptyColumns = createBlock('core/columns', { className: 'custom-layout' })
+		for (const original of [[], [emptyColumns]]) {
+			const [layout] = restoreSections(original, 2)
+			expect(layout.name).toBe('core/columns')
+			expect(layout.innerBlocks.map(column => column.name)).toEqual([
+				'core/column',
+				'core/column',
+			])
+			expect(layout.innerBlocks[1].innerBlocks).toEqual([])
+			expect(missingSections([layout])).toEqual([])
+			expect(layout.attributes.className).toBe(original[0]?.attributes.className)
+		}
+	})
+
 	test('restores donation type before the first later section, across columns', () => {
 		const [top] = createInitialLayout(3)
 		const amount = top.innerBlocks[0].innerBlocks.find(

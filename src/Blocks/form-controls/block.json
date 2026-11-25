@@ -8,6 +8,7 @@
 	"description": "Adds form controls.",
 	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
+		"lock": { "type": "object", "default": { "remove": true } },
 		"submitLabel": {
 			"type": "string",
 			"default": ""

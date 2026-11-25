@@ -96,10 +96,15 @@ msgstr "Lahjoitussumma"
 msgid "Campaign"
 msgstr "Kampanja"
 
-#: build/Blocks/donation-campaigns/render.php:58
-#: src/Blocks/donation-campaigns/render.php:58
+#: build/Blocks/donation-campaigns/render.php:59
+#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Select campaign"
 msgstr "Valitse kampanja"
+
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "Dropdown placeholder"
+msgstr "Pudotusvalikon oletusteksti"
 
 #: build/Blocks/donation-form/render.php:138
 #: src/Blocks/donation-form/render.php:138
@@ -310,10 +315,8 @@ msgid "Require phone number"
 msgstr "Vaadi puhelinnumero"
 
 #: build/Blocks/contact-form/index.js:1
-msgid ""
-"The contact form is not in use. Use the toggle in the sidebar to enable it."
-msgstr ""
-"Yhteystietolomake ei ole käytössä. Ota se käyttöön sivupalkin kytkimestä."
+msgid "The contact form is not in use."
+msgstr "Yhteystietolomake ei ole käytössä."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
@@ -909,6 +912,18 @@ msgid ""
 msgstr ""
 "Lahjoituslomake sisältää toisen lomakkeen. Siirrä upotettu lomake "
 "lahjoituslomakkeen ulkopuolelle."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Lahjoitin blocks"
+msgstr "Lahjoitin-lohkot"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"To add a block, select a block in the form. Open its three-dot menu, choose "
+"Add before or Add after, then click + to choose a block."
+msgstr ""
+"Valitse lomakkeesta lohko. Avaa sen kolmen pisteen valikko, valitse Lisää "
+"ennen tai Lisää jälkeen ja valitse lisättävä lohko pluspainikkeella."
 
 #~ msgid "Donation provider"
 #~ msgstr "Lahjoitusmaksuntarjoaja"

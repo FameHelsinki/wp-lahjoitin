@@ -1,5 +1,5 @@
 import React from 'react'
-import { BlockAlignmentToolbar, BlockControls, useSettings } from '@wordpress/block-editor'
+import { BlockControls, store as blockEditorStore, useSettings } from '@wordpress/block-editor'
 import {
 	Dropdown,
 	RadioControl,
@@ -7,39 +7,72 @@ import {
 	ToolbarButton,
 	ToolbarGroup,
 } from '@wordpress/components'
+import { useSelect } from '@wordpress/data'
 import { __ } from '@wordpress/i18n'
 
-export type WidthChoice = '' | 'content' | 'custom'
-export type WidthAlignment = 'wide' | 'full'
+export type WidthChoice = '' | 'content' | 'wide' | 'full' | 'custom'
+
+type WidthAlignment = 'wide' | 'full'
+
+export type ParentLayout = {
+	type?: string
+	alignments?: string[]
+	contentSize?: string
+	wideSize?: string
+}
+
+type LayoutSettings = {
+	alignWide?: boolean
+	supportsLayout?: boolean
+	__unstableIsBlockBasedTheme?: boolean
+}
+
+function supportsWidth(alignment: WidthAlignment, layout: ParentLayout, settings: LayoutSettings) {
+	const { type = 'default', alignments, contentSize, wideSize } = layout
+	// Match the editor's wide/full options for flow, constrained, flex and grid layouts.
+	if (type !== 'default' && type !== 'constrained') return false
+	if (alignments) return alignments.includes(alignment)
+	if (!settings.supportsLayout) return !!settings.alignWide
+	if (type === 'default' && settings.__unstableIsBlockBasedTheme) return false
+	return Boolean(alignment === 'wide' ? wideSize : contentSize)
+}
+
+function widthLabel(label: string, size: unknown): string {
+	return typeof size === 'string' && size ? `${label} (${size})` : label
+}
 
 export default function WidthControl({
 	width,
-	wideAlignment,
+	parentLayout = {},
 	customWidth,
 	onChange,
-	onAlignmentChange,
 	onCustomWidthChange,
 }: {
 	width: WidthChoice
-	wideAlignment: WidthAlignment | undefined
+	parentLayout?: ParentLayout
 	customWidth: number
 	onChange: (value: WidthChoice) => void
-	onAlignmentChange: (value: WidthAlignment | undefined) => void
 	onCustomWidthChange: (value: number) => void
 }) {
-	const [contentSize] = useSettings('layout.contentSize')
-	const contentLabel = __('Content width', 'fame_lahjoitukset')
+	const [contentSize, wideSize] = useSettings('layout.contentSize', 'layout.wideSize')
+	const settings: LayoutSettings = useSelect(select => select(blockEditorStore).getSettings(), [])
 	const options = [
 		{ value: '', label: __('Theme default', 'fame_lahjoitukset') },
 		{
 			value: 'content',
-			label:
-				typeof contentSize === 'string' && contentSize
-					? `${contentLabel} (${contentSize})`
-					: contentLabel,
+			label: widthLabel(__('Content width', 'fame_lahjoitukset'), contentSize),
 		},
-		{ value: 'custom', label: __('Custom width', 'fame_lahjoitukset') },
 	]
+	if (supportsWidth('wide', parentLayout, settings)) {
+		options.push({
+			value: 'wide',
+			label: widthLabel(__('Wide width'), parentLayout.wideSize ?? wideSize),
+		})
+	}
+	if (supportsWidth('full', parentLayout, settings)) {
+		options.push({ value: 'full', label: __('Full width') })
+	}
+	options.push({ value: 'custom', label: __('Custom width', 'fame_lahjoitukset') })
 
 	return (
 		<BlockControls group="block">
@@ -56,22 +89,11 @@ export default function WidthControl({
 						<div style={{ padding: 12, minWidth: 220 }}>
 							<RadioControl
 								label={__('Form width', 'fame_lahjoitukset')}
-								selected={wideAlignment ? undefined : width}
+								selected={width}
 								options={options}
 								onChange={value => onChange(value as WidthChoice)}
 							/>
-							{/* Core hides this toolbar when neither alignment is available here. */}
-							<BlockAlignmentToolbar
-								controls={['wide', 'full']}
-								isCollapsed={false}
-								value={wideAlignment}
-								onChange={value =>
-									onAlignmentChange(
-										value === 'wide' || value === 'full' ? value : undefined
-									)
-								}
-							/>
-							{!wideAlignment && width === 'custom' && (
+							{width === 'custom' && (
 								<TextControl
 									label={__('Maximum width (px)', 'fame_lahjoitukset')}
 									type="number"

@@ -96,10 +96,15 @@ msgstr "Donationsbelopp"
 msgid "Campaign"
 msgstr "Kampanj"
 
-#: build/Blocks/donation-campaigns/render.php:58
-#: src/Blocks/donation-campaigns/render.php:58
+#: build/Blocks/donation-campaigns/render.php:59
+#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Select campaign"
 msgstr "Välj kampanj"
+
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "Dropdown placeholder"
+msgstr "Rullgardinsmenyns platshållartext"
 
 #: build/Blocks/donation-form/render.php:138
 #: src/Blocks/donation-form/render.php:138
@@ -311,11 +316,8 @@ msgid "Require phone number"
 msgstr "Kräv telefonnummer"
 
 #: build/Blocks/contact-form/index.js:1
-msgid ""
-"The contact form is not in use. Use the toggle in the sidebar to enable it."
-msgstr ""
-"Kontaktformuläret används inte. Använd knappen i sidofältet för att aktivera "
-"det."
+msgid "The contact form is not in use."
+msgstr "Kontaktformuläret används inte."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
@@ -911,6 +913,18 @@ msgid ""
 msgstr ""
 "Donationsformuläret innehåller ett annat formulär. Flytta det inbäddade "
 "formuläret utanför donationsformuläret."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Lahjoitin blocks"
+msgstr "Lahjoitin-block"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"To add a block, select a block in the form. Open its three-dot menu, choose "
+"Add before or Add after, then click + to choose a block."
+msgstr ""
+"Markera ett block i formuläret. Öppna dess meny med tre punkter, välj Lägg "
+"till före eller Lägg till efter och klicka sedan på + för att välja ett block."
 
 #~ msgid "Donation provider"
 #~ msgstr "Donationsleverantör"

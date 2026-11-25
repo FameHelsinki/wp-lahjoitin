@@ -7,7 +7,7 @@ import {
 	AlignmentToolbar,
 	BlockControls,
 } from '@wordpress/block-editor'
-import { PanelBody, TextControl, ToggleControl } from '@wordpress/components'
+import { Button, PanelBody, TextControl, ToggleControl } from '@wordpress/components'
 import ContactInputControl from './ContactInputControl.tsx'
 import ContactInputGroup from './ContactInputGroup.tsx'
 import { EditProps } from '../common/types.ts'
@@ -45,11 +45,11 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 			</BlockControls>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
-					<ToggleControl
-						label={__('Enable contact fields', 'fame_lahjoitukset')}
-						checked={attributes.show}
-						onChange={value => setAttributes({ show: value })}
-					/>
+					{!show && (
+						<Button variant="secondary" onClick={() => setAttributes({ show: true })}>
+							{__('Enable contact fields', 'fame_lahjoitukset')}
+						</Button>
+					)}
 
 					{show && (
 						<>
@@ -172,10 +172,7 @@ export default function Edit({ attributes, setAttributes }: EditProps): React.JS
 						className="fame-form__hidden-placeholder"
 						style={{ padding: 12, border: '1px dashed #ccc' }}
 					>
-						{__(
-							'The contact form is not in use. Use the toggle in the sidebar to enable it.',
-							'fame_lahjoitukset'
-						)}
+						{__('The contact form is not in use.', 'fame_lahjoitukset')}
 					</div>
 				)}
 			</div>

@@ -13,6 +13,7 @@ import { registerBlockType } from '@wordpress/blocks'
 import Edit from './edit'
 import save from './save'
 import metadata from './block.json'
+import { withColumnCountControl } from './column-count-control'
 
 import './edit.css'
 
@@ -37,3 +38,5 @@ addFilter(
 	'famehelsinki/donation-content',
 	canInsertDonationContent
 )
+
+addFilter('editor.BlockEdit', 'famehelsinki/donation-form-column-count', withColumnCountControl)

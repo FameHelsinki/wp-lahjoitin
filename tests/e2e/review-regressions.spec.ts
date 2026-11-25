@@ -124,12 +124,12 @@ test('sets theme and custom widths from the donation form toolbar', async ({
 		await menu.getByRole('radio', { name: 'Content width' }).check()
 		await expect(await publishCurrentLayout()).toHaveCSS('width', '645px')
 
-		await menu.getByRole('button', { name: 'Wide width' }).click()
+		await menu.getByRole('radio', { name: /Wide width/ }).check()
 		const wideForm = await publishCurrentLayout()
 		await expect(wideForm).toHaveClass(/\balignwide\b/)
 		await expect(wideForm).toHaveCSS('width', '1340px')
 
-		await menu.getByRole('button', { name: 'Full width' }).click()
+		await menu.getByRole('radio', { name: 'Full width' }).check()
 		const fullForm = await publishCurrentLayout()
 		await expect(fullForm).toHaveClass(/\balignfull\b/)
 		const fullWidth = await fullForm.evaluate(element => element.getBoundingClientRect().width)
@@ -139,8 +139,9 @@ test('sets theme and custom widths from the donation form toolbar', async ({
 		const customWidth = menu.getByRole('spinbutton', { name: 'Maximum width (px)' })
 		await customWidth.fill('480')
 		await expect(block).toHaveCSS('width', '480px')
-		await menu.getByRole('button', { name: 'Wide width' }).click()
-		await menu.getByRole('button', { name: 'None', exact: true }).click()
+		await menu.getByRole('radio', { name: /Wide width/ }).check()
+		await expect(customWidth).toHaveCount(0)
+		await menu.getByRole('radio', { name: 'Custom width' }).check()
 		await expect(customWidth).toHaveValue('480')
 		await expect(block).toHaveCSS('width', '480px')
 		const customForm = await publishCurrentLayout()
@@ -184,8 +185,8 @@ test('only offers widths supported by the parent layout inside a column', async 
 	const menu = page.locator('.fame-form-width-control')
 	await expect(menu.getByRole('radio', { name: 'Custom width' })).toBeChecked()
 	await expect(menu.getByRole('spinbutton', { name: 'Maximum width (px)' })).toHaveValue('480')
-	await expect(menu.getByRole('button', { name: 'Wide width' })).toHaveCount(0)
-	await expect(menu.getByRole('button', { name: 'Full width' })).toHaveCount(0)
+	await expect(menu.getByRole('radio', { name: /Wide width/ })).toHaveCount(0)
+	await expect(menu.getByRole('radio', { name: 'Full width' })).toHaveCount(0)
 })
 
 for (const { theme, restricted, color, rgb } of [
@@ -229,6 +230,20 @@ for (const { theme, restricted, color, rgb } of [
 			const block = editor.canvas.locator('[data-type="famehelsinki/donation-form"]')
 			await expect(block.locator('[data-type="famehelsinki/donation-amounts"]')).toBeVisible()
 			await editor.selectBlocks(block)
+			if (theme === 'twentyseventeen') {
+				const widthButton = page.getByRole('button', { name: 'Width', exact: true })
+				await widthButton.click()
+				const menu = page.locator('.fame-form-width-control')
+				await expect(
+					menu.getByRole('radio', { name: /Wide width|Full width/ })
+				).toHaveCount(0)
+				await menu.getByRole('radio', { name: 'Theme default' }).check()
+				await menu.getByRole('radio', { name: 'Custom width' }).check()
+				await expect(
+					menu.getByRole('spinbutton', { name: 'Maximum width (px)' })
+				).toHaveValue('480')
+				await widthButton.click()
+			}
 			await editor.openDocumentSettingsSidebar()
 			await page.getByRole('tab', { name: 'Styles', exact: true }).click()
 			await expect(page.getByText('Padding', { exact: true })).toBeVisible()
@@ -286,6 +301,16 @@ test('missing required sections block saving and can be restored; invalid saved 
 	await page.evaluate(id => {
 		;(window as any).wp.data.dispatch('core/block-editor').removeBlocks([id])
 	}, controls.clientId)
+	const wasProtected = await page.evaluate(
+		id => Boolean((window as any).wp.data.select('core/block-editor').getBlock(id)),
+		controls.clientId
+	)
+	expect(wasProtected).toBe(true)
+	await page.evaluate(id => {
+		const actions = (window as any).wp.data.dispatch('core/block-editor')
+		actions.updateBlockAttributes(id, { lock: { move: false, remove: false } })
+		actions.removeBlocks([id])
+	}, controls.clientId)
 	await expect(
 		editor.canvas.getByText(
 			'The donation form is incomplete. Restore the missing sections before saving.'
@@ -299,6 +324,8 @@ test('missing required sections block saving and can be restored; invalid saved 
 	const content = await editor.getEditedPostContent()
 	await editor.canvas.getByRole('button', { name: 'Restore missing sections' }).click()
 	await expect(editor.canvas.locator('[data-type="famehelsinki/form-controls"]')).toBeVisible()
+	const restored = find(await editor.getBlocks({ full: true }), 'famehelsinki/form-controls')
+	expect(restored.attributes.lock.remove).toBe(true)
 	await expect
 		.poll(() =>
 			page.evaluate(() => (window as any).wp.data.select('core/editor').isPostSavingLocked())
@@ -391,6 +418,8 @@ test('functional palette colors render and an unset legend weight respects the t
 		},
 	})
 	await expect(editor.canvas.locator('[data-type="famehelsinki/donation-amounts"]')).toBeVisible()
+	const column = find(await editor.getBlocks({ full: true }), 'core/column')
+	await editor.insertBlock({ name: 'famehelsinki/contact-form' }, { clientId: column.clientId })
 	await expect
 		.poll(
 			async () =>
@@ -442,7 +471,10 @@ test('saved layouts stay clean when reopened and support 1-to-3-column Undo and 
 		method: 'GET',
 	})
 	expect(await editor.getEditedPostContent()).toBe(stored.content.raw)
-	await editor.selectBlocks(editor.canvas.locator('[data-type="famehelsinki/donation-form"]'))
+	const columnsBlock = editor.canvas.locator(
+		'[data-type="famehelsinki/donation-form"] [data-type="core/columns"]'
+	)
+	await editor.selectBlocks(columnsBlock)
 	await editor.openDocumentSettingsSidebar()
 	await page.getByRole('spinbutton', { name: 'Desktop columns' }).fill('3')
 	await expect
@@ -451,7 +483,7 @@ test('saved layouts stay clean when reopened and support 1-to-3-column Undo and 
 				find(await editor.getBlocks({ full: true }), 'core/columns').innerBlocks.length
 		)
 		.toBe(3)
-	await editor.selectBlocks(editor.canvas.locator('[data-type="famehelsinki/donation-form"]'))
+	await editor.selectBlocks(columnsBlock)
 	await page.keyboard.press('ControlOrMeta+z')
 	await expect
 		.poll(
@@ -520,6 +552,35 @@ test('native form blocks are rejected inside columns and groups; unsafe API writ
 	await expect(page.getByRole('status')).toContainText('contains another form')
 })
 
+test('the form inserter offers optional sections and inserts headings before submit', async ({
+	admin,
+	editor,
+	page,
+}) => {
+	await admin.createNewPost({ title: 'Add a form section' })
+	await editor.insertBlock({ name: 'famehelsinki/donation-form' })
+	const form = editor.canvas.locator('[data-type="famehelsinki/donation-form"]')
+	const submit = form.locator('[data-type="famehelsinki/form-controls"]')
+	await expect(submit).toBeVisible()
+	await editor.selectBlocks(form)
+	const help = form.locator('.fame-form__editor-help')
+	await expect(help).toContainText('Add before or Add after')
+	await expect(help).toHaveCSS('background-color', 'rgb(240, 246, 252)')
+	await editor.selectBlocks(submit)
+	await expect(help).toBeVisible()
+	await editor.clickBlockOptionsMenuItem('Add before')
+	await page.locator('.block-editor-block-list__empty-block-inserter button').click()
+
+	const menu = page.getByRole('menu', { name: 'Add block', exact: true })
+	for (const name of ['Contact form', 'Campaigns', 'Paragraph', 'Heading']) {
+		await expect(menu.getByRole('menuitem', { name, exact: true })).toBeVisible()
+	}
+	await menu.getByRole('menuitem', { name: 'Heading', exact: true }).click()
+	await expect(
+		form.locator('[data-type="core/heading"] + [data-type="famehelsinki/form-controls"]')
+	).toHaveCount(1)
+})
+
 test('restoring donation type puts it before amount fields instead of after submit', async ({
 	admin,
 	editor,
@@ -532,7 +593,9 @@ test('restoring donation type puts it before amount fields instead of after subm
 	await expect(editor.canvas.locator('[data-type="famehelsinki/donation-type"]')).toBeVisible()
 	const type = find(await editor.getBlocks({ full: true }), 'famehelsinki/donation-type')
 	await page.evaluate(id => {
-		;(window as any).wp.data.dispatch('core/block-editor').removeBlocks([id])
+		const actions = (window as any).wp.data.dispatch('core/block-editor')
+		actions.updateBlockAttributes(id, { lock: { move: false, remove: false } })
+		actions.removeBlocks([id])
 	}, type.clientId)
 	await editor.canvas.getByRole('button', { name: 'Restore missing sections' }).click()
 	await expect(editor.canvas.locator('[data-type="famehelsinki/donation-type"]')).toBeVisible()

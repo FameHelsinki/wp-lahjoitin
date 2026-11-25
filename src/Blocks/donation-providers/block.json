@@ -8,6 +8,7 @@
 	"description": "Allows selecting payment providers.",
 	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
+		"lock": { "type": "object", "default": { "remove": true } },
 		"showLegend": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "" },
 		"providers": { "type": "array", "default": [] },

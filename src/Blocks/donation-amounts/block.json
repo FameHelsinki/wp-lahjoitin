@@ -9,6 +9,7 @@
 	"ancestor": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
+		"lock": { "type": "object", "default": { "remove": true } },
 		"settings": {
 			"type": "array",
 			"default": [

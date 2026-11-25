@@ -11,6 +11,7 @@
 	"attributes": {
 		"campaigns": { "type": "array", "default": [] },
 		"label": { "type": "string", "default": "" },
+		"placeholder": { "type": "string", "default": "" },
 		"showLabel": { "type": "boolean", "default": true }
 	},
 	"supports": {

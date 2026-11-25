@@ -3,13 +3,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Lahjoitin 1.x\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/app\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-lahjoitin\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-05T01:34:30+00:00\n"
+"POT-Creation-Date: 2026-11-24T11:41:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: fame_lahjoitukset\n"
@@ -35,46 +35,46 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: build/Blocks/contact-form/render.php:38
-#: src/Blocks/contact-form/render.php:38
-#: build/Blocks/contact-form/index.js:1
-msgid "First name"
-msgstr ""
-
 #: build/Blocks/contact-form/render.php:39
 #: src/Blocks/contact-form/render.php:39
 #: build/Blocks/contact-form/index.js:1
-msgid "Last name"
+msgid "First name"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:40
 #: src/Blocks/contact-form/render.php:40
 #: build/Blocks/contact-form/index.js:1
-msgid "Email"
+msgid "Last name"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:41
 #: src/Blocks/contact-form/render.php:41
 #: build/Blocks/contact-form/index.js:1
-msgid "Address"
+msgid "Email"
 msgstr ""
 
 #: build/Blocks/contact-form/render.php:42
-#: build/Blocks/contact-form/render.php:45
 #: src/Blocks/contact-form/render.php:42
-#: src/Blocks/contact-form/render.php:45
+#: build/Blocks/contact-form/index.js:1
+msgid "Address"
+msgstr ""
+
+#: build/Blocks/contact-form/render.php:43
+#: build/Blocks/contact-form/render.php:46
+#: src/Blocks/contact-form/render.php:43
+#: src/Blocks/contact-form/render.php:46
 #: build/Blocks/contact-form/index.js:1
 msgid "City"
 msgstr ""
 
-#: build/Blocks/contact-form/render.php:43
-#: src/Blocks/contact-form/render.php:43
+#: build/Blocks/contact-form/render.php:44
+#: src/Blocks/contact-form/render.php:44
 #: build/Blocks/contact-form/index.js:1
 msgid "Postal code"
 msgstr ""
 
-#: build/Blocks/contact-form/render.php:44
-#: src/Blocks/contact-form/render.php:44
+#: build/Blocks/contact-form/render.php:45
+#: src/Blocks/contact-form/render.php:45
 #: build/Blocks/contact-form/index.js:1
 msgid "Phone"
 msgstr ""
@@ -101,13 +101,30 @@ msgstr ""
 msgid "Campaign"
 msgstr ""
 
-#: build/Blocks/donation-campaigns/render.php:58
-#: src/Blocks/donation-campaigns/render.php:58
+#: build/Blocks/donation-campaigns/render.php:59
+#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Select campaign"
 msgstr ""
 
-#: build/Blocks/donation-form/render.php:138
-#: src/Blocks/donation-form/render.php:138
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "Dropdown placeholder"
+msgstr ""
+
+#: build/Blocks/donation-form/render.php:144
+#: src/Blocks/donation-form/render.php:144
+msgid "The donation form is temporarily unavailable because its configuration is incomplete."
+msgstr ""
+
+#: build/Blocks/donation-form/render.php:180
+#: build/Blocks/donation-form/render.php:209
+#: src/Blocks/donation-form/render.php:180
+#: src/Blocks/donation-form/render.php:209
+msgid "The donation form contains another form. Move the embedded form outside the donation form."
+msgstr ""
+
+#: build/Blocks/donation-form/render.php:236
+#: src/Blocks/donation-form/render.php:236
 msgid "Loading"
 msgstr ""
 
@@ -168,8 +185,8 @@ msgstr ""
 msgid "The form is ready to submit."
 msgstr ""
 
-#: build/Blocks/form-controls/render.php:45
-#: src/Blocks/form-controls/render.php:45
+#: build/Blocks/form-controls/render.php:59
+#: src/Blocks/form-controls/render.php:59
 msgid "Please enable JavaScript to use this form."
 msgstr ""
 
@@ -317,17 +334,21 @@ msgid "Require phone number"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
-msgid "The contact form is not in use. Use the toggle in the sidebar to enable it."
+msgid "The contact form is not in use."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Lahjoitin blocks"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"To add a block, select a block in the form. Open its three-dot menu, choose "
+"Add before or Add after, then click + to choose a block."
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
-msgstr ""
-
-#: build/Blocks/donation-amounts/index.js:1
-msgid ""
-"Hidden because no amount buttons are configured and the other amount field "
-"is disabled."
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
@@ -371,6 +392,10 @@ msgid "hidden"
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
+msgid "Hidden because no amount buttons are configured and the other amount field is disabled."
+msgstr ""
+
+#: build/Blocks/donation-amounts/index.js:1
 msgid "Other amount text"
 msgstr ""
 
@@ -387,7 +412,6 @@ msgid "Amount columns"
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
-#: build/Blocks/donation-form/index.js:1
 msgid "Choose 1–3 columns for the form layout."
 msgstr ""
 
@@ -437,7 +461,43 @@ msgid "Hidden because no campaigns are configured."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Content width"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Theme default"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Custom width"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Width"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Form width"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Maximum width (px)"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "saved value"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Add privacy policy and terms text here…"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Desktop columns"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Choose 1–3 columns. New columns start empty. Removing columns moves their blocks to the end of the last remaining column."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
@@ -493,6 +553,18 @@ msgid "This color is used for all form section legends."
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Section label font weight"
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "The theme does not declare font weights for the current font."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Available weights come from the theme font definitions. Applies only to section labels."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
 msgid "Section label font size"
 msgstr ""
 
@@ -532,6 +604,18 @@ msgstr ""
 msgid "This is the border-radius for the text fields."
 msgstr ""
 
+#: build/Blocks/donation-form/index.js:1
+msgid "Another form is embedded in this donation form. Remove it or move it outside before saving."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "The donation form is incomplete. Restore the missing sections before saving."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Restore missing sections"
+msgstr ""
+
 #: build/Blocks/donation-form/view.js:1
 msgid "The donation could not be submitted. Please try again."
 msgstr ""
@@ -569,11 +653,11 @@ msgid "Invalid email"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
-msgid "Invalid phone number"
+msgid "Phone number is required"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
-msgid "Phone number is required"
+msgid "Invalid phone number"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
@@ -614,10 +698,6 @@ msgstr ""
 #: build/Blocks/donation-form/view.js:3
 #, js-format
 msgid "The maximum donation amount is %1$s%2$s."
-msgstr ""
-
-#: build/Blocks/donation-providers/index.js:1
-msgid "Add privacy policy and terms text here…"
 msgstr ""
 
 #: build/Blocks/donation-providers/index.js:1

@@ -12,7 +12,6 @@ import {
 	PanelBody,
 	TextControl,
 	BaseControl,
-	RangeControl,
 	SelectControl,
 	Notice,
 	Button,
@@ -22,8 +21,8 @@ import { useDispatch, useSelect, useRegistry } from '@wordpress/data'
 import { getBlockType, type Block as BlockInstance } from '@wordpress/blocks'
 import {
 	createInitialLayout,
-	resizeLayout,
 	prepareLayout,
+	LAYOUT_VERSION,
 	missingSections,
 	restoreSections,
 } from './layout'
@@ -31,7 +30,8 @@ import {
 import { invalidContent } from './content-validation'
 import { colorValue, cssLength } from './style-values'
 import { legendFontWeights } from './legend-font-weights'
-import WidthControl, { type WidthChoice } from './width-control'
+import WidthControl, { type ParentLayout, type WidthChoice } from './width-control'
+import FormInserter from './form-inserter'
 
 import { EditProps } from '../common/types.ts'
 
@@ -41,7 +41,8 @@ export default function Edit({
 	attributes,
 	setAttributes,
 	clientId,
-}: EditProps & { clientId: string }): React.JSX.Element {
+	__unstableParentLayout: parentLayout,
+}: EditProps & { __unstableParentLayout?: ParentLayout }): React.JSX.Element {
 	const {
 		returnAddress,
 		align,
@@ -145,6 +146,10 @@ export default function Edit({
 	}
 
 	const changeWidth = (choice: WidthChoice) => {
+		if (choice === 'wide' || choice === 'full') {
+			setAttributes({ align: choice })
+			return
+		}
 		setAttributes({
 			formWidth: choice,
 			align: wideAlignment ? '' : align,
@@ -194,8 +199,16 @@ export default function Edit({
 	const dangerColorId = useInstanceId(BaseControl, 'fame-clr-danger')
 	const sectionLabelColorId = useInstanceId(BaseControl, 'section-label-color')
 
-	const innerBlocks = useSelect(
-		select => select(blockEditorStore).getBlocks(clientId) as BlockInstance[],
+	const { innerBlocks, showEditorHelp } = useSelect(
+		select => {
+			const editor = select(blockEditorStore)
+			return {
+				innerBlocks: editor.getBlocks(clientId) as BlockInstance[],
+				showEditorHelp:
+					editor.isBlockSelected(clientId) ||
+					editor.hasSelectedInnerBlock(clientId, true),
+			}
+		},
 		[clientId]
 	)
 	const invalidBlocks = invalidContent(innerBlocks)
@@ -215,28 +228,25 @@ export default function Edit({
 	useEffect(() => {
 		if (initialized.current) return
 		initialized.current = true
-		if ((attributes.layoutVersion ?? 0) > 1) return
+		const version = attributes.layoutVersion ?? 0
+		if (version >= LAYOUT_VERSION) return
 		const top = innerBlocks[0]
 		let next: BlockInstance[] | null = null
 		if (innerBlocks.length === 0) next = createInitialLayout(cols)
 		else if (innerBlocks.length === 1 && top.name === 'core/columns') {
-			next = [prepareLayout(top, (attributes.layoutVersion ?? 0) < 1)]
+			next = [prepareLayout(top, version < 1)]
 		}
 		if (!next) return
 		const treeChanged =
 			next.length !== innerBlocks.length ||
 			next.some((item, index) => item !== innerBlocks[index])
-		const versionChanged = (attributes.layoutVersion ?? 0) < 1
-		if (!treeChanged && !versionChanged) return
 		registry.batch(() => {
 			if (treeChanged) {
 				__unstableMarkNextChangeAsNotPersistent()
 				replaceInnerBlocks(clientId, next, false)
 			}
-			if (versionChanged) {
-				__unstableMarkNextChangeAsNotPersistent()
-				setAttributes({ layoutVersion: 1 })
-			}
+			__unstableMarkNextChangeAsNotPersistent()
+			setAttributes({ layoutVersion: LAYOUT_VERSION })
 		})
 	}, [
 		attributes.layoutVersion,
@@ -263,42 +273,17 @@ export default function Edit({
 		return () => actions?.unlockPostSaving?.(key)
 	}, [clientId, missingKey, invalidKey, registry])
 
-	const changeColumns = (value?: number) => {
-		const top = innerBlocks[0]
-		if (!top || top.name !== 'core/columns') return
-		const count = Math.min(3, Math.max(1, value ?? 1))
-		registry.batch(() => {
-			setAttributes({ colsDesktop: count })
-			replaceInnerBlocks(clientId, [resizeLayout(top, count)], false)
-		})
-	}
-
 	return (
 		<>
 			<WidthControl
-				width={width}
-				wideAlignment={wideAlignment}
+				width={wideAlignment ?? width}
+				parentLayout={parentLayout}
 				customWidth={customWidth}
 				onChange={changeWidth}
-				onAlignmentChange={value =>
-					setAttributes({ align: value ?? (wideAlignment ? '' : align) })
-				}
 				onCustomWidthChange={value => setAttributes({ formMaxWidth: value })}
 			/>
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'fame_lahjoitukset')}>
-					<RangeControl
-						label={__('Desktop columns', 'fame_lahjoitukset')}
-						help={__(
-							'Choose 1–3 columns. New columns start empty. Removing columns moves their blocks to the end of the last remaining column.',
-							'fame_lahjoitukset'
-						)}
-						min={1}
-						max={3}
-						value={cols}
-						onChange={changeColumns}
-					/>
-
 					<TextControl
 						label={__('Return address', 'fame_lahjoitukset')}
 						help={__(
@@ -526,18 +511,31 @@ export default function Edit({
 						<Button
 							variant="secondary"
 							onClick={() => {
-								replaceInnerBlocks(clientId, restoreSections(innerBlocks), false)
+								replaceInnerBlocks(
+									clientId,
+									restoreSections(innerBlocks, cols),
+									false
+								)
 							}}
 						>
 							{__('Restore missing sections', 'fame_lahjoitukset')}
 						</Button>
 					</Notice>
 				)}
+				{showEditorHelp && (
+					<p className="fame-form__editor-help">
+						{__(
+							'To add a block, select a block in the form. Open its three-dot menu, choose Add before or Add after, then click + to choose a block.',
+							'fame_lahjoitukset'
+						)}
+					</p>
+				)}
 				<InnerBlocks
 					allowedBlocks={TOP_ALLOWED_BLOCKS as unknown as string[]}
-					templateLock="all"
+					templateLock="insert"
 					renderAppender={() => null}
 				/>
+				<FormInserter clientId={clientId} formRef={wrapperRef} />
 			</div>
 		</>
 	)

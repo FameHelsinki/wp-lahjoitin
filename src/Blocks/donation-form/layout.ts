@@ -2,6 +2,10 @@ import { __ } from '@wordpress/i18n'
 import { FORM_BLOCK } from './insertion'
 import { createBlock, getBlockType, type Block as BlockInstance } from '@wordpress/blocks'
 
+export const LAYOUT_VERSION = 3
+const COLUMNS_DEFAULTS = { templateLock: 'insert', lock: { remove: false } }
+const COLUMN_DEFAULTS = { templateLock: false, lock: { remove: false } }
+
 const SECTIONS = [
 	'famehelsinki/donation-type',
 	'famehelsinki/donation-campaigns',
@@ -31,7 +35,19 @@ export function missingSections(blocks: BlockInstance[]): string[] {
 }
 
 /** Insert before the first later section, without imposing order on existing blocks. */
-export function restoreSections(blocks: BlockInstance[]): BlockInstance[] {
+export function restoreSections(blocks: BlockInstance[], columnCount = 1): BlockInstance[] {
+	const firstBlock = blocks[0]
+	if (
+		!firstBlock ||
+		(blocks.length === 1 &&
+			firstBlock.name === 'core/columns' &&
+			!firstBlock.innerBlocks.length)
+	) {
+		const layout = firstBlock ?? createBlock('core/columns', COLUMNS_DEFAULTS)
+		const sections = REQUIRED_SECTIONS.map(name => createBlock(name))
+		const column = createBlock('core/column', COLUMN_DEFAULTS, sections)
+		return [resizeLayout({ ...layout, innerBlocks: [column] }, columnCount)]
+	}
 	let next = blocks
 	for (const name of missingSections(blocks)) {
 		const rank = SECTIONS.indexOf(name)
@@ -41,14 +57,15 @@ export function restoreSections(blocks: BlockInstance[]): BlockInstance[] {
 			const result: BlockInstance[] = []
 			let changed = false
 			for (const item of items) {
+				const templateLock = item.attributes.templateLock
 				const layoutContainer =
 					next.length === 1 &&
 					item === next[0] &&
 					item.name === 'core/columns' &&
-					item.attributes.templateLock === 'all'
+					(templateLock === 'all' || templateLock === 'insert')
 				const editableContainer =
 					['core/columns', 'core/column', 'core/group'].includes(item.name) &&
-					!item.attributes.templateLock
+					!templateLock
 				const canDescend = editableContainer || layoutContainer
 				const hasLaterSection = (block: BlockInstance): boolean =>
 					block.name !== FORM_BLOCK &&
@@ -108,6 +125,14 @@ function withAttributes(block: BlockInstance, attributes: Record<string, unknown
 	return { ...block, attributes: { ...block.attributes, ...attributes } }
 }
 
+function containerLock(block: BlockInstance) {
+	const lock = block.attributes.lock as { move?: boolean; remove?: boolean } | undefined
+	// Override the parent's insertion template so it doesn't prevent removing columns.
+	// Older layouts also set both individual locks by default.
+	if (lock?.move === true && lock.remove === true) return { remove: false }
+	return { ...lock, remove: false }
+}
+
 /** Preserve styled legacy groups; unwrap only the old, unstyled layout groups. */
 function migrateGroup(block: BlockInstance): BlockInstance[] {
 	// The old providers block owned the terms paragraph. Move every legacy
@@ -147,14 +172,14 @@ function migrateGroup(block: BlockInstance): BlockInstance[] {
 
 export function prepareLayout(top: BlockInstance, migrateLegacy = true): BlockInstance {
 	let next = withAttributes(top, {
-		templateLock: 'all',
-		lock: { move: true, remove: true },
+		...COLUMNS_DEFAULTS,
+		lock: containerLock(top),
 	})
 	const columns = next.innerBlocks.map(column => {
 		if (column.name !== 'core/column') return column
 		let prepared = withAttributes(column, {
-			templateLock: false,
-			lock: { move: true, remove: true },
+			...COLUMN_DEFAULTS,
+			lock: containerLock(column),
 			allowedBlocks: undefined,
 		})
 		const content = migrateLegacy
@@ -187,23 +212,23 @@ export function resizeLayout(top: BlockInstance, count: number): BlockInstance {
 			innerBlocks: [...last.innerBlocks, ...columns.slice(count).flatMap(c => c.innerBlocks)],
 		}
 	}
-	while (kept.length < count) kept.push(createBlock('core/column'))
+	while (kept.length < count) kept.push(createBlock('core/column', COLUMN_DEFAULTS))
 	// Explicit widths from legacy layouts must not prevent equal-width columns.
-	return prepareLayout(
-		{
-			...top,
-			innerBlocks: kept.map(column => withAttributes(column, { width: undefined })),
-		},
-		false
-	)
+	return {
+		...top,
+		innerBlocks: kept.map(column => withAttributes(column, { width: undefined })),
+	}
 }
 
 export function createInitialLayout(count: number): BlockInstance[] {
+	const initialSections = SECTIONS.filter(
+		name => !['famehelsinki/donation-campaigns', 'famehelsinki/contact-form'].includes(name)
+	)
 	const top = createBlock('core/columns', {}, [
 		createBlock(
 			'core/column',
 			{},
-			SECTIONS.flatMap(name =>
+			initialSections.flatMap(name =>
 				name === 'famehelsinki/form-controls'
 					? [
 							createBlock('core/paragraph', {
