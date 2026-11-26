@@ -80,6 +80,17 @@ add_action('rest_api_init', static function (): void {
                 }
             }
 
+            $custom_data = $data['custom_data'] ?? null;
+            if (is_array($custom_data) && $custom_data) {
+                $json = wp_json_encode($custom_data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                if (is_string($json) && strlen($json) <= 4096) {
+                    $token = wp_generate_uuid4();
+                    if (set_transient('lahjoitin_demo_data_' . $token, $json, 10 * MINUTE_IN_SECONDS)) {
+                        $args['custom_data_token'] = $token;
+                    }
+                }
+            }
+
             $thanks = (int) get_option('lahjoitin_demo_thanks_page');
 
             return new WP_REST_Response([
@@ -142,6 +153,16 @@ add_filter('the_content', static function (string $content): string {
         }
 
         $rows .= sprintf('<tr><th scope="row">%s</th><td>%s</td></tr>', esc_html($label), esc_html($value));
+    }
+
+    $token = isset($_GET['custom_data_token']) && is_string($_GET['custom_data_token'])
+        ? wp_unslash($_GET['custom_data_token'])
+        : '';
+    if (wp_is_uuid($token, 4)) {
+        $custom_data = get_transient('lahjoitin_demo_data_' . $token);
+        if (is_string($custom_data)) {
+            $rows .= sprintf('<tr><th scope="row">Custom data</th><td><code>%s</code></td></tr>', esc_html($custom_data));
+        }
     }
 
     return $content . '<figure class="wp-block-table"><table><tbody>' . $rows . '</tbody></table></figure>';

@@ -150,14 +150,25 @@ $unavailable = static function (): void {
 if ($block instanceof WP_Block) {
   $names = [];
   $invalid_nested_form = false;
+  $additional_field_keys = [];
+  $duplicate_additional_field = false;
   $forbidden = \Fame\WordPress\Lahjoitukset\FormContent::forbiddenNames();
-  $collect = static function ($children) use (&$collect, &$names, &$invalid_nested_form, $forbidden): void {
+  $collect = static function ($children) use (
+    &$collect, &$names, &$invalid_nested_form, &$additional_field_keys, &$duplicate_additional_field, $forbidden
+  ): void {
     foreach ($children as $child) {
       if (in_array($child->name, $forbidden, true)) {
         $invalid_nested_form = true;
         continue;
       }
       $names[] = $child->name;
+      if ($child->name === 'famehelsinki/custom-data-field') {
+        $key = \Fame\WordPress\Lahjoitukset\FormContent::additionalFieldKey($child->attributes['fieldKey'] ?? '');
+        if ($key !== '') {
+          $duplicate_additional_field = $duplicate_additional_field || isset($additional_field_keys[$key]);
+          $additional_field_keys[$key] = true;
+        }
+      }
       $collect($child->inner_blocks);
     }
   };
@@ -170,7 +181,7 @@ if ($block instanceof WP_Block) {
       . '</div>';
     return;
   }
-  if (array_diff($required, $names)) {
+  if ($duplicate_additional_field || array_diff($required, $names)) {
     $unavailable();
     return;
   }

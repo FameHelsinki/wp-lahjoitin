@@ -32,3 +32,19 @@ window.addEventListener('fame-lahjoitukset-submit', (event) => {
 	event.detail.data.campaign = params.get('utm_campaign');
 })
 ```
+
+#### Adding metadata
+
+The form collects answers from Additional field blocks in `event.detail.data.custom_data`.
+Each block uses a key with the `custom_` prefix. Checked boxes send `true`. Unchecked boxes
+and empty optional text and dropdown fields are omitted. The form omits `custom_data` when
+there are no answers.
+
+Merge your metadata into the existing object to preserve answers from the form.
+
+```js
+window.addEventListener('fame-lahjoitukset-submit', event => {
+	const { data } = event.detail
+	data.custom_data = { ...data.custom_data, source: 'website' }
+})
+```

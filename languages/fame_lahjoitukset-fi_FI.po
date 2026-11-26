@@ -230,6 +230,7 @@ msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
 msgstr "Lahjoitin-lisäosa on asennettu väärin, asenna se uudelleen"
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/donation-providers/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
@@ -237,6 +238,7 @@ msgid "Label"
 msgstr "Otsikko"
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Help text"
 msgstr "Ohjeteksti"
@@ -913,6 +915,46 @@ msgstr ""
 "Lahjoituslomake sisältää toisen lomakkeen. Siirrä upotettu lomake "
 "lahjoituslomakkeen ulkopuolelle."
 
+#: build/Blocks/custom-data-field/render.php:54
+#: src/Blocks/custom-data-field/render.php:54
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Select an option"
+msgstr "Valitse vaihtoehto"
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Use lowercase letters, numbers, hyphens or underscores for the field key. Start with a letter or number."
+msgstr "Käytä avaimessa pieniä a–z-kirjaimia, numeroita, yhdysmerkkejä tai alaviivoja. Aloita kirjaimella tai numerolla."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "This field key is already used. Clear this field’s key in Advanced to generate a new one."
+msgstr "Tämä kentän avain on jo käytössä. Tyhjennä tämän kentän avain Edistyneet-asetuksissa, niin sille luodaan uusi avain."
+
+#. translators: %s: the duplicated field key.
+#: build/Blocks/donation-form/index.js:1
+msgid "The field key “%s” is used more than once."
+msgstr "Kentän avain ”%s” on käytössä useammassa kuin yhdessä kentässä."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Enter a label for the additional field."
+msgstr "Anna lisätietokentälle otsikko."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Add at least one choice and give each choice a label."
+msgstr "Lisää vähintään yksi vaihtoehto ja nimeä jokainen vaihtoehto."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Each choice must have a different stored value."
+msgstr "Jokaisella vaihtoehdolla pitää olla eri tallennettava arvo."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Additional field"
+msgstr "Lisätietokenttä"
+
 #: build/Blocks/donation-form/index.js:1
 msgid "Lahjoitin blocks"
 msgstr "Lahjoitin-lohkot"
@@ -924,6 +966,82 @@ msgid ""
 msgstr ""
 "Valitse lomakkeesta lohko. Avaa sen kolmen pisteen valikko, valitse Lisää "
 "ennen tai Lisää jälkeen ja valitse lisättävä lohko pluspainikkeella."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field type"
+msgstr "Kentän tyyppi"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Text field"
+msgstr "Tekstikenttä"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Checkbox"
+msgstr "Valintaruutu"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Dropdown list"
+msgstr "Valintalista"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field key"
+msgstr "Kentän avain"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Enter your own key after custom_. Clear the field to generate a key from the label."
+msgstr "Voit määrittää avaimen loppuosan itse. Tyhjennä kenttä, niin avain luodaan otsikosta."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Required field"
+msgstr "Pakollinen kenttä"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choices"
+msgstr "Vaihtoehdot"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choice label"
+msgstr "Vaihtoehdon nimi"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Stored value"
+msgstr "Tallennettava arvo"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Leave empty to store the choice label."
+msgstr "Jätä tyhjäksi, jos haluat tallentaa vaihtoehdon nimen."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Remove choice"
+msgstr "Poista vaihtoehto"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Add choice"
+msgstr "Lisää vaihtoehto"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Complete the settings of the additional fields before saving."
+msgstr "Täydennä lisätietokenttien asetukset ennen tallentamista."
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Additional information is too long. Shorten your answers."
+msgstr "Lisätiedot ovat liian pitkät. Lyhennä vastauksiasi."
+
+#: build/Blocks/donation-form/view.js:1
+msgid "This field is required."
+msgstr "Tämä kenttä on pakollinen."
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block title"
+msgid "Additional field"
+msgstr "Lisätietokenttä"
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block description"
+msgid "Collects an additional piece of information with a donation."
+msgstr "Kerää lisätiedon lahjoituksen yhteydessä."
 
 #~ msgid "Donation provider"
 #~ msgstr "Lahjoitusmaksuntarjoaja"

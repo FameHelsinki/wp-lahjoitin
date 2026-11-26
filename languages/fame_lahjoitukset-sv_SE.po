@@ -231,6 +231,7 @@ msgstr ""
 "Lahjoitin-insticksprogrammet är installerat felaktigt, installera om det"
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/donation-providers/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
@@ -238,6 +239,7 @@ msgid "Label"
 msgstr "Etikett"
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Help text"
 msgstr "Hjälptext"
@@ -914,6 +916,46 @@ msgstr ""
 "Donationsformuläret innehåller ett annat formulär. Flytta det inbäddade "
 "formuläret utanför donationsformuläret."
 
+#: build/Blocks/custom-data-field/render.php:54
+#: src/Blocks/custom-data-field/render.php:54
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Select an option"
+msgstr "Välj ett alternativ"
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Use lowercase letters, numbers, hyphens or underscores for the field key. Start with a letter or number."
+msgstr "Använd gemenerna a–z, siffror, bindestreck eller understreck i fältnyckeln. Börja med en bokstav eller siffra."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "This field key is already used. Clear this field’s key in Advanced to generate a new one."
+msgstr "Den här fältnyckeln används redan. Rensa fältets nyckel under Avancerat så skapas en ny nyckel."
+
+#. translators: %s: the duplicated field key.
+#: build/Blocks/donation-form/index.js:1
+msgid "The field key “%s” is used more than once."
+msgstr "Fältnyckeln ”%s” används i mer än ett fält."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Enter a label for the additional field."
+msgstr "Ange en etikett för tilläggsfältet."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Add at least one choice and give each choice a label."
+msgstr "Lägg till minst ett alternativ och namnge varje alternativ."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Each choice must have a different stored value."
+msgstr "Varje alternativ måste ha ett unikt värde."
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Additional field"
+msgstr "Tilläggsfält"
+
 #: build/Blocks/donation-form/index.js:1
 msgid "Lahjoitin blocks"
 msgstr "Lahjoitin-block"
@@ -925,6 +967,82 @@ msgid ""
 msgstr ""
 "Markera ett block i formuläret. Öppna dess meny med tre punkter, välj Lägg "
 "till före eller Lägg till efter och klicka sedan på + för att välja ett block."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field type"
+msgstr "Fälttyp"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Text field"
+msgstr "Textfält"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Checkbox"
+msgstr "Kryssruta"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Dropdown list"
+msgstr "Rullgardinslista"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field key"
+msgstr "Fältnyckel"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Enter your own key after custom_. Clear the field to generate a key from the label."
+msgstr "Ange en egen nyckel efter custom_. Töm fältet för att skapa en nyckel utifrån etiketten."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Required field"
+msgstr "Obligatoriskt fält"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choices"
+msgstr "Alternativ"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choice label"
+msgstr "Alternativets namn"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Stored value"
+msgstr "Värde som sparas"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Leave empty to store the choice label."
+msgstr "Lämna fältet tomt för att spara alternativets namn."
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Remove choice"
+msgstr "Ta bort alternativ"
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Add choice"
+msgstr "Lägg till alternativ"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Complete the settings of the additional fields before saving."
+msgstr "Komplettera inställningarna för tilläggsfälten innan du sparar."
+
+#: build/Blocks/donation-form/view.js:1
+msgid "Additional information is too long. Shorten your answers."
+msgstr "Tilläggsuppgifterna är för långa. Förkorta dina svar."
+
+#: build/Blocks/donation-form/view.js:1
+msgid "This field is required."
+msgstr "Det här fältet är obligatoriskt."
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block title"
+msgid "Additional field"
+msgstr "Tilläggsfält"
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block description"
+msgid "Collects an additional piece of information with a donation."
+msgstr "Samlar in en tilläggsuppgift i samband med en donation."
 
 #~ msgid "Donation provider"
 #~ msgstr "Donationsleverantör"

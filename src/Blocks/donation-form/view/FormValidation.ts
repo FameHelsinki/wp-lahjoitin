@@ -317,7 +317,7 @@ export default class FormValidation {
 
 		const message = control.validity.customError
 			? control.validationMessage
-			: this.#getErrorMessage(control.name, control.validity)
+			: this.#getErrorMessage(control)
 		this.#showError(control, message)
 		return false
 	}
@@ -434,8 +434,12 @@ export default class FormValidation {
 		}
 	}
 
-	#getErrorMessage(name: string, validity: ValidityState): string {
-		const errorType = getErrorType(validity)
+	#getErrorMessage(control: ValidatedFormControl): string {
+		const { name, validity } = control
+		const errorType =
+			validity.patternMismatch && control.required && control.value.trim() === ''
+				? 'required'
+				: getErrorType(validity)
 		return (
 			this.#translations[name]?.[errorType] ??
 			this.#translations[name]?.unknown ??

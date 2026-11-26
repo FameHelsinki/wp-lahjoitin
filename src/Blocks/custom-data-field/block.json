@@ -1,0 +1,28 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "famehelsinki/custom-data-field",
+	"version": "0.1.0",
+	"title": "Additional field",
+	"category": "widgets",
+	"description": "Collects an additional piece of information with a donation.",
+	"ancestor": ["famehelsinki/donation-form"],
+	"usesContext": ["famehelsinki/fieldKeyConflicts"],
+	"icon": "forms",
+	"attributes": {
+		"fieldType": {
+			"type": "string",
+			"enum": ["text", "checkbox", "select"],
+			"default": "text"
+		},
+		"fieldKey": { "type": "string", "default": "" },
+		"label": { "type": "string", "default": "" },
+		"helpText": { "type": "string", "default": "" },
+		"required": { "type": "boolean", "default": false },
+		"choices": { "type": "array", "default": [] }
+	},
+	"supports": { "html": false },
+	"textdomain": "fame_lahjoitukset",
+	"editorScript": "file:./index.js",
+	"render": "file:./render.php"
+}

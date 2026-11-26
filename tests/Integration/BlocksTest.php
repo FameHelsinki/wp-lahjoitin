@@ -117,6 +117,21 @@ final class BlocksTest extends WP_UnitTestCase
         self::assertStringContainsString('<button type="submit">Donate', $html);
     }
 
+    public function testAdditionalFieldPrefixesLegacyKeyAndIgnoresLegacyVisibilityRule(): void
+    {
+        $markup = '<!-- wp:famehelsinki/custom-data-field '
+            . wp_json_encode(['fieldKey' => 'newsletter', 'label' => 'Newsletter', 'showWhen' => 'consent'])
+            . ' /-->';
+        $html = new \WP_HTML_Tag_Processor(do_blocks($markup));
+
+        self::assertTrue($html->next_tag(['class_name' => 'wp-block-famehelsinki-custom-data-field']));
+        self::assertSame('custom_newsletter', $html->get_attribute('data-custom-data-field'));
+        self::assertNull($html->get_attribute('hidden'));
+        self::assertTrue($html->next_tag('INPUT'));
+        self::assertSame('custom_data[custom_newsletter]', $html->get_attribute('name'));
+        self::assertNull($html->get_attribute('disabled'));
+    }
+
     public function testPhoneRequiredSettingOnlyAffectsVisiblePhoneField(): void
     {
         $render = static function (array $attributes): string {

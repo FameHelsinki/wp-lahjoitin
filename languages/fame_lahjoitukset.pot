@@ -79,6 +79,12 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
+#: build/Blocks/custom-data-field/render.php:54
+#: src/Blocks/custom-data-field/render.php:54
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Select an option"
+msgstr ""
+
 #: build/Blocks/donation-amounts/render.php:36
 #: build/Blocks/donation-amounts/render.php:38
 #: src/Blocks/donation-amounts/render.php:36
@@ -249,6 +255,7 @@ msgid "The Lahjoitin plugin is installed incorrectly, please re-install"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-campaigns/index.js:1
 #: build/Blocks/donation-providers/index.js:1
 #: build/Blocks/recurring-due-date/index.js:1
@@ -256,6 +263,7 @@ msgid "Label"
 msgstr ""
 
 #: build/Blocks/contact-form/index.js:1
+#: build/Blocks/custom-data-field/index.js:1
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Help text"
 msgstr ""
@@ -337,6 +345,40 @@ msgstr ""
 msgid "The contact form is not in use."
 msgstr ""
 
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Use lowercase letters, numbers, hyphens or underscores for the field key. Start with a letter or number."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "This field key is already used. Clear this field’s key in Advanced to generate a new one."
+msgstr ""
+
+#. translators: %s: the duplicated field key.
+#: build/Blocks/donation-form/index.js:1
+msgid "The field key “%s” is used more than once."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Enter a label for the additional field."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Add at least one choice and give each choice a label."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Each choice must have a different stored value."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+#: build/Blocks/donation-form/index.js:1
+msgid "Additional field"
+msgstr ""
+
 #: build/Blocks/donation-form/index.js:1
 msgid "Lahjoitin blocks"
 msgstr ""
@@ -345,6 +387,58 @@ msgstr ""
 msgid ""
 "To add a block, select a block in the form. Open its three-dot menu, choose "
 "Add before or Add after, then click + to choose a block."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field type"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Text field"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Checkbox"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Dropdown list"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Field key"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Enter your own key after custom_. Clear the field to generate a key from the label."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Required field"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choices"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Choice label"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Stored value"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Leave empty to store the choice label."
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Remove choice"
+msgstr ""
+
+#: build/Blocks/custom-data-field/index.js:1
+msgid "Add choice"
 msgstr ""
 
 #: build/Blocks/donation-amounts/index.js:1
@@ -609,6 +703,10 @@ msgid "Another form is embedded in this donation form. Remove it or move it outs
 msgstr ""
 
 #: build/Blocks/donation-form/index.js:1
+msgid "Complete the settings of the additional fields before saving."
+msgstr ""
+
+#: build/Blocks/donation-form/index.js:1
 msgid "The donation form is incomplete. Restore the missing sections before saving."
 msgstr ""
 
@@ -617,7 +715,15 @@ msgid "Restore missing sections"
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
+msgid "Additional information is too long. Shorten your answers."
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
 msgid "The donation could not be submitted. Please try again."
+msgstr ""
+
+#: build/Blocks/donation-form/view.js:1
+msgid "This field is required."
 msgstr ""
 
 #: build/Blocks/donation-form/view.js:1
@@ -802,6 +908,18 @@ msgstr ""
 #: src/Blocks/contact-form/block.json
 msgctxt "block description"
 msgid "Gutenberg block for Fame lahjoitukset backend."
+msgstr ""
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block title"
+msgid "Additional field"
+msgstr ""
+
+#: build/Blocks/custom-data-field/block.json
+#: src/Blocks/custom-data-field/block.json
+msgctxt "block description"
+msgid "Collects an additional piece of information with a donation."
 msgstr ""
 
 #: build/Blocks/donation-amounts/block.json
