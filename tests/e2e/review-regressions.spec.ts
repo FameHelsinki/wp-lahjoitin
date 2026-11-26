@@ -415,6 +415,7 @@ test('functional palette colors render and an unset legend weight respects the t
 			primaryColor: 'rgb(30 30 30)',
 			thirdColor: 'hsl(120 100% 25%)',
 			sectionLabelColor: '',
+			style: { color: { text: '#264653' } },
 		},
 	})
 	await expect(editor.canvas.locator('[data-type="famehelsinki/donation-amounts"]')).toBeVisible()
@@ -433,6 +434,11 @@ test('functional palette colors render and an unset legend weight respects the t
 	const form = page.locator('form.fame-form--donations')
 	const input = form.locator('input[name="email"]')
 	await expect(input).toHaveCSS('border-top-color', 'rgb(0, 128, 0)')
+	const unselectedAmount = form
+		.locator('.donation-amounts .fame-form__label:not(:has(:checked)):visible')
+		.first()
+	await expect(unselectedAmount).toHaveCSS('color', 'rgb(38, 70, 83)')
+	await expect(input).toHaveCSS('color', 'rgb(38, 70, 83)')
 	await expect(form.locator('legend').first()).toHaveCSS('font-weight', '600')
 	await expect(page.locator('.fame-form--editable-layout')).toHaveCSS(
 		'--primary-color',

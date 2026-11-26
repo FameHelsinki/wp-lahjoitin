@@ -44,7 +44,7 @@
 	border: var(--border-width, 1px) solid var(--third-color);
 	border-radius: var(--text-field-border-radius);
 	background: transparent;
-	color: var(--primary-color, #000);
+	color: inherit;
 }
 
 .fame-form__input:focus {
@@ -179,7 +179,7 @@
 
 .wp-block-famehelsinki-donation-form .fame-form__input {
 	background-color: transparent;
-	color: var(--primary-color, #000);
+	color: inherit;
 }
 
 .wp-block-famehelsinki-donation-form .fame-form__fieldset {
@@ -218,12 +218,6 @@
 .wp-block-famehelsinki-donation-form .wp-block-famehelsinki-donation-type .fame-form__group {
 	display: block;
 	width: 100%;
-}
-
-.wp-block-famehelsinki-donation-form
-.wp-block-famehelsinki-donation-campaigns
-.fame-form__input {
-	color: inherit;
 }
 
 /* Donation type (tabs) */

@@ -27,6 +27,7 @@
 .wp-block-famehelsinki-donation-form .fame-form__editor-help {
 	background-color: #f0f6fc;
 	color: #1d2327;
+	border: 1px solid #c3d2df;
 	border-radius: 4px;
 	font-size: 0.875rem;
 	margin-block: 0;
@@ -46,6 +47,7 @@
 	font-family: inherit;
 	font-size: inherit;
 	box-sizing: border-box;
+	color: inherit;
 }
 
 .editor-styles-wrapper .wp-block-famehelsinki-donation-form .fame-form__row {
@@ -247,7 +249,7 @@
 	border: var(--border-width, 1px) solid var(--third-color, #000) !important;
 	border-radius: var(--text-field-border-radius, 0) !important;
 	background: transparent;
-	color: var(--primary-color, #000);
+	color: inherit;
 }
 
 /* Unit positioning in editor */
