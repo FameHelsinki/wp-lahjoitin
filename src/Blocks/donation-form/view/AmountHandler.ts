@@ -258,6 +258,13 @@ export class AmountWrapper {
 
 	#showError(input: HTMLInputElement, message: string) {
 		const el = this.#getErrorEl(input)
+		const help = input
+			.closest('.donation-amounts__input-wrapper')
+			?.querySelector<HTMLElement>('.fame-form__help')
+		if (help) {
+			help.hidden = true
+			this.#removeDescription(input, help.id)
+		}
 		if (el) {
 			if (el.textContent !== message) {
 				el.textContent = message
@@ -271,6 +278,13 @@ export class AmountWrapper {
 
 	#clearError(input: HTMLInputElement) {
 		const el = this.#getErrorEl(input)
+		const help = input
+			.closest('.donation-amounts__input-wrapper')
+			?.querySelector<HTMLElement>('.fame-form__help')
+		if (help) {
+			help.hidden = false
+			this.#addDescription(input, help.id)
+		}
 		if (el) {
 			if (el.textContent !== '') {
 				el.textContent = ''

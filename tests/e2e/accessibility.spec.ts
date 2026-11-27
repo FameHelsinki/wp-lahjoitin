@@ -614,15 +614,23 @@ test.describe('donation form accessibility', () => {
 		await page.goto(fixtures['optional-contact']!.url)
 		const form = page.locator(formSelector)
 		const amount = form.locator('.donation-amounts__other:visible input[type="number"]')
+		const help = form.locator('.donation-amounts__other:visible .fame-form__help')
+		const helpId = await help.getAttribute('id')
+		await expect(help).toBeVisible()
+		await expect(amount).toHaveAttribute('aria-describedby', helpId!)
 
 		await amount.fill('4')
 		await expect(amount).toHaveAttribute('aria-invalid', 'true')
+		await expect(help).toBeHidden()
 
 		const describedBy = (await amount.getAttribute('aria-describedby'))?.split(/\s+/) ?? []
 		const linkedError = form.locator(`#${describedBy.at(-1)}`)
+		expect(describedBy).not.toContain(helpId)
+		await expect(linkedError).toBeVisible()
 		await expect(linkedError).not.toBeEmpty()
 		await expect(linkedError).not.toHaveAttribute('aria-live')
 		await expect(form.locator('.fame-form__validation-announcer')).toBeEmpty()
+		await expectDonationFormToPassAxe(page, 'amount error replacing the minimum help')
 
 		await form.locator('input[name="first_name"]').focus()
 		await expect(form.locator('.fame-form__validation-announcer')).toContainText(
@@ -632,7 +640,10 @@ test.describe('donation form accessibility', () => {
 		await amount.fill('5')
 		await expect(amount).not.toHaveAttribute('aria-invalid')
 		await expect(linkedError).toBeEmpty()
+		await expect(help).toBeVisible()
+		await expect(amount).toHaveAttribute('aria-describedby', helpId!)
 		await expect(form.locator('.fame-form__validation-announcer')).toBeEmpty()
+		await expectDonationFormToPassAxe(page, 'minimum help restored after correcting the amount')
 	})
 
 	test('typing a valid amount digit by digit does not announce a temporary error', async ({
