@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { __ } from '@wordpress/i18n'
+import { __, sprintf } from '@wordpress/i18n'
 import {
+	BlockContextProvider,
 	InspectorControls,
 	ColorPalette,
 	InnerBlocks,
@@ -28,6 +29,8 @@ import {
 } from './layout'
 
 import { invalidContent } from './content-validation'
+import { fieldProblem } from '../custom-data-field/fields'
+import { useFieldKeyConflicts } from '../custom-data-field/field-key-conflicts'
 import { colorValue, cssLength } from './style-values'
 import { legendFontWeights } from './legend-font-weights'
 import WidthControl, { type ParentLayout, type WidthChoice } from './width-control'
@@ -199,11 +202,12 @@ export default function Edit({
 	const dangerColorId = useInstanceId(BaseControl, 'fame-clr-danger')
 	const sectionLabelColorId = useInstanceId(BaseControl, 'section-label-color')
 
-	const { innerBlocks, showEditorHelp } = useSelect(
+	const { innerBlocks, editorBlockIds, showEditorHelp } = useSelect(
 		select => {
 			const editor = select(blockEditorStore)
 			return {
 				innerBlocks: editor.getBlocks(clientId) as BlockInstance[],
+				editorBlockIds: editor.getClientIdsWithDescendants(),
 				showEditorHelp:
 					editor.isBlockSelected(clientId) ||
 					editor.hasSelectedInnerBlock(clientId, true),
@@ -213,6 +217,16 @@ export default function Edit({
 	)
 	const invalidBlocks = invalidContent(innerBlocks)
 	const invalidKey = invalidBlocks.join(',')
+	const { fields, duplicateKeys, fieldContext } = useFieldKeyConflicts(
+		clientId,
+		innerBlocks,
+		editorBlockIds
+	)
+	const misconfiguredFields = fields.flatMap(field => {
+		const problem = fieldProblem(field.attributes)
+		return problem ? [{ ...field, problem }] : []
+	})
+	const hasMisconfiguredFields = misconfiguredFields.length > 0 || duplicateKeys.length > 0
 	const blockActions = useDispatch(blockEditorStore)
 	const { replaceInnerBlocks } = blockActions
 	const { __unstableMarkNextChangeAsNotPersistent } = blockActions as unknown as {
@@ -268,10 +282,10 @@ export default function Edit({
 			  }
 			| undefined
 		const key = `lahjoitin-incomplete-${clientId}`
-		if (missingKey || invalidKey) actions?.lockPostSaving?.(key)
+		if (missingKey || invalidKey || hasMisconfiguredFields) actions?.lockPostSaving?.(key)
 		else actions?.unlockPostSaving?.(key)
 		return () => actions?.unlockPostSaving?.(key)
-	}, [clientId, missingKey, invalidKey, registry])
+	}, [clientId, missingKey, invalidKey, hasMisconfiguredFields, registry])
 
 	return (
 		<>
@@ -493,6 +507,40 @@ export default function Edit({
 						</ul>
 					</Notice>
 				)}
+				{hasMisconfiguredFields && (
+					<Notice
+						status="error"
+						isDismissible={false}
+						className="fame-form__configuration-notice"
+					>
+						{__(
+							'Complete the settings of the additional fields before saving.',
+							'fame_lahjoitukset'
+						)}
+						<ul>
+							{duplicateKeys.map(key => (
+								<li key={`duplicate-${key}`}>
+									{sprintf(
+										/* translators: %s: the duplicated field key. */
+										__(
+											'The field key “%s” is used more than once.',
+											'fame_lahjoitukset'
+										),
+										key
+									)}
+								</li>
+							))}
+							{misconfiguredFields.map(field => (
+								<li key={field.clientId}>
+									{field.attributes.label.trim() ||
+										__('Additional field', 'fame_lahjoitukset')}
+									{' — '}
+									{field.problem}
+								</li>
+							))}
+						</ul>
+					</Notice>
+				)}
 				{missing.length > 0 && (
 					<Notice
 						status="error"
@@ -530,11 +578,13 @@ export default function Edit({
 						)}
 					</p>
 				)}
-				<InnerBlocks
-					allowedBlocks={TOP_ALLOWED_BLOCKS as unknown as string[]}
-					templateLock="insert"
-					renderAppender={() => null}
-				/>
+				<BlockContextProvider value={fieldContext}>
+					<InnerBlocks
+						allowedBlocks={TOP_ALLOWED_BLOCKS as unknown as string[]}
+						templateLock="insert"
+						renderAppender={() => null}
+					/>
+				</BlockContextProvider>
 				<FormInserter clientId={clientId} formRef={wrapperRef} />
 			</div>
 		</>

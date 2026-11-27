@@ -7,6 +7,7 @@ import { __ } from '@wordpress/i18n'
 import { FORM_BLOCK } from './insertion'
 
 const FORM_INSERTIONS = [
+	'famehelsinki/custom-data-field',
 	'famehelsinki/contact-form',
 	'famehelsinki/donation-campaigns',
 	'core/paragraph',

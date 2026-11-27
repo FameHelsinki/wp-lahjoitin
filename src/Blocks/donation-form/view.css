@@ -57,6 +57,24 @@
 	color: var(--fame-clr-danger);
 }
 
+.fame-form__custom-checkbox {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.5em;
+}
+
+.fame-form__custom-checkbox > input[type="checkbox"] {
+	--fame-checkbox-size: 1.25rem;
+
+	flex: none;
+	font: inherit;
+	inline-size: var(--fame-checkbox-size);
+	block-size: var(--fame-checkbox-size);
+	margin: 0.2em 0 0;
+	margin-block-start: max(0px, calc((1lh - var(--fame-checkbox-size)) / 2));
+	accent-color: var(--primary-color, currentColor);
+}
+
 .fame-form__help {
 	display: block;
 	margin-top: 0.25rem;

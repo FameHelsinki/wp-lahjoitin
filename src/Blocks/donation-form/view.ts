@@ -17,12 +17,17 @@ domReady(() => {
 	if (!form) return
 
 	const translations = {
+		customDataTooLarge: __(
+			'Additional information is too long. Shorten your answers.',
+			'fame_lahjoitukset'
+		),
 		submitError: __(
 			'The donation could not be submitted. Please try again.',
 			'fame_lahjoitukset'
 		),
 		errors: {
 			_default: {
+				required: __('This field is required.', 'fame_lahjoitukset'),
 				unknown: __('Invalid value', 'fame_lahjoitukset'),
 			},
 			amount: {

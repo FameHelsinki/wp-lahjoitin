@@ -1,4 +1,5 @@
 import { jest, describe, beforeEach, afterEach, test, expect } from '@jest/globals'
+import { TextEncoder } from 'node:util'
 import FormHandler from './FormHandler'
 import { ErrorTranslations } from './Validation.ts'
 import { FormResultEvent, FormSubmitEvent } from './Events.ts'
@@ -486,6 +487,52 @@ describe('FormHandler events', () => {
 			email: '',
 			campaign: 'spring',
 		})
+	})
+
+	test('submits only checked additional checkboxes and omits empty custom data', async () => {
+		const formWithMetadata = form.cloneNode(true) as HTMLFormElement
+		formWithMetadata.insertAdjacentHTML(
+			'afterbegin',
+			`<div data-custom-data-field="custom_newsletter">
+				<input type="checkbox" name="custom_data[custom_newsletter]" checked />
+			</div>
+			<div data-custom-data-field="custom_certificate">
+				<input type="checkbox" name="custom_data[custom_certificate]" />
+			</div>`
+		)
+		form.replaceWith(formWithMetadata)
+		form = formWithMetadata
+		handler = new FormHandler('https://api.lahjoitin.fi', 'my-org', form)
+
+		const fetchMock = jest
+			.fn<(url: URL, options: RequestInit) => Promise<Pick<Response, 'ok' | 'json'>>>()
+			.mockResolvedValue({ ok: true, json: async () => ({ redirect_url: '/thanks' }) })
+		Object.assign(globalThis, { fetch: fetchMock })
+		on('fame-lahjoitukset-result', event => event.preventDefault())
+
+		const originalEncoder = Object.getOwnPropertyDescriptor(globalThis, 'TextEncoder')
+		Object.defineProperty(globalThis, 'TextEncoder', { configurable: true, value: TextEncoder })
+		try {
+			submit()
+			await flush()
+
+			const newsletter = form.querySelector<HTMLInputElement>(
+				'[name="custom_data[custom_newsletter]"]'
+			)!
+			newsletter.checked = false
+			submit()
+			await flush()
+		} finally {
+			if (originalEncoder) Object.defineProperty(globalThis, 'TextEncoder', originalEncoder)
+			else Reflect.deleteProperty(globalThis, 'TextEncoder')
+		}
+
+		expect(fetchMock).toHaveBeenCalledTimes(2)
+		const [withSelection, withoutSelection] = fetchMock.mock.calls.map(([, { body }]) =>
+			JSON.parse(body as string)
+		)
+		expect(withSelection.custom_data).toEqual({ custom_newsletter: true })
+		expect(withoutSelection).not.toHaveProperty('custom_data')
 	})
 
 	test('ignores a second submission while a request is in progress', async () => {

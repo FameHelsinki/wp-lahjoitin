@@ -1,7 +1,8 @@
 import AmountHandler, { AmountMessages } from './AmountHandler.ts'
 import FormValidation from './FormValidation.ts'
 import Validation, { ErrorTranslations } from './Validation.ts'
-import { FormResultEvent, FormSubmitEvent } from './Events.ts'
+import { type DonationRequestData, FormResultEvent, FormSubmitEvent } from './Events.ts'
+import CustomDataFields, { CUSTOM_DATA_MAX_BYTES } from './CustomData.ts'
 
 /**
  * All translatable strings used by the donation form, bundled into a single
@@ -12,6 +13,7 @@ export type Translations = {
 	errors?: ErrorTranslations
 	amount?: AmountMessages
 	submitError?: string
+	customDataTooLarge?: string
 }
 
 export default class FormHandler {
@@ -24,6 +26,8 @@ export default class FormHandler {
 	readonly #submitStatus: HTMLElement | null
 	readonly #submissionError: HTMLElement | null
 	readonly #submitErrorMessage: string
+	readonly #customDataTooLarge: string
+	readonly #customDataFields: CustomDataFields
 
 	#providerField: HTMLInputElement | null
 	#providerRadios: NodeListOf<HTMLInputElement>
@@ -50,6 +54,7 @@ export default class FormHandler {
 
 		this.#submit = this.#form.querySelectorAll('[type="submit"]')
 		this.#amount = new AmountHandler(this.#form, translations.amount)
+		this.#customDataFields = new CustomDataFields(this.#form)
 		this.#validation = new FormValidation(
 			this.#form,
 			translations.errors,
@@ -59,6 +64,9 @@ export default class FormHandler {
 		this.#submissionError = this.#form.querySelector('.fame-form__submission-error')
 		this.#submitErrorMessage =
 			translations.submitError ?? 'The donation could not be submitted. Please try again.'
+		this.#customDataTooLarge =
+			translations.customDataTooLarge ??
+			'Additional information is too long. Shorten your answers.'
 
 		// Initialize form elements.
 		this.#providerField = this.#form.querySelector<HTMLInputElement>(
@@ -290,8 +298,13 @@ export default class FormHandler {
 		this.#form.classList.add('fame-form--submitting')
 
 		const formData = new FormData(this.#form)
-		const data = Object.fromEntries(formData)
-		this.#removeEmptyOptionalFields(data)
+		const formValues = Object.fromEntries(formData)
+		this.#removeEmptyOptionalFields(formValues)
+		const customData = this.#customDataFields.collect(formValues)
+		const data: DonationRequestData = {
+			...formValues,
+			...(customData && { custom_data: customData }),
+		}
 		const url = this.getSubmitUrl()
 
 		// Allow plugins to alter form data.
@@ -349,7 +362,15 @@ export default class FormHandler {
 		}
 	}
 
-	async #submitForm(url: URL, data: any): Promise<boolean> {
+	async #submitForm(url: URL, data: DonationRequestData): Promise<boolean> {
+		if (
+			data.custom_data &&
+			new TextEncoder().encode(JSON.stringify(data.custom_data)).length >
+				CUSTOM_DATA_MAX_BYTES
+		) {
+			this.#showSubmissionError(this.#customDataTooLarge)
+			return false
+		}
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {

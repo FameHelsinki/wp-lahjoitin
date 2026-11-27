@@ -587,6 +587,186 @@ test('the form inserter offers optional sections and inserts headings before sub
 	).toHaveCount(1)
 })
 
+test('an added field uses a stable automatic key with an override in Advanced', async ({
+	admin,
+	editor,
+	page,
+	requestUtils,
+}) => {
+	await setOrganization(requestUtils)
+	await admin.createNewPost({ title: 'Add a donation field' })
+	await editor.insertBlock({ name: 'famehelsinki/donation-form' })
+	const form = editor.canvas.locator('[data-type="famehelsinki/donation-form"]')
+	const submit = form.locator('[data-type="famehelsinki/form-controls"]')
+	await expect(submit).toBeVisible()
+	await editor.selectBlocks(submit)
+	await editor.clickBlockOptionsMenuItem('Add before')
+	await page.locator('.block-editor-block-list__empty-block-inserter button').click()
+
+	const menu = page.getByRole('menu', { name: 'Add block', exact: true })
+	await expect(menu.getByRole('menuitem').first()).toHaveText('Additional field')
+	await menu.getByRole('menuitem', { name: 'Additional field' }).click()
+	await expect(
+		form.locator(
+			'[data-type="famehelsinki/custom-data-field"] + [data-type="famehelsinki/form-controls"]'
+		)
+	).toHaveCount(1)
+	await expect
+		.poll(() =>
+			page.evaluate(
+				() => (window as any).wp.data.select('core/block-editor').getSelectedBlock()?.name
+			)
+		)
+		.toBe('famehelsinki/custom-data-field')
+
+	await editor.openDocumentSettingsSidebar()
+	const label = page.getByRole('textbox', { name: 'Label', exact: true })
+	const inlineLabel = form
+		.locator('[data-type="famehelsinki/custom-data-field"]')
+		.getByRole('textbox', { name: 'Label', exact: true })
+	const key = page.getByRole('textbox', { name: 'Field key', exact: true })
+	await expect(key).toHaveCount(0)
+	await inlineLabel.pressSequentially('Tilaan & luen uutiskirjeen')
+	await expect(label).toHaveValue('Tilaan & luen uutiskirjeen')
+	await page.getByRole('button', { name: 'Advanced', exact: true }).click()
+	const prefix = page.getByRole('region', { name: 'Editor settings' }).getByText('custom_', {
+		exact: true,
+	})
+	await expect(prefix).toBeVisible()
+	await expect(prefix.locator('..')).toHaveCSS('display', 'flex')
+	await expect(key).toHaveValue('tilaan_luen_uutiskirjeen')
+	await label.fill('Uutiset & tapahtumat')
+	await label.press('Tab')
+	await expect(inlineLabel).toHaveText('Uutiset & tapahtumat')
+	await expect(key).toHaveValue('tilaan_luen_uutiskirjeen')
+	await key.fill('')
+	await key.press('Tab')
+	await expect(key).toHaveValue('uutiset_tapahtumat')
+	await key.fill('newsletter')
+	await key.press('Tab')
+	await expect(key).toHaveValue('newsletter')
+	await key.fill('custom_newsletter')
+	await key.press('Tab')
+	await expect(key).toHaveValue('newsletter')
+
+	const id = await editor.publishPost()
+	await page.goto(`/?p=${id}`)
+	await expect(page.getByRole('textbox', { name: 'Uutiset & tapahtumat' })).toHaveAttribute(
+		'name',
+		'custom_data[custom_newsletter]'
+	)
+})
+
+test('copies get numbered additional field keys and unresolved conflicts block saving', async ({
+	admin,
+	editor,
+	page,
+	requestUtils,
+}) => {
+	await setOrganization(requestUtils)
+	await admin.createNewPost({ title: 'Copied additional field' })
+	await editor.insertBlock({ name: 'famehelsinki/donation-form' })
+	const form = editor.canvas.locator('[data-type="famehelsinki/donation-form"]')
+	await expect(form.locator('[data-type="famehelsinki/donation-amounts"]')).toBeVisible()
+	const column = find(await editor.getBlocks({ full: true }), 'core/column')
+	const fieldName = 'famehelsinki/custom-data-field'
+	await editor.insertBlock(
+		{
+			name: fieldName,
+			attributes: {
+				fieldType: 'select',
+				label: 'Newsletter frequency',
+				fieldKey: 'custom_newsletter',
+				choices: [{ label: 'Monthly digest', value: 'monthly' }],
+			},
+		},
+		{ clientId: column.clientId }
+	)
+	const fields = form.locator(`[data-type="${fieldName}"]`)
+	await expect(fields.first().getByRole('combobox')).toBeVisible()
+	const originalId = await fields.first().getAttribute('data-block')
+	const duplicate = () =>
+		page.evaluate(async id => {
+			const [copy] = await (window as any).wp.data
+				.dispatch('core/block-editor')
+				.duplicateBlocks([id])
+			return copy
+		}, originalId)
+	const readKey = (id: string) =>
+		page.evaluate(
+			clientId =>
+				(window as any).wp.data.select('core/block-editor').getBlockAttributes(clientId)
+					?.fieldKey,
+			id
+		)
+	const copyId = await duplicate()
+	await expect.poll(() => readKey(copyId)).toBe('custom_newsletter_2')
+	const secondCopyId = await duplicate()
+	await expect.poll(() => readKey(secondCopyId)).toBe('custom_newsletter_3')
+	await expect(fields).toHaveCount(3)
+	await page.evaluate(() => (window as any).wp.data.dispatch('core/editor').undo())
+	await expect(fields).toHaveCount(2)
+	await page.evaluate(() => (window as any).wp.data.dispatch('core/editor').redo())
+	await expect(fields).toHaveCount(3)
+	await expect.poll(() => readKey(secondCopyId)).toBe('custom_newsletter_3')
+
+	const original = form.locator(`[data-block="${originalId}"]`)
+	const copy = form.locator(`[data-block="${copyId}"]`)
+	const duplicateMessage = form
+		.locator('.components-notice.is-error')
+		.getByText('The field key “custom_newsletter” is used more than once.')
+	const sidebar = page.getByRole('region', { name: 'Editor settings' })
+	const repairMessage = sidebar
+		.locator('.components-notice.is-error')
+		.getByText(
+			'This field key is already used. Clear this field’s key in Advanced to generate a new one.'
+		)
+	const savingLocked = () =>
+		page.evaluate(() => (window as any).wp.data.select('core/editor').isPostSavingLocked())
+	await expect.poll(savingLocked).toBe(false)
+
+	await page.evaluate(
+		({ copyBlock, columnId }) =>
+			(window as any).wp.data
+				.dispatch('core/block-editor')
+				.moveBlocksToPosition([copyBlock], columnId, columnId, 0),
+		{ copyBlock: copyId, columnId: column.clientId }
+	)
+	await expect(fields.first()).toHaveAttribute('data-block', copyId)
+	await editor.selectBlocks(copy)
+	await editor.openDocumentSettingsSidebar()
+	await page.getByRole('button', { name: 'Advanced', exact: true }).click()
+	const key = page.getByRole('textbox', { name: 'Field key', exact: true })
+	await expect(key).toHaveValue('newsletter_2')
+	await key.fill('newsletter')
+	await key.press('Tab')
+	await expect(duplicateMessage).toHaveCount(1)
+	await expect(repairMessage).toBeVisible()
+	await expect.poll(savingLocked).toBe(true)
+	const invalidContent = await editor.getEditedPostContent()
+	await key.fill('newsletter_2')
+	await key.press('Tab')
+	await expect(key).toHaveValue('newsletter_2')
+	await expect(duplicateMessage).toHaveCount(0)
+	await expect.poll(savingLocked).toBe(false)
+	await editor.selectBlocks(original)
+	await expect(key).toHaveValue('newsletter')
+
+	const post = await requestUtils.rest({
+		path: '/wp/v2/posts',
+		method: 'POST',
+		data: { title: 'Previously conflicting fields', status: 'draft', content: invalidContent },
+	})
+	await admin.editPost(post.id)
+	await expect(duplicateMessage).toHaveCount(1)
+	await expect.poll(savingLocked).toBe(true)
+	await editor.selectBlocks(fields.first())
+	await editor.openDocumentSettingsSidebar()
+	await expect(repairMessage).toHaveCount(0)
+	await editor.selectBlocks(fields.nth(1))
+	await expect(repairMessage).toHaveCount(0)
+})
+
 test('restoring donation type puts it before amount fields instead of after submit', async ({
 	admin,
 	editor,
