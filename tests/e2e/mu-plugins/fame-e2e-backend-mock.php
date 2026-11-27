@@ -12,7 +12,7 @@ declare(strict_types=1);
  *
  * Only intercepts `/providers/e2e-*` requests, so a normally configured site
  * is unaffected. The slug picks the scenario:
- *   - e2e-ok:   two providers enabled
+ *   - e2e-ok, e2e-restricted: two providers enabled
  *   - e2e-fail: backend unavailable (HTTP 500)
  */
 add_filter('pre_http_request', static function ($preempt, $args, $url) {
@@ -29,7 +29,7 @@ add_filter('pre_http_request', static function ($preempt, $args, $url) {
     ];
 
     return match ($matches[1]) {
-        'e2e-ok' => $response(200, [
+        'e2e-ok', 'e2e-restricted' => $response(200, [
             ['provider' => 'checkout', 'types' => ['single', 'recurring']],
             ['provider' => 'mobilepay', 'types' => ['single']],
         ]),
@@ -49,3 +49,20 @@ add_action('rest_api_init', static function (): void {
         'show_in_rest' => true,
     ]);
 });
+
+// Exercise the real block theme editor with appearance tools and palettes disabled.
+add_filter('wp_theme_json_data_theme', static function (WP_Theme_JSON_Data $data): WP_Theme_JSON_Data {
+    if (get_option('slug') !== 'e2e-restricted') {
+        return $data;
+    }
+
+    return $data->update_with([
+        'version' => 3,
+        'settings' => [
+            'appearanceTools' => false,
+            'color' => ['background' => false, 'custom' => false, 'defaultPalette' => false, 'palette' => []],
+            'spacing' => ['padding' => false, 'customSpacingSize' => false],
+            'border' => ['color' => false, 'radius' => false, 'style' => false, 'width' => false],
+        ],
+    ]);
+}, 5);

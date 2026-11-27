@@ -41,7 +41,7 @@ final class BlocksTest extends WP_UnitTestCase
         $this->assertStringContainsString('backend_url', (string) $data);
     }
 
-    public function testDonationFormMarkupSurvivesRendering(): void
+    public function testIncompleteDonationFormFailsSafely(): void
     {
         $markup = '<!-- wp:famehelsinki/donation-form {"type":"single"} -->'
             . '<form class="wp-block-famehelsinki-donation-form" data-type="single"></form>'
@@ -49,7 +49,72 @@ final class BlocksTest extends WP_UnitTestCase
 
         $rendered = do_blocks($markup);
 
-        $this->assertStringContainsString('wp-block-famehelsinki-donation-form', $rendered);
+        $this->assertStringContainsString('configuration is incomplete', $rendered);
+        $this->assertStringNotContainsString('<form', $rendered);
+    }
+
+    private function completeForm(array $attributes = [], array $extra = []): string
+    {
+        $children = '';
+        foreach (['donation-type', 'donation-amounts', 'donation-providers', 'form-controls'] as $name) {
+            $children .= '<!-- wp:famehelsinki/' . $name . ' /-->';
+        }
+        return '<!-- wp:famehelsinki/donation-form' . ($attributes ? ' ' . wp_json_encode($attributes) : '') . ' -->'
+            . $children . implode('', $extra) . '<!-- /wp:famehelsinki/donation-form -->';
+    }
+
+    public function testCompleteFormPreservesBlockSupportStylesAndValidatedVariables(): void
+    {
+        $rendered = do_blocks($this->completeForm([
+            'layoutVersion' => 1,
+            'primaryColor' => 'rgb(30 30 30)',
+            'sectionLabelColor' => 'light-dark(#fff, #000)',
+            'style' => [
+                'color' => ['text' => '#123456'],
+                'spacing' => ['margin' => ['top' => '12px']],
+                'typography' => ['fontSize' => '22px'],
+            ],
+        ]));
+        $html = new \WP_HTML_Tag_Processor($rendered);
+        self::assertTrue($html->next_tag(['class_name' => 'wp-block-famehelsinki-donation-form']));
+        $style = (string) $html->get_attribute('style');
+        self::assertStringContainsString('--primary-color:rgb(30 30 30)', $style);
+        self::assertStringContainsString('--section-label-color:light-dark(#fff, #000)', $style);
+        self::assertStringContainsString('color:#123456', $style);
+        self::assertStringContainsString('margin-top:12px', $style);
+        self::assertStringContainsString('font-size:22px', $style);
+        self::assertStringNotContainsString('--section-label-font-weight:', $style);
+        self::assertStringContainsString('fame-form--editable-layout', (string) $html->get_attribute('class'));
+        self::assertStringContainsString('<form', $rendered);
+    }
+
+    public function testNestedNativeFormsFailSafelyEvenWhenTheParentHasAllSections(): void
+    {
+        foreach (['<!-- wp:search /-->', '<!-- wp:html --><form><input name="foreign"></form><!-- /wp:html -->'] as $nested) {
+            $rendered = do_blocks($this->completeForm([], [$nested]));
+            self::assertStringContainsString('contains another form', $rendered);
+            self::assertStringNotContainsString('<form', $rendered);
+        }
+    }
+
+    public function testNestedDonationCannotSupplyItsParentsMissingSections(): void
+    {
+        $markup = '<!-- wp:famehelsinki/donation-form -->'
+            . $this->completeForm() . '<!-- /wp:famehelsinki/donation-form -->';
+        $rendered = do_blocks($markup);
+        self::assertStringContainsString('contains another form', $rendered);
+        self::assertStringNotContainsString('<form', $rendered);
+    }
+
+    public function testExtraButtonsDoNotSubmitByDefault(): void
+    {
+        $html = \Fame\WordPress\Lahjoitukset\FormContent::prepareHtml(
+            '<button>Info</button><button type="submit">Other</button>'
+            . '<button type="submit">Donate</button>'
+        );
+        self::assertStringContainsString('<button type="button">Info', $html);
+        self::assertStringContainsString('<button type="submit">Other', $html);
+        self::assertStringContainsString('<button type="submit">Donate', $html);
     }
 
     public function testPhoneRequiredSettingOnlyAffectsVisiblePhoneField(): void

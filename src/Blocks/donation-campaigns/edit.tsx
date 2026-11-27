@@ -11,6 +11,7 @@ const MAX_CAMPAIGNS = 10
 type Attributes = {
 	campaigns: string[]
 	label: string
+	placeholder: string
 	showLabel: boolean
 }
 
@@ -18,10 +19,11 @@ export default function Edit({
 	attributes,
 	setAttributes,
 }: EditProps<Attributes>): React.JSX.Element {
-	const { campaigns, label, showLabel } = attributes
+	const { campaigns, label, placeholder = '', showLabel } = attributes
 	const strings = captionStrings('label')
 	const translatedLabel = __('Campaign', 'fame_lahjoitukset')
 	const localizedLabel = localizedDefault(label, 'Campaign', translatedLabel)
+	const defaultPlaceholder = __('Select campaign', 'fame_lahjoitukset')
 	// Fewer than two campaigns means there is nothing to choose from: the value
 	// is submitted with a hidden input and no label is rendered at all.
 	const visible = campaigns.length > 1
@@ -56,6 +58,12 @@ export default function Edit({
 						value={localizedLabel}
 						disabled={!visible}
 						onChange={value => setAttributes({ label: value })}
+					/>
+					<TextControl
+						label={__('Dropdown placeholder', 'fame_lahjoitukset')}
+						value={placeholder}
+						placeholder={defaultPlaceholder}
+						onChange={value => setAttributes({ placeholder: value })}
 					/>
 
 					<div>
@@ -156,8 +164,10 @@ export default function Edit({
 								id="campaigns-preview"
 								className="fame-form__input"
 								aria-label={showLabel ? undefined : localizedLabel}
+								defaultValue=""
 								disabled
 							>
+								<option value="">{placeholder.trim() || defaultPlaceholder}</option>
 								{campaigns.map((campaign, index) => (
 									<option key={index} value={campaign}>
 										{campaign}

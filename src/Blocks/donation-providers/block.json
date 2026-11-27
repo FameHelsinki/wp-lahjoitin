@@ -6,8 +6,9 @@
 	"title": "Payment providers",
 	"category": "widgets",
 	"description": "Allows selecting payment providers.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"attributes": {
+		"lock": { "type": "object", "default": { "remove": true } },
 		"showLegend": { "type": "boolean", "default": true },
 		"legend": { "type": "string", "default": "" },
 		"providers": { "type": "array", "default": [] },

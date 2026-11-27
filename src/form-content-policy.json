@@ -1,0 +1,9 @@
+{
+  "forbiddenBlocks": [
+    "famehelsinki/donation-form",
+    "core/search",
+    "core/loginout",
+    "core/post-comments-form",
+    "core/form"
+  ]
+}

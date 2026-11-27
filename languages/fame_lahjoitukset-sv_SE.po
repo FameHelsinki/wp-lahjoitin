@@ -96,10 +96,15 @@ msgstr "Donationsbelopp"
 msgid "Campaign"
 msgstr "Kampanj"
 
-#: build/Blocks/donation-campaigns/render.php:58
-#: src/Blocks/donation-campaigns/render.php:58
+#: build/Blocks/donation-campaigns/render.php:59
+#: src/Blocks/donation-campaigns/render.php:59
+#: build/Blocks/donation-campaigns/index.js:1
 msgid "Select campaign"
 msgstr "Välj kampanj"
+
+#: build/Blocks/donation-campaigns/index.js:1
+msgid "Dropdown placeholder"
+msgstr "Rullgardinsmenyns platshållartext"
 
 #: build/Blocks/donation-form/render.php:138
 #: src/Blocks/donation-form/render.php:138
@@ -311,11 +316,8 @@ msgid "Require phone number"
 msgstr "Kräv telefonnummer"
 
 #: build/Blocks/contact-form/index.js:1
-msgid ""
-"The contact form is not in use. Use the toggle in the sidebar to enable it."
-msgstr ""
-"Kontaktformuläret används inte. Använd knappen i sidofältet för att aktivera "
-"det."
+msgid "The contact form is not in use."
+msgstr "Kontaktformuläret används inte."
 
 #: build/Blocks/donation-amounts/index.js:1
 msgid "Amount"
@@ -819,6 +821,110 @@ msgstr "Debiteringsdag för månatlig donation"
 msgctxt "block description"
 msgid "Allows donors to choose the monthly recurring charge day."
 msgstr "Låter givare välja debiteringsdag för månatliga donationer."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Theme default"
+msgstr "Temats standard"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Content width"
+msgstr "Innehållsbredd"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Custom width"
+msgstr "Anpassad bredd"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Width"
+msgstr "Bredd"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Form width"
+msgstr "Formulärets bredd"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Maximum width (px)"
+msgstr "Maxbredd (px)"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "saved value"
+msgstr "sparat värde"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Choose 1–3 columns. New columns start empty. Removing columns moves their "
+"blocks to the end of the last remaining column."
+msgstr ""
+"Välj 1–3 kolumner. Nya kolumner är tomma. Blocken i de borttagna "
+"kolumnerna flyttas till slutet av den sista återstående kolumnen."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Section label font weight"
+msgstr "Teckenvikt för sektionsrubriker"
+
+#: build/Blocks/donation-form/index.js:1
+msgid "The theme does not declare font weights for the current font."
+msgstr "Temat anger inga teckenvikter för det valda teckensnittet."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Available weights come from the theme font definitions. Applies only to "
+"section labels."
+msgstr ""
+"Tillgängliga teckenvikter hämtas från temats teckensnittsinställningar. "
+"Gäller endast sektionsrubriker."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"Another form is embedded in this donation form. Remove it or move it "
+"outside before saving."
+msgstr ""
+"Donationsformuläret innehåller ett annat formulär. Ta bort det eller "
+"flytta det utanför donationsformuläret innan du sparar."
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"The donation form is incomplete. Restore the missing sections before "
+"saving."
+msgstr ""
+"Donationsformuläret är ofullständigt. Återställ avsnitten som saknas "
+"innan du sparar."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Restore missing sections"
+msgstr "Återställ avsnitt som saknas"
+
+#: build/Blocks/donation-form/render.php:144
+#: src/Blocks/donation-form/render.php:144
+msgid ""
+"The donation form is temporarily unavailable because its configuration is "
+"incomplete."
+msgstr ""
+"Donationsformuläret är tillfälligt otillgängligt eftersom inställningarna "
+"är ofullständiga."
+
+#: build/Blocks/donation-form/render.php:169
+#: build/Blocks/donation-form/render.php:198
+#: src/Blocks/donation-form/render.php:169
+#: src/Blocks/donation-form/render.php:198
+msgid ""
+"The donation form contains another form. Move the embedded form outside "
+"the donation form."
+msgstr ""
+"Donationsformuläret innehåller ett annat formulär. Flytta det inbäddade "
+"formuläret utanför donationsformuläret."
+
+#: build/Blocks/donation-form/index.js:1
+msgid "Lahjoitin blocks"
+msgstr "Lahjoitin-block"
+
+#: build/Blocks/donation-form/index.js:1
+msgid ""
+"To add a block, select a block in the form. Open its three-dot menu, choose "
+"Add before or Add after, then click + to choose a block."
+msgstr ""
+"Markera ett block i formuläret. Öppna dess meny med tre punkter, välj Lägg "
+"till före eller Lägg till efter och klicka sedan på + för att välja ett block."
 
 #~ msgid "Donation provider"
 #~ msgstr "Donationsleverantör"

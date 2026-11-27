@@ -8,6 +8,13 @@
 	"description": "Gutenberg block for Fame donation system.",
 	"example": {},
 	"attributes": {
+		"layoutVersion": { "type": "number", "default": 0 },
+		"formWidth": {
+			"type": "string",
+			"enum": ["", "content", "custom"],
+			"default": ""
+		},
+		"formMaxWidth": { "type": "integer", "default": 0 },
 		"colsDesktop": {
 			"type": "number",
 			"default": 1
@@ -48,6 +55,10 @@
 			"type": "string",
 			"default": "#dc3545"
 		},
+		"sectionLabelFontWeight": {
+			"type": "string",
+			"default": ""
+		},
 		"sectionLabelColor": {
 			"type": "string",
 			"default": ""
@@ -58,19 +69,39 @@
 		}
 	},
 	"supports": {
-		"align": ["left", "right", "center", "full"],
+		"align": ["left", "right", "center", "wide", "full"],
 		"color": {
-			"background": false,
-			"text": true
+			"background": true,
+			"text": true,
+			"__experimentalDefaultControls": {
+				"background": true,
+				"text": true
+			}
 		},
 		"spacing": {
-			"margin": true
+			"margin": true,
+			"padding": true,
+			"__experimentalDefaultControls": {
+				"margin": true,
+				"padding": true
+			}
 		},
 		"html": false,
 		"typography": {
 			"fontSize": true
 		},
-		"border": { "radius": true, "width": true }
+		"__experimentalBorder": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true,
+			"__experimentalDefaultControls": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		}
 	},
 	"allowedBlocks": ["core/columns"],
 	"icon": "money",

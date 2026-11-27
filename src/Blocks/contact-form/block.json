@@ -6,7 +6,7 @@
 	"title": "Contact form",
 	"category": "widgets",
 	"description": "Gutenberg block for Fame lahjoitukset backend.",
-	"parent": ["famehelsinki/donation-form"],
+	"ancestor": ["famehelsinki/donation-form"],
 	"example": {},
 	"attributes": {
 		"showLegend": { "type": "boolean", "default": true },

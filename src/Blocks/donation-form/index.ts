@@ -3,6 +3,8 @@
  *
  * @see https://developer.wordpress.org/block-editor/developers/block-api/#registering-a-block
  */
+import { addFilter } from '@wordpress/hooks'
+import { canInsertDonationContent } from './insertion'
 import { registerBlockType } from '@wordpress/blocks'
 
 /**
@@ -11,6 +13,7 @@ import { registerBlockType } from '@wordpress/blocks'
 import Edit from './edit'
 import save from './save'
 import metadata from './block.json'
+import { withColumnCountControl } from './column-count-control'
 
 import './edit.css'
 
@@ -29,3 +32,11 @@ registerBlockType(metadata.name, {
 	 */
 	save,
 } as any)
+
+addFilter(
+	'blockEditor.__unstableCanInsertBlockType',
+	'famehelsinki/donation-content',
+	canInsertDonationContent
+)
+
+addFilter('editor.BlockEdit', 'famehelsinki/donation-form-column-count', withColumnCountControl)

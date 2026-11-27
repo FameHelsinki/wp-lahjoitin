@@ -14,6 +14,7 @@ use Psr\Container\ContainerInterface;
  */
 class Blocks implements ComponentInterface, ContainerInjectionInterface
 {
+    private const DONATION_FORM = 'famehelsinki/donation-form';
 
 	/**
 	 * Constructs a new instance.
@@ -55,7 +56,7 @@ class Blocks implements ComponentInterface, ContainerInjectionInterface
 			}
 		}
 
-		if ($block->name === 'famehelsinki/donation-form') {
+		if ($block->name === self::DONATION_FORM) {
 			if (empty($block->view_script_handles)) {
 				return;
 			}
@@ -158,6 +159,65 @@ class Blocks implements ComponentInterface, ContainerInjectionInterface
         }
 
         return array_unique($locales);
+    }
+
+    /**
+     * Enable native style controls through the theme data used by Global Styles.
+     */
+    #[Filter('wp_theme_json_data_theme')]
+    public function enableDonationFormStyles(\WP_Theme_JSON_Data $themeData): \WP_Theme_JSON_Data
+    {
+        $supports = [
+            'color' => ['background' => true, 'custom' => true],
+            'spacing' => ['padding' => true, 'customSpacingSize' => true],
+            'border' => ['color' => true, 'radius' => true, 'style' => true, 'width' => true],
+        ];
+        if (!$this->hasDonationFormPalette($themeData)) {
+            $supports['color']['defaultPalette'] = true;
+        }
+
+        return $themeData->update_with([
+            'version' => 3,
+            'settings' => ['blocks' => [self::DONATION_FORM => $supports]],
+        ]);
+    }
+
+    private function hasDonationFormPalette(\WP_Theme_JSON_Data $themeData): bool
+    {
+        $theme = wp_get_theme();
+        $settings = $themeData->get_data()['settings'] ?? [];
+        $parentSettings = [];
+
+        // WordPress merges parent settings and legacy theme supports after this filter.
+        $parent = $theme->parent();
+        if ($parent) {
+            $file = $parent->get_file_path('theme.json');
+            if (is_readable($file)) {
+                $parentConfig = wp_json_file_decode($file, ['associative' => true]);
+                $parentSettings = $parentConfig['settings'] ?? [];
+            }
+        }
+
+        $themePalette = $settings['blocks'][self::DONATION_FORM]['color']['palette']['theme']
+            ?? $parentSettings['blocks'][self::DONATION_FORM]['color']['palette']
+            ?? $settings['color']['palette']['theme']
+            ?? $parentSettings['color']['palette']
+            ?? get_theme_support('editor-color-palette')[0]
+            ?? [];
+        if ($themePalette) {
+            return true;
+        }
+
+        $styles = \WP_Theme_JSON_Resolver::get_user_data_from_wp_global_styles($theme);
+        $config = json_decode($styles['post_content'] ?? '{}', true);
+        if (($config['isGlobalStylesUserThemeJSON'] ?? false) !== true) {
+            return false;
+        }
+
+        $settings = $config['settings'] ?? [];
+        return (bool) ($settings['blocks'][self::DONATION_FORM]['color']['palette']
+            ?? $settings['color']['palette']
+            ?? []);
     }
 
     /**

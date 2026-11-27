@@ -40,6 +40,7 @@ $label_raw = trim((string) ($attributes['label'] ?? ''));
 $label     = $label_raw === '' || $label_raw === 'Campaign'
   ? __('Campaign', 'fame_lahjoitukset')
   : $label_raw;
+$placeholder = trim((string) ($attributes['placeholder'] ?? ''));
 
 $wrapper_attrs = get_block_wrapper_attributes([
   'class' => 'fame-form__group',
@@ -55,7 +56,7 @@ $wrapper_attrs = get_block_wrapper_attributes([
 
   <select name="campaign" id="campaign" class="fame-form__input">
     <option value="" selected>
-      <?php echo esc_html__('Select campaign', 'fame_lahjoitukset'); ?>
+      <?php echo esc_html($placeholder === '' ? __('Select campaign', 'fame_lahjoitukset') : $placeholder); ?>
     </option>
 
     <?php foreach ($campaigns as $campaign) : ?>

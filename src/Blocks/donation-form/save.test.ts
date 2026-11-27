@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import save from './save'
 
 jest.mock('@wordpress/block-editor', () => {
-	const React = require('react')
+	const React = jest.requireActual<typeof import('react')>('react')
 	return {
 		InnerBlocks: {
 			Content: () => React.createElement('div', { 'data-testid': 'innerblocks-content' }),

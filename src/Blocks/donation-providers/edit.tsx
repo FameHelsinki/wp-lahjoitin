@@ -1,6 +1,5 @@
 import React, { useMemo, useEffect, CSSProperties } from 'react'
 import { __ } from '@wordpress/i18n'
-import { useDispatch, useSelect } from '@wordpress/data'
 import {
 	useBlockProps,
 	InspectorControls,
@@ -30,13 +29,6 @@ import { localizedDefault } from '../common/localized-default.ts'
 import { captionStrings } from '../common/strings.ts'
 
 export type FlatProvider = Provider & { type: string }
-
-const DEFAULT_TERMS_PLACEHOLDERS = new Set([
-	'Terms text…',
-	'Add privacy policy and terms text here…',
-	'Lisää tietosuojaselosteen ja käyttöehtojen teksti tähän…',
-	'Lägg till text för integritetspolicy och villkor här…',
-])
 
 export type Attributes = {
 	legend?: string
@@ -69,32 +61,6 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 	const donationTypes = useEnabledDonationTypes(clientId)
 	const currentType = useCurrentDonationType(clientId)
 	const blockProps = useBlockProps()
-	const termsPlaceholder = __('Add privacy policy and terms text here…', 'fame_lahjoitukset')
-	const innerBlocks = useSelect(
-		select => {
-			const blockEditor = select('core/block-editor') as any
-			return blockEditor.getBlocks(clientId) as any[]
-		},
-		[clientId]
-	)
-	const { updateBlockAttributes } = useDispatch('core/block-editor') as any
-
-	useEffect(() => {
-		for (const innerBlock of innerBlocks) {
-			if (innerBlock.name !== 'core/paragraph') continue
-			if (!String(innerBlock.attributes?.className ?? '').includes('fame-form__terms')) {
-				continue
-			}
-
-			const savedPlaceholder = String(innerBlock.attributes?.placeholder ?? '')
-			if (
-				DEFAULT_TERMS_PLACEHOLDERS.has(savedPlaceholder) &&
-				savedPlaceholder !== termsPlaceholder
-			) {
-				updateBlockAttributes(innerBlock.clientId, { placeholder: termsPlaceholder })
-			}
-		}
-	}, [innerBlocks, termsPlaceholder, updateBlockAttributes])
 
 	const [rawAvailable, loading, error] = useProviders()
 	const available = useMemo(() => {
@@ -382,19 +348,8 @@ export default function Edit({ attributes, setAttributes, clientId }: EditProps<
 						</fieldset>
 					)
 				})}
-				<InnerBlocks
-					allowedBlocks={['core/paragraph']}
-					template={[
-						[
-							'core/paragraph',
-							{
-								className: 'fame-form__terms',
-								placeholder: termsPlaceholder,
-							},
-						],
-					]}
-					templateLock="all"
-				/>
+				{/* Retain legacy children until the parent form migrates them. */}
+				<InnerBlocks allowedBlocks={[]} templateLock="all" renderAppender={() => null} />
 			</div>
 		</>
 	)
